@@ -6,6 +6,8 @@ import android.util.Size;
 
 import com.prometheussoftware.auikit.R;
 import com.prometheussoftware.auikit.BuildConfig;
+import com.prometheussoftware.auikit.common.protocols.ConstantsProtocol;
+
 import java.util.HashMap;
 
 public abstract class Constants implements ConstantsProtocol {

@@ -7,9 +7,10 @@ import android.view.View;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
-import com.prometheussoftware.auikit.model.EdgeInsets;
+import com.prometheussoftware.auikit.classes.UIColor;
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.BaseWindow;
-import com.prometheussoftware.auikit.common.LifeCycleDelegate;
+import com.prometheussoftware.auikit.uiviewcontroller.LifeCycleDelegate;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 
 import java.util.ArrayList;
@@ -23,9 +24,10 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     private int opacity = VISIBLE;
     private boolean userInteractionEnabled;
     private boolean selfSetOpacity;
+    private boolean loaded;
 
     /** The tintColor is inherited through the superview hierarchy */
-    private int tintColor;
+    private UIColor tintColor;
 
     protected ConstraintSet constraintSet = new ConstraintSet();
 
@@ -118,7 +120,6 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     //region load and init
 
-
     public void setLifeCycleDelegate(LifeCycleDelegate.View lifeCycleDelegate) {
         this.lifeCycleDelegate = lifeCycleDelegate;
     }
@@ -156,12 +157,18 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     /** Register targets */
     @Override public void viewDidLoad() {
+        loaded = true;
         setVisibility(opacity);
         constraintLayout();
     }
 
     /** Unregister targets */
     @Override public void unLoadView() {
+        loaded = false;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
     }
 
     /** Constraint subviews */
@@ -200,7 +207,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     //region draw
 
-    public void setTintColor(int tintColor) {
+    public void setTintColor(UIColor tintColor) {
         this.tintColor = tintColor;
         for (int i=0; i < getChildCount(); i++) {
             if (UIView.class.isInstance(getChildAt(i))) {
@@ -210,7 +217,11 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         }
     }
 
-    public int getTintColor() {
+    public void setTintColor(int tintColor) {
+        setTintColor(UIColor.build(tintColor));
+    }
+
+    public UIColor getTintColor() {
         return tintColor;
     }
 
@@ -291,10 +302,10 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     }
 
     public void constraintSidesForView (UIView view) {
-        constraintSidesForView(view, new EdgeInsets());
+        constraintSidesForView(view, new UIEdgeInsets());
     }
 
-    public void constraintSidesForView (UIView view, EdgeInsets insets) {
+    public void constraintSidesForView (UIView view, UIEdgeInsets insets) {
         if (view == null || view.getParent() != this) return;
         constraintSet.connect(view.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, insets.left);
         constraintSet.connect(view.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, insets.right);
@@ -550,7 +561,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintSameForViews(constraint, view1, view2, 0);
     }
 
-    public void constraintSameForViews (UIView view1, UIView view2, EdgeInsets insets) {
+    public void constraintSameForViews (UIView view1, UIView view2, UIEdgeInsets insets) {
         if (view1 == null || view1.getParent() != this || view2 == null || view2.getParent() != this) return;
         constraintSameForViews(ConstraintSet.TOP, view1, view2, insets.top);
         constraintSameForViews(ConstraintSet.END, view1, view2, insets.right);
@@ -559,7 +570,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     }
 
     public void constraintSameForViews (UIView view1, UIView view2) {
-        constraintSameForViews(view1, view2, new EdgeInsets());
+        constraintSameForViews(view1, view2, new UIEdgeInsets());
     }
 
     public void constraintViews (UIView view1, int constraint1, UIView view2, int constraint2, int padding) {

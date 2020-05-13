@@ -1,20 +1,22 @@
-package com.prometheussoftware.auikit.model;
+package com.prometheussoftware.auikit.classes;
 
-public class EdgeInsets {
+import com.prometheussoftware.auikit.model.BaseModel;
+
+public class UIEdgeInsets extends BaseModel {
 
     public int top;
     public int left;
     public int bottom;
     public int right;
 
-    public EdgeInsets (int top, int left, int bottom, int right) {
+    public UIEdgeInsets(int top, int left, int bottom, int right) {
         this.top = top;
         this.left = left;
         this.bottom = bottom;
         this.right = right;
     }
 
-    public EdgeInsets () {
+    public UIEdgeInsets() {
         this.top = 0;
         this.left = 0;
         this.bottom = 0;

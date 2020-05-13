@@ -9,7 +9,7 @@ import com.prometheussoftware.auikit.common.Constants;
 
 public class ViewUtility {
 
-    /** Very important: set ids then add subviews! Obviously a flaw in SDK */
+    /** Very important: set ids then add subviews! Obviously a flaw in the SDK */
     public static void setViewID (View view) {
         view.setId(View.generateViewId());
     }

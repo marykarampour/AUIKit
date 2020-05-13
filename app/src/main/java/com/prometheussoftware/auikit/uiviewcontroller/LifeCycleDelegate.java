@@ -1,4 +1,4 @@
-package com.prometheussoftware.auikit.common;
+package com.prometheussoftware.auikit.uiviewcontroller;
 
 public interface LifeCycleDelegate {
 
