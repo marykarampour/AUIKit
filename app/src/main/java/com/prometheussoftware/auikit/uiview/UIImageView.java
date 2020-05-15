@@ -6,7 +6,7 @@ import android.widget.ImageView;
 
 import com.prometheussoftware.auikit.classes.UIImage;
 
-public class UIImageView extends UISingleView <ImageView> {
+public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
     private UIImage image;
 
@@ -27,9 +27,13 @@ public class UIImageView extends UISingleView <ImageView> {
         init();
     }
 
-    @Override public void initView() {
-        super.initView();
-        view = new ImageView(getWindow());
+    @Override
+    protected void createView() {
+        setView(new UIImageLayer());
+    }
+
+    public ImageView view() {
+        return getView().view;
     }
 
     public void setImage(UIImage image) {
@@ -38,26 +42,39 @@ public class UIImageView extends UISingleView <ImageView> {
 
             Bitmap bitmap = image.getBitmap();
             if (bitmap != null) {
-                view.setImageBitmap(bitmap);
+                view().setImageBitmap(bitmap);
             }
             else {
                 Drawable drawable = image.getDrawable();
-                view.setImageDrawable(drawable);
+                view().setImageDrawable(drawable);
             }
         }
         else {
-            view.setImageDrawable(null);
+            view().setImageDrawable(null);
         }
-        view.setBackground(null);
+        view().setBackground(null);
     }
 
     public void setScaleType(ImageView.ScaleType type) {
-        view.setScaleType(type);
+        view().setScaleType(type);
     }
 
     @Override
     public void setTintColor(int tintColor) {
         super.setTintColor(tintColor);
         image.setTintColor(tintColor);
+    }
+
+    protected static class UIImageLayer extends UISingleView <ImageView> {
+
+        public UIImageLayer() {
+            super();
+            init();
+        }
+
+        @Override public void initView() {
+            super.initView();
+            view = new ImageView(getWindow());
+        }
     }
 }

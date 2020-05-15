@@ -47,7 +47,7 @@ public class UITransitioningContainerView extends UIView {
 
         transitioningView = new UIImageView();
         transitioningView.setBackgroundColor(Color.WHITE);
-        transitioningView.getView().setScaleType(ImageView.ScaleType.FIT_XY);
+        transitioningView.setScaleType(ImageView.ScaleType.FIT_XY);
 
         fadeOverlay = new UIView();
         addSubView(transitioningView);
@@ -78,7 +78,7 @@ public class UITransitioningContainerView extends UIView {
             ImageUtility.imageFromView(this.currentContentView, new Handler(), new ImageUtility.BitmapCopy() {
                 @Override
                 public void finishedWithResult(Bitmap bitmap) {
-                    transitioningView.getView().setImageBitmap(bitmap);
+                    transitioningView.getView().getView().setImageBitmap(bitmap);
                     callback.done();
                 }
 

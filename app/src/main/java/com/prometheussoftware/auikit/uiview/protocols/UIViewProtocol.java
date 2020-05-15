@@ -1,4 +1,4 @@
-package com.prometheussoftware.auikit.uiview;
+package com.prometheussoftware.auikit.uiview.protocols;
 
 public interface UIViewProtocol {
 

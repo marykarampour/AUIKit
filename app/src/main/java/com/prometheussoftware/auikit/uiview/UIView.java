@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.BaseWindow;
+import com.prometheussoftware.auikit.uiview.protocols.UIViewProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.LifeCycleDelegate;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 

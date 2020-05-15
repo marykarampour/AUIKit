@@ -77,6 +77,25 @@ public abstract class Constants implements ConstantsProtocol {
         return StringResource(R.string.no);
     }
 
+    //regex
+
+    public int Max_Regex_Chars() {
+        return Integer.MAX_VALUE;
+    }
+
+    public String Regex_Password() {
+        return "^(?=.*?([A-Z]|[\\W]))(?=.*?[a-z])(?=.*?[0-9]).{8,48}$";
+    }
+
+    public String Regex_Email() {
+        return "^([A-Z0-9a-z\\._%+-@]){0,256}$";
+    }
+
+    public String Regex_Phone() {
+        return "^([0-9]+-)*[0-9]+$";
+    }
+
+
     //common dimensions
 
     public static Size size(int dimension) {

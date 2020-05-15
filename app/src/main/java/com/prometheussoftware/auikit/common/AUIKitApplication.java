@@ -11,6 +11,7 @@ public abstract class AUIKitApplication extends MainApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        initAppInfo();
         initializeInstances();
     }
 
