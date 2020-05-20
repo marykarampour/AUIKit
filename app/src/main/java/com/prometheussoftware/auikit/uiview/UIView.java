@@ -226,6 +226,10 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         return tintColor;
     }
 
+    public void setBackgroundColor(UIColor color) {
+        super.setBackgroundColor(color.get());
+    }
+
     //endregion
 
     //region utility

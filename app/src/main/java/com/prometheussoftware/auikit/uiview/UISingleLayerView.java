@@ -29,7 +29,7 @@ public class UISingleLayerView <U extends UIView> extends UIView {
         super();
         init();
         setBackgroundColor(Color.TRANSPARENT);
-        setContentBackgroundColor(Color.TRANSPARENT);
+        setContentBackgroundColor(UIColor.build(Color.TRANSPARENT));
     }
 
     private void createLayer() {
@@ -90,10 +90,12 @@ public class UISingleLayerView <U extends UIView> extends UIView {
 
     //region styling
 
-    public void setContentBackgroundColor(int color) {
+    /** Background color os the view */
+    public void setContentBackgroundColor(UIColor color) {
         view.setBackgroundColor(color);
     }
 
+    /** Background color os the layer view, it is the card's background color */
     public void setViewBackgroundColor(UIColor color) {
         layer.setCardBackgroundColor(color.get());
     }

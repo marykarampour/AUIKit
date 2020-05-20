@@ -13,4 +13,7 @@ public interface ThemeProtocol {
     UIColor Nav_Bar_Tint_Color();
     UIColor Nav_Bar_Background_Color();
     UIFont Nav_Bar_Font();
+
+    //controls
+    int Picker_View_Style();
 }

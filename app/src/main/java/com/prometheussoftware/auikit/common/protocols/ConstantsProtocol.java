@@ -24,4 +24,7 @@ public interface ConstantsProtocol {
     String Regex_Password();
     String Regex_Email();
     String Regex_Phone();
+
+    //padding and size
+    int Min_TextView_Height();
 }

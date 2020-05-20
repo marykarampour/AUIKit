@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Size;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -539,6 +540,15 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
 
     public void setAccessoryPadding(int accessoryPadding) {
         this.accessoryPadding = accessoryPadding;
+    }
+
+    public void setSecure() {
+        view().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        view().setTransformationMethod(PasswordTransformationMethod.getInstance());
+    }
+
+    public void setGravity(int gravity) {
+        view().setGravity(gravity);
     }
 
     //endregion

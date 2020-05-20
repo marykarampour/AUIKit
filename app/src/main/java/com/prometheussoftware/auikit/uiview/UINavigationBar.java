@@ -38,7 +38,7 @@ public class UINavigationBar extends UIView {
         shadow = new UIImageView();
         shadow.setScaleType(ImageView.ScaleType.FIT_XY);
 
-        setBackgroundColor(App.theme().Nav_Bar_Background_Color().get());
+        setBackgroundColor(App.theme().Nav_Bar_Background_Color());
     }
 
     @Override

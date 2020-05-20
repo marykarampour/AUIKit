@@ -117,7 +117,7 @@ public class UITransitioningContainerView extends UIView {
 
     private void applyTransitionColorFade(boolean isDismiss) {
 
-        int color = UIColor.black(0.7f);
+        int color = UIColor.black(0.7f).get();
         int start = !isDismiss ? Color.TRANSPARENT : color;
         int end = isDismiss ? Color.TRANSPARENT : color;
         ObjectAnimator.ofObject(fadeOverlay, "backgroundColor", new ArgbEvaluator(), start, end)
