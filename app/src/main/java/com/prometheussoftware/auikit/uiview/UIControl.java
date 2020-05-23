@@ -102,6 +102,9 @@ public class UIControl extends UIView implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
+        if (!isUserInteractionEnabled()) return false;
+
         if (gestureDetector.onTouchEvent(event)) {
             for (Object ID : targets.keySet()) {
 

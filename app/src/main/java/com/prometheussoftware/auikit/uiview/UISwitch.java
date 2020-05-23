@@ -23,6 +23,7 @@ public class UISwitch extends UIControl {
     }
 
     protected void switchOnOff() {
+        if (!isUserInteractionEnabled()) return;
         setSelected(!isSelected());
     }
 
