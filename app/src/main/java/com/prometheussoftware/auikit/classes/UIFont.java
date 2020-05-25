@@ -43,7 +43,7 @@ public class UIFont {
         this.size = size;
     }
 
-    public Typeface getFont() {
+    public Typeface get() {
         return font;
     }
 }

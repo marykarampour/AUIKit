@@ -32,10 +32,10 @@ public class UILabel extends UISingleView <TextView> {
     public void setFont(UIFont font) {
         if (0 < font.size) view.setTextSize(font.size);
         if (0 < font.style) {
-            view.setTypeface(font.getFont(), font.style);
+            view.setTypeface(font.get(), font.style);
         }
         else {
-            view.setTypeface(font.getFont());
+            view.setTypeface(font.get());
         }
     }
 

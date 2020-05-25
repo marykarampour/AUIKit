@@ -52,8 +52,13 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         this.contentView = contentView;
     }
 
-    public void addBackView() {
-
+    public void setBackView(UIView backView) {
+        this.backView = backView;
+        backView.setBackgroundColor(UIColor.clear());
+        contentView.addSubView(backView);
+        contentView.bringChildToFront(backView);
+        contentView.constraintSidesForView(backView);
+        contentView.applyConstraints();
     }
 
     //region life cycle
