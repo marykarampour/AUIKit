@@ -27,4 +27,5 @@ public interface ConstantsProtocol {
 
     //padding and size
     int Min_TextView_Height();
+    int Default_Row_Height();
 }

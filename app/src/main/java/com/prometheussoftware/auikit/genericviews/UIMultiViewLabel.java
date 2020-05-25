@@ -236,6 +236,14 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         this.rightView = rightView;
     }
 
+    public R getRightView() {
+        return rightView;
+    }
+
+    public L getLeftView() {
+        return leftView;
+    }
+
     //endregion
 
     //region sizes

@@ -118,6 +118,10 @@ public abstract class UIAccessoryView extends UISwitch implements UIAccessoryVie
         return view;
     }
 
+    public static UIAccessoryView build(TYPE type) {
+        return build(type.intValue());
+    }
+
     public static class Image extends UIAccessoryView {
 
         private UIImageView imageView;
