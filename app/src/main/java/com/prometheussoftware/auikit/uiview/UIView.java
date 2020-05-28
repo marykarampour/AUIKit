@@ -25,7 +25,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     private int opacity = VISIBLE;
     private boolean userInteractionEnabled;
     private boolean selfSetOpacity;
-    private boolean loaded;
+    protected boolean loaded;
 
     /** The tintColor is inherited through the superview hierarchy */
     private UIColor tintColor;

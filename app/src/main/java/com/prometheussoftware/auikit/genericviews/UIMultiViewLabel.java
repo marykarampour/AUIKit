@@ -1,6 +1,7 @@
 package com.prometheussoftware.auikit.genericviews;
 
 import android.util.Size;
+import android.view.Gravity;
 
 import androidx.constraintlayout.widget.ConstraintSet;
 
@@ -52,12 +53,43 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         this.contentView = contentView;
     }
 
-    public void setBackView(UIView backView) {
+    /** @param backView is added on top and covers the entire view */
+    public void setTopView(UIView backView) {
         this.backView = backView;
         backView.setBackgroundColor(UIColor.clear());
         contentView.addSubView(backView);
         contentView.bringChildToFront(backView);
         contentView.constraintSidesForView(backView);
+        contentView.applyConstraints();
+    }
+
+    /** @param backView is added on top and covers the entire view other than possibly left and right views
+     * @param coverLeft pass true to have backView cover left view
+     * @param coverRight pass true to have backView cover right view */
+    public void setTopView(UIView backView, boolean coverLeft, boolean coverRight) {
+
+        if ((coverLeft || leftView == null) && (coverRight || rightView == null)) {
+            setTopView(backView);
+            return;
+        }
+
+        this.backView = backView;
+        backView.setBackgroundColor(UIColor.clear());
+        contentView.addSubView(backView);
+        contentView.bringChildToFront(backView);
+
+        if (!coverLeft && leftView != null) {
+            contentView.constraintViews(titleLabel, ConstraintSet.START, leftView, ConstraintSet.END, leftPadding);
+        }
+        else {
+            contentView.constraintForView(ConstraintSet.START, titleLabel, insets.left);
+        }
+        if (!coverRight && rightView != null) {
+            contentView.constraintViews(titleLabel, ConstraintSet.END, rightView, ConstraintSet.START, rightPadding);
+        }
+        else {
+            contentView.constraintForView(ConstraintSet.END, titleLabel, insets.right);
+        }
         contentView.applyConstraints();
     }
 
@@ -214,6 +246,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
     public void createTitleLabel() {
         titleLabel = new UILabel();
         titleLabel.setTextColor(UIColor.black(1.0f));
+        titleLabel.getView().setGravity(Gravity.LEFT | Gravity.TOP);
     }
 
     public void createRightView() { }
