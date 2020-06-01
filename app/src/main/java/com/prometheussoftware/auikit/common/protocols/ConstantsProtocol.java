@@ -27,8 +27,9 @@ public interface ConstantsProtocol {
 
     //padding and size
     int Min_TextView_Height();
-    int Default_Row_Height();
 
     //table view
     Size TableView_Accessory_Size();
+    int Default_Row_Height();
+    int TableView_Section_Header_Height();
 }
