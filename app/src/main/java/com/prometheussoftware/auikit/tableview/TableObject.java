@@ -207,6 +207,8 @@ public class TableObject {
     public static class Section <R extends RowData, T extends SectionData> extends BaseModel {
 
         private boolean isCollapsible;
+        /** only used if isCollapsible is true */
+        public boolean isExpanded;
         /** if false user interaction will be disabled on the section header, default is true */
         public boolean isEnabled = true;
         public boolean isHidden;
@@ -227,9 +229,13 @@ public class TableObject {
             BaseModel.Register(Section.class);
         }
 
-        public Section(boolean isCollapsible) {
-            this.isCollapsible = isCollapsible;
+        public Section () {
             object = (T) new SectionData();
+        }
+
+        public void setCollapsible(boolean collapsible) {
+            isCollapsible = collapsible;
+            if (!collapsible) isExpanded = true;
         }
 
         public boolean isCollapsible() {

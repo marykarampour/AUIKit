@@ -5,11 +5,12 @@ import com.prometheussoftware.auikit.uiview.UIView;
 
 import java.util.ArrayList;
 
-public class UITableViewContentController implements UITableViewProtocol.TableView {
+public class UITableViewContentController <D extends UITableViewDataController> implements UITableViewProtocol.TableView {
 
     protected UITableView tableView;
     private UIRefreshView refreshView;
     private UITableViewAdapter adapter;
+    protected D dataController;
     protected UIView view;
 
     /** Call load in your no param constructor */
@@ -26,7 +27,9 @@ public class UITableViewContentController implements UITableViewProtocol.TableVi
 
     /** Call this in your custom constructor
      * for preload initialization */
-    public void init() {
+    protected void init() {
+        createDataController();
+        createAdapter();
     }
 
     public void load() {
@@ -50,7 +53,11 @@ public class UITableViewContentController implements UITableViewProtocol.TableVi
         setRefreshView(refreshView);
     }
 
-    public void createAdapter(UITableViewDataController dataController) {
+    protected void createDataController() {
+        dataController = (D) new UITableViewDataController();
+    }
+
+    private void createAdapter() {
         setAdapter(new UITableViewAdapter(dataController));
     }
 
@@ -102,8 +109,8 @@ public class UITableViewContentController implements UITableViewProtocol.TableVi
         tableView.disableRecycling(viewType);
     }
 
-    public UITableViewDataController getDataController() {
-        return adapter.getDataController();
+    public D getDataController() {
+        return dataController;
     }
 
     //endregion
