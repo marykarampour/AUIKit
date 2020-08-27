@@ -1,2 +1,3 @@
+include ':AUIKit'
 rootProject.name='AndroidUIKit'
 include ':app'
