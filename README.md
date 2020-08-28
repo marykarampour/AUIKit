@@ -15,9 +15,7 @@ presentViewController(vc, Navigation.TRANSITION_ANIMATION.DOWNUP, null);
 ```
 This is very simple and convenient, since any view controller is just a Java class, you can have your custom constructor, set values at initialization, etc. no need for dealing with Intetns to pass values around from one screen to the other. 
 
-## How to create a project like this test project
-
-Here is the process to create a project using AUIKit:
+## How to create a project using AUIKit
 
 1. Create an empty project
 2. In project's directory: git submodule add https://git.prometheussoftware.ca/androidlibraries/androiduikit.git
