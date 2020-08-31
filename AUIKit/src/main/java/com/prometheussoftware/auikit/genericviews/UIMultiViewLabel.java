@@ -63,7 +63,8 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         contentView.applyConstraints();
     }
 
-    /** @param backView is added on top and covers the entire view other than possibly left and right views
+    /** This view is added on top of all other views
+     * @param backView is added on top and covers the entire view other than possibly left and right views
      * @param coverLeft pass true to have backView cover left view
      * @param coverRight pass true to have backView cover right view */
     public void setTopView(UIView backView, boolean coverLeft, boolean coverRight) {
@@ -79,18 +80,24 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         contentView.bringChildToFront(backView);
 
         if (!coverLeft && leftView != null) {
-            contentView.constraintViews(titleLabel, ConstraintSet.START, leftView, ConstraintSet.END, leftPadding);
+            contentView.constraintViews(backView, ConstraintSet.START, leftView, ConstraintSet.END, leftPadding);
         }
         else {
-            contentView.constraintForView(ConstraintSet.START, titleLabel, insets.left);
+            contentView.constraintForView(ConstraintSet.START, backView, insets.left);
         }
         if (!coverRight && rightView != null) {
-            contentView.constraintViews(titleLabel, ConstraintSet.END, rightView, ConstraintSet.START, rightPadding);
+            contentView.constraintViews(backView, ConstraintSet.END, rightView, ConstraintSet.START, rightPadding);
         }
         else {
-            contentView.constraintForView(ConstraintSet.END, titleLabel, insets.right);
+            contentView.constraintForView(ConstraintSet.END, backView, insets.right);
         }
+        contentView.constraintForView(ConstraintSet.TOP, backView);
+        contentView.constraintForView(ConstraintSet.BOTTOM, backView);
         contentView.applyConstraints();
+    }
+
+    public UIView getBackView() {
+        return backView;
     }
 
     //region life cycle
@@ -277,6 +284,10 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         return leftView;
     }
 
+    public UILabel getTitleLabel() {
+        return titleLabel;
+    }
+
     //endregion
 
     //region sizes
@@ -310,16 +321,14 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
     public void setRightViewSize(Size rightViewSize) {
         this.rightViewSize = rightViewSize;
         if (rightView != null && isLoaded()) {
-            contentView.constraintSizeForView(rightView, rightViewSize);
-            contentView.applyConstraints();
+            constraintLayout();
         }
     }
 
     public void setLeftViewSize(Size leftViewSize) {
         this.leftViewSize = leftViewSize;
         if (leftView != null && isLoaded()) {
-            contentView.constraintSizeForView(leftView, leftViewSize);
-            contentView.applyConstraints();
+            constraintLayout();
         }
     }
 

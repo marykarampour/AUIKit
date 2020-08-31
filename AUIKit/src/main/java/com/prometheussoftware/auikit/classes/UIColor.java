@@ -4,8 +4,9 @@ import android.graphics.Color;
 
 import com.prometheussoftware.auikit.R;
 import com.prometheussoftware.auikit.common.MainApplication;
+import com.prometheussoftware.auikit.model.BaseModel;
 
-public class UIColor {
+public class UIColor extends BaseModel {
 
     private int hex;
 
@@ -19,6 +20,26 @@ public class UIColor {
 
     public static UIColor build(int colorID) {
         return new UIColor(colorID, 1.0f);
+    }
+
+    /** Creates a hex color with transparency from color components
+     * @param red Red color component 0-255
+     * @param green Green color component 0-255
+     * @param blue Blue color component 0-255
+     * @param alpha Between 0.0-1.0 is transparency */
+    public static UIColor build(int red, int green, int blue, float alpha) {
+        int color = Color.argb(alpha, red/255.0f, green/255.0f, blue/255.0f);
+        return new UIColor(color, 1.0f);
+    }
+
+    /** Creates a hex color with transparency from color components
+     * @param red Red color component 0.0-1.0
+     * @param green Green color component 0.0-1.0
+     * @param blue Blue color component 0.0-1.0
+     * @param alpha Between 0.0-1.0 is transparency */
+    public static UIColor build(float red, float green, float blue, float alpha) {
+        int color = Color.argb(alpha, red, green, blue);
+        return new UIColor(color, 1.0f);
     }
 
     /** Creates a hex color with transparency from colorID
@@ -83,7 +104,7 @@ public class UIColor {
     }
 
     public static UIColor clear() {
-        return UIColor.build(Color.TRANSPARENT);
+        return UIColor.build(Color.TRANSPARENT, 0.0f);
     }
 
     //endregion

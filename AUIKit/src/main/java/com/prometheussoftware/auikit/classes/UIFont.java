@@ -3,8 +3,9 @@ package com.prometheussoftware.auikit.classes;
 import android.graphics.Typeface;
 
 import com.prometheussoftware.auikit.common.AUIKitApplication;
+import com.prometheussoftware.auikit.model.BaseModel;
 
-public class UIFont {
+public class UIFont extends BaseModel {
 
     private Typeface font;
     public int size;

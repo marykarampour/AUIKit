@@ -28,12 +28,11 @@ public class UITableViewContentController <D extends UITableViewDataController> 
     /** Call this in your custom constructor
      * for preload initialization */
     protected void init() {
+        createViews();
         createDataController();
-        createAdapter();
     }
 
     public void load() {
-        createViews();
         constraintViews();
     }
 
@@ -54,14 +53,14 @@ public class UITableViewContentController <D extends UITableViewDataController> 
     }
 
     protected void createDataController() {
-        dataController = (D) new UITableViewDataController();
+        setDataController((D) new UITableViewDataController());
     }
 
     private void createAdapter() {
         setAdapter(new UITableViewAdapter(dataController));
     }
 
-    public void setAdapter(UITableViewAdapter adapter) {
+    protected void setAdapter(UITableViewAdapter adapter) {
         this.adapter = adapter;
         adapter.setView(tableView);
         adapter.getDataController().setViewDelegate(this);
@@ -105,13 +104,23 @@ public class UITableViewContentController <D extends UITableViewDataController> 
         return view;
     }
 
+    public UITableView getTableView() {
+        return tableView;
+    }
+
     public void disableRecycling(int viewType) {
         tableView.disableRecycling(viewType);
     }
 
-    public D getDataController() {
-        return dataController;
+    public <D extends UITableViewDataController> D getDataController() {
+        return (D) dataController;
     }
+
+    public <T extends D> void setDataController(T dataController) {
+        this.dataController = dataController;
+        createAdapter();
+    }
+
 
     //endregion
 }

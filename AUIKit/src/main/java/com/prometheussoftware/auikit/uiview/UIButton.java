@@ -13,8 +13,8 @@ public class UIButton extends UIControl {
     private UILabel     titleLabel;
     private UIImageView imageView;
 
-    private UIEdgeInsets titleEdgeInsets;
-    private UIEdgeInsets imageEdgeInsets;
+    private UIEdgeInsets titleEdgeInsets = new UIEdgeInsets();
+    private UIEdgeInsets imageEdgeInsets = new UIEdgeInsets();
 
     public UIButton() {
         super();
@@ -25,6 +25,7 @@ public class UIButton extends UIControl {
         super.initView();
         titleLabel = new UILabel();
         titleLabel.setGravity(Gravity.CENTER);
+        titleLabel.setBackgroundColor(UIColor.clear());
 
         imageView = new UIImageView();
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);

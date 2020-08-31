@@ -1,7 +1,7 @@
 package com.prometheussoftware.auikit.tableview;
 
-import android.graphics.Color;
 import android.util.Size;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
@@ -11,11 +11,11 @@ import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Constants;
+import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.genericviews.UIAccessoryView;
 import com.prometheussoftware.auikit.genericviews.UIMultiViewLabel;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.model.IndexPath;
-import com.prometheussoftware.auikit.uiview.UIButton;
 import com.prometheussoftware.auikit.uiview.UIControl;
 import com.prometheussoftware.auikit.uiview.UIImageView;
 import com.prometheussoftware.auikit.uiview.UIView;
@@ -28,7 +28,9 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
 
     protected S separator;
 
-    private UIButton interactionLayer;
+    private UIControl interactionLayer;
+
+    private int separatorHeight;
 
     static {
         Identifier.Register(UITableViewCell.class);
@@ -40,25 +42,32 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
         setEnabled(true);
     }
 
+    private void baseSetup() {
+        if (separatorHeight == 0) separatorHeight = separatorHeight();
+        getTitleLabel().setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+    }
+
     @Override
     public void init() {
         setSize();
         super.init();
+        baseSetup();
         constraintLayout();
+        addInteractionLayer();
     }
 
     @Override
     public void initView() {
         super.initView();
-
-        interactionLayer = new UIButton();
-        setTopView(interactionLayer, false, false);
+        createSeparator();
+        createInteractionLayer();
     }
 
     @Override
     public void constraintLayout() {
         super.constraintLayout();
 
+        contentView.constraintHeightForView(separator, separatorHeight);
         contentView.constraintForView(ConstraintSet.START, separator, 0);
         contentView.constraintForView(ConstraintSet.END, separator, 0);
         contentView.constraintForView(ConstraintSet.BOTTOM, separator, 0);
@@ -68,7 +77,16 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
     protected void createSeparator() {
         separator = (S) new UIView();
         separator.setEnabled(false);
-        setSeparatorColor(UIColor.white(1.0f));
+        setSeparatorColor(App.theme().Tableview_Separator_Color());
+        contentView.addSubView(separator);
+    }
+
+    private void createInteractionLayer() {
+        interactionLayer = new UIControl();
+    }
+
+    private void addInteractionLayer() {
+        setTopView(interactionLayer, false, false);
     }
 
     @Override
@@ -90,11 +108,6 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
         return new Size(Constants.Screen_Size().getWidth(), App.constants().Default_Row_Height());
     }
 
-    public void setAccessorySize(int size) {
-        contentView.constraintHeightForView(separator, size);
-        contentView.applyConstraints();
-    }
-
     public void setHeight(int height, UIView mainView) {
 
         constraintSet.clear(mainView.getId());
@@ -111,9 +124,18 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
         setMinHeight(height);
     }
 
-    public void setSeparatorHeight(int height) {
-        contentView.constraintHeightForView(separator, height);
+    public void setAccessorySize(Size size) {
+        setRightViewSize(size);
+    }
+
+    public void setSeparatorHeight(int separatorHeight) {
+        this.separatorHeight = separatorHeight;
+        contentView.constraintHeightForView(separator, separatorHeight);
         contentView.applyConstraints();
+    }
+
+    protected int separatorHeight() {
+        return Dimensions.Int_1();
     }
 
     public void setSizeForView(Size size, UIView view) {
@@ -198,8 +220,8 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
 
     //region actions
 
-    public void setSelectionAction(UIControl.TargetDelegate target) {
-        interactionLayer.addTarget(this, target);
+    public void setSelectionAction(Object obj, UIControl.TargetDelegate target) {
+        interactionLayer.addTarget(obj, target);
     }
 
     //endregion

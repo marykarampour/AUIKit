@@ -1,6 +1,7 @@
 package com.prometheussoftware.auikit.uiview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Size;
 import android.view.View;
 
@@ -26,6 +27,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     private boolean userInteractionEnabled;
     private boolean selfSetOpacity;
     protected boolean loaded;
+    private UIColor viewBackgroundColor;
 
     /** The tintColor is inherited through the superview hierarchy */
     private UIColor tintColor;
@@ -37,6 +39,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     public UIView() {
         super(window);
         ViewUtility.setViewID(this);
+        viewBackgroundColor = UIColor.clear();
     }
 
     //region visibility
@@ -140,7 +143,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         if (lifeCycleDelegate != null) lifeCycleDelegate.viewIsUnloaded();
     }
 
-    /** Add this to your custom constructors or call it after default constructor */
+    /** Add this to your custom constructors or call it after initializing using default constructor */
     public void init() {
         initView();
         loadView();
@@ -160,6 +163,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     @Override public void viewDidLoad() {
         loaded = true;
         setVisibility(opacity);
+        setBackgroundColor(viewBackgroundColor.get());
         constraintLayout();
     }
 
@@ -227,7 +231,29 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     }
 
     public void setBackgroundColor(UIColor color) {
-        super.setBackgroundColor(color.get());
+        setViewBackgroundColor(color);
+    }
+
+    public UIColor getBackgroundColor() {
+        return viewBackgroundColor;
+    }
+
+    public void setViewBackgroundColor(UIColor viewBackgroundColor) {
+        this.viewBackgroundColor = viewBackgroundColor;
+        setBackgroundColor(viewBackgroundColor.get());
+    }
+
+    @Override
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
+        if (color != viewBackgroundColor.get()) {
+            if (color == Color.TRANSPARENT) {
+                viewBackgroundColor = UIColor.clear();
+            }
+            else {
+                viewBackgroundColor = UIColor.build(color);
+            }
+        }
     }
 
     //endregion

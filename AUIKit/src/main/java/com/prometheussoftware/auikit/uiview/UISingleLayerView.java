@@ -16,12 +16,14 @@ import com.prometheussoftware.auikit.utility.ViewUtility;
 
 public class UISingleLayerView <U extends UIView> extends UIView {
 
+    /** This is the main content view of this class
+     * add all subviews to this view */
     private U view;
     private int shadowSize;
 
     /** This is the layer to which this view is added
      * Use this to add corners and elevation
-     * @apiNote Be careful when dealing with low level
+     * @apiNote Be careful, when dealing with low level
      * Android Views use getLayer() instead of this */
     private MaterialCardView layer;
 
@@ -29,7 +31,7 @@ public class UISingleLayerView <U extends UIView> extends UIView {
         super();
         init();
         setBackgroundColor(Color.TRANSPARENT);
-        setContentBackgroundColor(UIColor.build(Color.TRANSPARENT));
+        setContentBackgroundColor(UIColor.clear());
     }
 
     private void createLayer() {
@@ -80,6 +82,12 @@ public class UISingleLayerView <U extends UIView> extends UIView {
         ViewUtility.addViewWithID(layer, this);
     }
 
+    @Override
+    public void viewDidLoad() {
+        super.viewDidLoad();
+        setLayerBackgroundColor(UIColor.clear());
+    }
+
     @Override public void constraintLayout() {
         super.constraintLayout();
         ConstraintUtility.constraintSidesForView(constraintSet, layer, new UIEdgeInsets(shadowSize(), shadowSize(), shadowSize(), shadowSize()));
@@ -90,13 +98,13 @@ public class UISingleLayerView <U extends UIView> extends UIView {
 
     //region styling
 
-    /** Background color os the view */
+    /** Background color of the view */
     public void setContentBackgroundColor(UIColor color) {
         view.setBackgroundColor(color);
     }
 
-    /** Background color os the layer view, it is the card's background color */
-    public void setViewBackgroundColor(UIColor color) {
+    /** Background color of the layer view, it is the card's background color */
+    public void setLayerBackgroundColor(UIColor color) {
         layer.setCardBackgroundColor(color.get());
     }
 

@@ -161,11 +161,11 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         return new IndexPath(section, row);
     }
 
-    public boolean sectionIsCollapsable(int section) {
+    public boolean sectionIsCollapsable (int section) {
         return false;
     }
 
-    public boolean sectionIsExpanded(int section) {
+    public boolean sectionIsExpanded (int section) {
         return true;
     }
 
@@ -173,7 +173,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         return sections;
     }
 
-    public void setSections(ArrayList<TableObject.Section> sections) {
+    public void setSections (ArrayList<TableObject.Section> sections) {
 
         this.sections.clear();
         if (sections == null) return;
@@ -229,7 +229,6 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
         return values.get(indexPath.row).getFirst();
     }
-
 
     protected TableObject.Section sectionAtIndex (Integer section) {
         if (sections.size() <= section) return null;

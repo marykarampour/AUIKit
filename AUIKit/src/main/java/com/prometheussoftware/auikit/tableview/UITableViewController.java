@@ -31,4 +31,8 @@ public class UITableViewController <C extends UITableViewContentController> exte
     public C getContentController() {
         return contentController;
     }
+
+    public void reloadData() {
+        contentController.reloadData();
+    }
 }
