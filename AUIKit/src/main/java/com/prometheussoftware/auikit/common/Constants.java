@@ -10,7 +10,7 @@ import com.prometheussoftware.auikit.common.protocols.ConstantsProtocol;
 
 import java.util.HashMap;
 
-public abstract class Constants implements ConstantsProtocol {
+public class Constants implements ConstantsProtocol {
 
     public static final int NOT_FOUND_ID = -1;
 
@@ -91,37 +91,4 @@ public abstract class Constants implements ConstantsProtocol {
         return "^([0-9]+-)*[0-9]+$";
     }
 
-    public enum ALIGNMENT {
-        TOP(0),
-        CENTER_Y(1 << 0);
-
-        private int value;
-        private static HashMap<Integer, ALIGNMENT> map = new HashMap<>();
-
-        static {
-            for (ALIGNMENT al : values()) {
-                map.put(al.value, al);
-            }
-        }
-
-        ALIGNMENT(int i) { value = i; }
-
-        public int intValue() { return value; }
-
-        public static ALIGNMENT valueOf (int i) {
-            return map.get(i);
-        }
-
-        public boolean isOption (int option) {
-            return (option & value) == value;
-        }
-
-        public boolean isValue (int option) {
-            return (option & value) == option;
-        }
-
-        public boolean isOption (ALIGNMENT option) {
-            return (option.value & value) == value;
-        }
-    }
 }

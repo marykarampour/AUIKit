@@ -4,19 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.prometheussoftware.auikit.classes.UIColor;
+import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.genericviews.UICheckbox;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
-import com.prometheussoftware.auikit.tableview.UITableViewController;
-import com.prometheussoftware.auikit.tableview.UITableViewDataController;
 import com.prometheussoftware.auikit.tableview.UITableViewHolder;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
+import com.prometheussoftware.auikit.tableview.collapsing.CollapsingTableViewController;
+import com.prometheussoftware.auikit.tableview.collapsing.CollapsingTableViewDataController;
+import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIView;
 
 import java.util.ArrayList;
 
-public class ExampleTableViewController extends UITableViewController {
+public class ExampleCollapsingTableViewController extends CollapsingTableViewController {
 
     ArrayList<String> titles = new ArrayList<>();
 
@@ -24,7 +27,10 @@ public class ExampleTableViewController extends UITableViewController {
     public void viewDidLoad() {
         super.viewDidLoad();
 
+        setTitle("Collapsing");
+        getView().setBackgroundColor(UIColor.blue(1.0f));
         contentController.setDataController(new DataController());
+        contentController.getTableView().setBackgroundColor(UIColor.red(1.0f));
         createTitles();
         loadData();
     }
@@ -32,12 +38,25 @@ public class ExampleTableViewController extends UITableViewController {
     private void loadData() {
 
         ArrayList<TableObject.Section> sections = new ArrayList();
-        TableObject.Section section = new TableObject.Section();
-        TableObject.RowData data = new TableObject.RowData(titles, ExampleTableViewCell.class);
-        section.rows = data;
-        sections.add(section);
+
+        for (int i = 0; i < 2; i++) {
+
+            TableObject.Section section = new TableObject.Section();
+            section.info = new TableObject.CellInfo(UICheckbox.class);
+            section.object.title = "Section";
+            section.object.subTitle = Integer.toString(i);
+            section.expandedHeight = App.constants().TableView_Section_Header_Height();
+            section.setCollapsible(true);
+
+            TableObject.RowData data = new TableObject.RowData(titles, ExampleTableViewCell.class);
+            section.rows = data;
+            sections.add(section);
+
+            contentController.disableRecycling(section.info.getIdentifier());
+            contentController.disableRecycling(data.getItemsInfo().array.get(0).getFirst().getIdentifier());
+        }
+
         contentController.setData(sections);
-        contentController.disableRecycling(data.getItemsInfo().array.get(0).getFirst().getIdentifier());
     }
 
     private void createTitles() {
@@ -49,11 +68,16 @@ public class ExampleTableViewController extends UITableViewController {
         titles.add("Last Cell label");
     }
 
-    class DataController extends UITableViewDataController {
+    class DataController extends CollapsingTableViewDataController {
 
         @Override
         public <V extends UITableViewHolder, C extends UITableViewCell> V viewHolderForCell(C cell) {
-            return (V) new CellViewHolder(cell);
+            return (V) new DataController.CellViewHolder(cell);
+        }
+
+        @Override
+        public <V extends UITableViewHolder, W extends UIView> V viewHolderForHeader(W header) {
+            return (V) new HeaderViewHolder(header);
         }
 
         class CellViewHolder extends UITableViewHolder.Cell <ExampleTableViewCell> {
@@ -76,6 +100,23 @@ public class ExampleTableViewController extends UITableViewController {
             }
         }
 
+        class HeaderViewHolder extends UITableViewHolder.Header <UICheckbox> {
+
+            public HeaderViewHolder(@NonNull UIView itemView) {
+                super(itemView);
+            }
+
+            @Override
+            public void bindDataForSection(TableObject.Section item, Integer section, @Nullable UITableViewProtocol.Data delegate) {
+                super.bindDataForSection(item, section, delegate);
+
+                UILabel label = view.getTitleLabel();
+                label.setText(item.object.title + "\n" + item.object.subTitle);
+                view.getRightView().setOn(item.isExpanded);
+                view.setMinHeight(heightForHeaderInSection(section));
+            }
+        }
+
         @Override
         public void didSelectRowAtIndexPath(Object item, IndexPath indexPath) {
             super.didSelectRowAtIndexPath(item, indexPath);
@@ -84,16 +125,10 @@ public class ExampleTableViewController extends UITableViewController {
                 Pair pair = (Pair)item;
                 String title = (String) pair.getSecond();
                 if (title instanceof String) {
-                    transitionToCollapsingScreen();
+                    pair.setSecond("Selected " + title);
                 }
             }
             reloadData();
         }
-    }
-
-    private void transitionToCollapsingScreen() {
-
-        ExampleCollapsingTableViewController vc = new ExampleCollapsingTableViewController();
-        pushViewController(vc, true);
     }
 }

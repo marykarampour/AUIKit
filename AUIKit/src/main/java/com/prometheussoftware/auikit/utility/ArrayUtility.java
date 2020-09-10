@@ -83,4 +83,41 @@ public class ArrayUtility {
             array.set(index, obj);
         }
     }
+
+    /** It will remove the item if it exists in the array */
+    public static <T> void safeRemove (ArrayList<T> array, T obj) {
+        if (array == null || obj == null) return;
+        array.remove(obj);
+    }
+
+    /** It will remove the item at index if the index is within the bound of the array */
+    public static <T> void safeRemove (ArrayList<T> array, int index) {
+        if (array == null || index < 0 || array.size() <= index) return;
+        array.remove(index);
+    }
+
+    /** If object doesn't exist in the array it will add the object.
+     * If index is beyond the bounds of array it will move the object to the end.
+     * Otherwise, it will move it to the given index
+     * */
+    public static <T> void safeMove (ArrayList<T> array, int index, T obj) {
+        if (array == null || obj == null || index < 0) return;
+        if (array.contains(obj)) {
+
+            array.remove(obj);
+
+            if (array.size() <= index) {
+                array.add(obj);
+            }
+            else {
+                array.add(index, obj);
+            }
+        }
+        else if (array.size() <= index) {
+            array.add(obj);
+        }
+        else {
+            array.set(index, obj);
+        }
+    }
 }

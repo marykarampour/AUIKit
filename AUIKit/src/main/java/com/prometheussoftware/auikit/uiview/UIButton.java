@@ -28,7 +28,7 @@ public class UIButton extends UIControl {
         titleLabel.setBackgroundColor(UIColor.clear());
 
         imageView = new UIImageView();
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
     @Override
@@ -86,6 +86,12 @@ public class UIButton extends UIControl {
             imageView.setTintColor(getTintColor());
         }
         imageView.setImage(image);
+    }
+
+    @Override
+    public void setTintColor(UIColor tintColor) {
+        super.setTintColor(tintColor);
+        imageView.setTintColor(tintColor);
     }
 
     public void setScaleType(ImageView.ScaleType type) {

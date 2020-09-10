@@ -14,6 +14,7 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
     public UIImageView() {
         super();
+        this.image = new UIImage();
         init();
     }
 
@@ -40,6 +41,10 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
     public void setImage(UIImage image) {
         this.image = image;
+        updateImage();
+    }
+
+    private void updateImage() {
         if (image != null) {
 
             Bitmap bitmap = image.getBitmap();
@@ -62,9 +67,12 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
     }
 
     @Override
-    public void setTintColor(int tintColor) {
+    public void setTintColor(UIColor tintColor) {
         super.setTintColor(tintColor);
-        image.setTintColor(tintColor);
+        if (tintColor != null && image != null) {
+            image.setTintColor(tintColor.get());
+            updateImage();
+        }
     }
 
     protected static class UIImageLayer extends UISingleView <ImageView> {

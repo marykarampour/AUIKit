@@ -10,6 +10,9 @@ public class UIColor extends BaseModel {
 
     private int hex;
 
+    public UIColor() {
+    }
+
     public UIColor(int colorID, float alpha) {
         hex = colorWithAlpha(colorID, alpha);
     }
@@ -67,6 +70,10 @@ public class UIColor extends BaseModel {
 
     public int blue() {
         return hex & 0xFF;
+    }
+
+    public static boolean hasNoColor (UIColor color) {
+        return color == null || color.get() == 0;
     }
 
     //region pure colors

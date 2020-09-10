@@ -24,8 +24,4 @@ public class AppInfo extends MainAppInfo {
         return new EXAppTheme();
     }
 
-    @Override
-    public Assets initializeAssets() {
-        return null;
-    }
 }

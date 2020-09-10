@@ -11,11 +11,11 @@ public class UIEnum {
 
     public enum ALIGNMENT {
         TOP(0),
-        BOTTOM(1 << 0),
-        LEFT(2 << 0),
-        RIGHT(3 << 0),
-        CENTER_X(4 << 0),
-        CENTER_Y(5 << 0);
+        BOTTOM(1),
+        LEFT(1 << 1),
+        RIGHT(1 << 2),
+        CENTER_X(1 << 3),
+        CENTER_Y(1 << 4);
 
         private int value;
         private static HashMap<Integer, ALIGNMENT> map = new HashMap<>();
@@ -46,4 +46,5 @@ public class UIEnum {
             return (option.value & value) == value;
         }
     }
+
 }

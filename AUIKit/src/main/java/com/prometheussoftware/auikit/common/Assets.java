@@ -1,16 +1,14 @@
 package com.prometheussoftware.auikit.common;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
+import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.common.protocols.AssetsProtocol;
 
-public abstract class Assets implements AssetsProtocol {
+public class Assets implements AssetsProtocol {
 
     protected static Context context () {
         return MainApplication.getContext();
@@ -20,11 +18,43 @@ public abstract class Assets implements AssetsProtocol {
         if (id <= 0) return null;
 
         Drawable drawable = ContextCompat.getDrawable(context(), id);
-        DrawableCompat.setTint(drawable.mutate(), color);
+        drawable.mutate();
+        drawable.setTint(color);
         return drawable;
     }
 
-    public static Drawable imageFromID(int id) {
+    public static Drawable drawableFromID(int id) {
         return (id == 0) ? null : ContextCompat.getDrawable(context(), id);
+    }
+
+    public static UIImage imageFromID(int id) {
+        return new UIImage(id);
+    }
+
+    // navigation
+
+    @Override
+    public UIImage Shadow_Gradient_Image() {
+        return imageFromID(AssetIDs.Shadow_Gradient_ID());
+    }
+
+    @Override
+    public UIImage Left_Chevron_Image() {
+        return imageFromID(AssetIDs.Left_Chevron__ID());
+    }
+
+    @Override
+    public UIImage Right_Chevron_Image() {
+        return imageFromID(AssetIDs.Right_Chevron__ID());
+    }
+
+    @Override
+    public UIImage Up_Chevron_Image() {
+        return imageFromID(AssetIDs.Up_Chevron__ID());
+    }
+
+    @Override
+    public UIImage Down_Chevron_Image() {
+        return imageFromID(AssetIDs.Down_Chevron__ID());
     }
 }

@@ -42,7 +42,7 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
         }
     }
 
-    public static class Header <C extends UISwitch> extends UITableViewHolder <C> {
+    public static class Header <C extends UIView> extends UITableViewHolder <C> {
 
         public Header(@NonNull UIView itemView) {
             super(itemView);
@@ -51,12 +51,22 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
             }
         }
 
-        public void bindDataForSection(TableObject.Section item, Integer section, @Nullable UITableViewProtocol.Data delegate) {
-            view.setDelegate((UIControl view, boolean selected) -> {
-                if (delegate != null) {
-                    delegate.didSelectSectionAtIndex(item, section, selected);
-                }
-            });
+        public void bindDataForSection(TableObject.Section item, Integer section, @Nullable UITableViewProtocol.Data delegate) { }
+
+        public static class Switch <C extends UISwitch> extends Header <C> {
+
+            public Switch(@NonNull UIView itemView) {
+                super(itemView);
+            }
+
+            public void bindDataForSection(TableObject.Section item, Integer section, @Nullable UITableViewProtocol.Data delegate) {
+                super.bindDataForSection(item, section, delegate);
+                view.setDelegate((UIControl view, boolean selected) -> {
+                    if (delegate != null) {
+                        delegate.didSelectSectionAtIndex(item, section, selected);
+                    }
+                });
+            }
         }
     }
 
