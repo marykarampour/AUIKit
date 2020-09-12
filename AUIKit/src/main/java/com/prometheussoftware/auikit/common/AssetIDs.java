@@ -1,7 +1,6 @@
 package com.prometheussoftware.auikit.common;
 
 import com.prometheussoftware.auikit.R;
-import com.prometheussoftware.auikit.classes.UIImage;
 
 public class AssetIDs {
 

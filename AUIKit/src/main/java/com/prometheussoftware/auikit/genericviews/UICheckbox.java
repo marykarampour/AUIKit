@@ -50,7 +50,7 @@ public class UICheckbox <L extends UIAccessoryView, R extends UIAccessoryView> e
     }
 
     protected void handleSwitchCheckbox(boolean on) {
-        setSelected(on);
+        rightView.setSelected(on);
     }
 
     public Size estimatedSize() {

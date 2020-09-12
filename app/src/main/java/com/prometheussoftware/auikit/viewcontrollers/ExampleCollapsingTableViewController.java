@@ -128,7 +128,7 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
                 label.setFont(UIFont.systemFont(12, UIFont.STYLE.BOLD));
                 label.setText(item.object.title + "\n" + item.object.subTitle);
                 view.setBackgroundColor(UIColor.build(220, 220, 240, 1.0f));
-                view.getRightView().setOn(item.isExpanded);
+                view.getRightView().setBackgroundColor(UIColor.red(1.0f));
                 view.getRightView().setSelectedColor(UIColor.black(1.0f));
                 view.getRightView().setDeselectedColor(UIColor.black(1.0f));
                 view.getRightView().setOnImage(App.assets().Right_Chevron_Image());
