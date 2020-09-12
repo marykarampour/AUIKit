@@ -14,7 +14,7 @@ public interface ThemeProtocol {
     //nav bar
     default UIColor Nav_Bar_Tint_Color() { return UIColor.black(1.0f); }
     default UIColor Nav_Bar_Background_Color() { return UIColor.white(1.0f); }
-    default UIFont Nav_Bar_Font() { return UIFont.systemFont(); }
+    default UIFont Nav_Bar_Font() { return UIFont.systemFont(14, UIFont.STYLE.BOLD); }
 
     //controls
     default int Picker_View_Style() { return 0; }

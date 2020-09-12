@@ -7,10 +7,9 @@ import android.widget.ImageView;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.classes.UIColor;
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.common.App;
-import com.prometheussoftware.auikit.common.Assets;
-import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 
@@ -18,33 +17,40 @@ import java.util.ArrayList;
 
 public class UINavigationBar extends UIView {
 
-    private ArrayList<UIButton> leftBarButtonItems = new ArrayList<>();
-    private ArrayList<UIButton> rightBarButtonItems = new ArrayList<>();
     private UILabel titleLabel;
-    private UIView titleView;
     private UIImageView shadow;
+    private int titleViewHeight = Dimensions.Int_48();
+    /** Default is 16. */
+    private int statusBarHeight = statusBarHeight();
+
+    private TitleViewHolder titleViewHolder;
+    private BarButtonHolder leftItemsViewHolder;
+    private BarButtonHolder rightItemsViewHolder;
 
     public UINavigationBar() {
         super();
         init();
-        initBase();
     }
 
-    private void initBase() {
+    private void setupHolders() {
 
-        addItem(titleLabel, UIEnum.ALIGNMENT.CENTER_X);
+        titleLabel = new UILabel();
+        titleLabel.setGravity(Gravity.CENTER);
+        titleLabel.setFont(App.theme().Nav_Bar_Font());
+        titleLabel.setTextColor(App.theme().Nav_Bar_Tint_Color());
+        titleViewHolder.setView(titleLabel);
+
         UIButton leftButton = barButtonItem(App.assets().Left_Chevron_Image());
-        setLeftBarButtonItem(leftButton);
+        leftItemsViewHolder.setView(leftButton);
     }
 
     @Override
     public void initView() {
         super.initView();
 
-        titleLabel = new UILabel();
-        titleLabel.setGravity(Gravity.CENTER);
-        titleLabel.setFont(App.theme().Nav_Bar_Font());
-        titleLabel.setTextColor(App.theme().Nav_Bar_Tint_Color());
+        titleViewHolder = new TitleViewHolder();
+        leftItemsViewHolder = new BarButtonHolder();
+        rightItemsViewHolder = new BarButtonHolder();
 
         shadow = new UIImageView();
         shadow.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -55,8 +61,11 @@ public class UINavigationBar extends UIView {
     @Override
     public void loadView() {
         super.loadView();
-        addSubView(titleLabel);
+        addSubView(titleViewHolder);
+        addSubView(leftItemsViewHolder);
+        addSubView(rightItemsViewHolder);
         addSubView(shadow);
+        setupHolders();
     }
 
     @Override
@@ -64,10 +73,19 @@ public class UINavigationBar extends UIView {
         super.constraintLayout();
 
         constraintHeightForView(shadow, App.constants().Nav_Bar_Shadow_Size());
+        constraintWidthForView(leftItemsViewHolder, ConstraintSet.WRAP_CONTENT);
+        constraintWidthForView(rightItemsViewHolder, ConstraintSet.WRAP_CONTENT);
+
+        constraintSidesForView(titleViewHolder, new UIEdgeInsets(statusBarHeight, 0, 0, 0));
         constraintForView(ConstraintSet.START, shadow);
         constraintForView(ConstraintSet.END, shadow);
         constraintForView(ConstraintSet.BOTTOM, shadow);
-
+        constraintForView(ConstraintSet.BOTTOM, leftItemsViewHolder);
+        constraintForView(ConstraintSet.BOTTOM, rightItemsViewHolder);
+        constraintForView(ConstraintSet.TOP, leftItemsViewHolder, statusBarHeight);
+        constraintForView(ConstraintSet.TOP, rightItemsViewHolder, statusBarHeight);
+        constraintForView(ConstraintSet.START, leftItemsViewHolder);
+        constraintForView(ConstraintSet.END, rightItemsViewHolder);
         applyConstraints();
     }
 
@@ -84,7 +102,6 @@ public class UINavigationBar extends UIView {
     /** Adds a view at the position defined by UIEnum.ALIGNMENT.
      * @param view The view to be added. Pass null to add a button at left or right, or label in center. */
     public void addItem (UIView view, UIEnum.ALIGNMENT position) {
-
         switch (position) {
             case LEFT: {
                 if (view == null) {
@@ -92,20 +109,7 @@ public class UINavigationBar extends UIView {
                     return;
                 }
                 else if (view instanceof UIButton) {
-                    addSubView(view);
-
-                    constraintSizeForView(view, App.constants().Nav_Bar_Icon_Size());
-                    constraintCenterXForView(view);
-
-                    if (leftBarButtonItems.size() == 0) {
-
-                        constraintForView(ConstraintSet.START, view);
-                        constraintViews(titleLabel, ConstraintSet.START, view, ConstraintSet.END);
-                    }
-                    else {
-                        constraintViews(view, ConstraintSet.START, ArrayUtility.lastObject(leftBarButtonItems), ConstraintSet.END);
-                        constraintViews(titleLabel, ConstraintSet.START, view, ConstraintSet.END);
-                    }
+                    leftItemsViewHolder.addView(view);
                 }
             }
             case RIGHT: {
@@ -114,21 +118,7 @@ public class UINavigationBar extends UIView {
                     return;
                 }
                 else if (view instanceof UIButton) {
-
-                    addSubView(view);
-
-                    constraintSizeForView(view, App.constants().Nav_Bar_Icon_Size());
-                    constraintCenterXForView(view);
-
-                    if (rightBarButtonItems.size() == 0) {
-
-                        constraintForView(ConstraintSet.END, view);
-                        constraintViews(titleLabel, ConstraintSet.END, view, ConstraintSet.START);
-                    }
-                    else {
-                        constraintViews(view, ConstraintSet.END, ArrayUtility.lastObject(rightBarButtonItems), ConstraintSet.START);
-                        constraintViews(titleLabel, ConstraintSet.END, view, ConstraintSet.START);
-                    }
+                    rightItemsViewHolder.addView(view);
                 }
             }
             default: {
@@ -137,19 +127,11 @@ public class UINavigationBar extends UIView {
                     return;
                 }
                 else {
-                    titleView = view;
-                    addSubView(view);
+                    titleViewHolder.setView(view);
 
-                    constraintCenterXForView(view);
-                    constraintCenterYForView(view);
-
-                    constraintHeightForView(view, ConstraintSet.WRAP_CONTENT);
-                    constraintWidthForView(view, ConstraintSet.WRAP_CONTENT);
                 }
             }
         }
-
-        applyConstraints();
     }
 
     //endregion
@@ -158,6 +140,15 @@ public class UINavigationBar extends UIView {
 
     public Size iconSize() {
         return App.constants().Nav_Bar_Icon_Size();
+    }
+
+    public void setTitleViewHeight(int titleViewHeight) {
+        this.titleViewHeight = titleViewHeight;
+        updateTitleViewHeight();
+    }
+
+    public void updateTitleViewHeight() {
+        titleViewHolder.updateViewHeight();
     }
 
     public void setTitle(String text) {
@@ -174,47 +165,32 @@ public class UINavigationBar extends UIView {
         }
     }
 
+    protected int statusBarHeight() {
+        return Dimensions.Int_16();
+    }
+
     //endregion
 
     //region controls
 
     public UIView getTitleView() {
-        return titleView;
+        return titleViewHolder.getView();
     }
 
     public ArrayList<UIButton> getLeftBarButtonItems() {
-        return leftBarButtonItems;
+        return leftItemsViewHolder.getViews();
     }
 
     public ArrayList<UIButton> getRightBarButtonItems() {
-        return rightBarButtonItems;
+        return rightItemsViewHolder.getViews();
     }
 
     public void setLeftBarButtonItems(ArrayList<UIButton> leftBarButtonItems) {
-        setBarButtonItems(leftBarButtonItems, UIEnum.ALIGNMENT.LEFT);
+        leftItemsViewHolder.setViews(leftBarButtonItems);
     }
 
     public void setRightBarButtonItems(ArrayList<UIButton> rightBarButtonItems) {
-        setBarButtonItems(leftBarButtonItems, UIEnum.ALIGNMENT.RIGHT);
-    }
-
-    private void constraintItems (ArrayList<UIButton> items, UIEnum.ALIGNMENT position) {
-
-        if (items == null || items.size() == 0) return;
-        UIButton first = ArrayUtility.safeGet(items, 0);
-        UIButton last = ArrayUtility.safeGetFromEnd(items, 0);
-        constraintHorizontally(items, 0, false);
-        constraintSizeForViews(items, App.constants().Nav_Bar_Icon_Size());
-
-        if (position == UIEnum.ALIGNMENT.LEFT) {
-            constraintForView(ConstraintSet.START, first);
-            constraintViews(titleLabel, ConstraintSet.START, last, ConstraintSet.END);
-        }
-        else {
-            constraintForView(ConstraintSet.END, first);
-            constraintViews(titleLabel, ConstraintSet.END, last, ConstraintSet.START);
-        }
-        applyConstraints();
+        rightItemsViewHolder.setViews(rightBarButtonItems);
     }
 
     /** The contents of this property always refer to the first bar button item in the leftBarButtonItems array.
@@ -223,7 +199,7 @@ public class UINavigationBar extends UIView {
      * If the bar button item is already in the array, it is moved from its current location to the front of the array.
      * */
     public void setLeftBarButtonItem(UIButton item) {
-        setBarButtonItem(item, UIEnum.ALIGNMENT.LEFT);
+        leftItemsViewHolder.setView(item);
     }
 
     /** The contents of this property always refer to the first bar button item in the rightBarButtonItems array.
@@ -232,71 +208,63 @@ public class UINavigationBar extends UIView {
      * If the bar button item is already in the array, it is moved from its current location to the front of the array.
      * */
     public void setRightBarButtonItem(UIButton item) {
-        setBarButtonItem(item, UIEnum.ALIGNMENT.RIGHT);
-    }
-
-    public void setBarButtonItem(UIButton item, UIEnum.ALIGNMENT position) {
-
-        ArrayList<UIButton> buttons = barButtonItemsForPosition(position);
-
-        if (ArrayUtility.firstObject(buttons) == item) return;
-
-        ArrayList<UIButton> tempButtons = (ArrayList<UIButton>) buttons.clone();
-
-        clearBarButtonItems(position);
-
-        if (item == null) {
-            ArrayUtility.safeRemove(tempButtons, 0);
-        }
-        else {
-            ArrayUtility.safeMove(tempButtons, 0, item);
-        }
-
-        constraintBarButtonItems(tempButtons, position);
-    }
-
-    public void setBarButtonItems(ArrayList<UIButton> items, UIEnum.ALIGNMENT position) {
-        clearBarButtonItems(position);
-        if (items == null || items.size() == 0) return;
-        constraintBarButtonItems(items, position);
-    }
-
-    private ArrayList<UIButton> barButtonItemsForPosition(UIEnum.ALIGNMENT position) {
-        return (position == UIEnum.ALIGNMENT.LEFT ? leftBarButtonItems : rightBarButtonItems);
-    }
-
-    private void clearBarButtonItems(UIEnum.ALIGNMENT position) {
-        if (position == UIEnum.ALIGNMENT.LEFT) {
-            clearBarButtonItems(leftBarButtonItems);
-        }
-        else {
-            clearBarButtonItems(rightBarButtonItems);
-        }
-    }
-
-    private void clearBarButtonItems(ArrayList<UIButton> items) {
-        items.clear();
-        removeSubViews(items);
-    }
-
-    private void constraintBarButtonItems(ArrayList<UIButton> items, UIEnum.ALIGNMENT position) {
-        addSubViews(items);
-        constraintItems(items, position);
-
-        if (position == UIEnum.ALIGNMENT.LEFT) {
-            leftBarButtonItems = items;
-        }
-        else {
-            rightBarButtonItems = items;
-        }
+        rightItemsViewHolder.setView(item);
     }
 
     public UIButton leftBarButtonItem() {
-        return ArrayUtility.firstObject(leftBarButtonItems);
+        return ArrayUtility.firstObject(getLeftBarButtonItems());
     }
 
     public UIButton rightBarButtonItem() {
-        return ArrayUtility.firstObject(rightBarButtonItems);
+        return ArrayUtility.firstObject(getRightBarButtonItems());
+    }
+
+    //endregion
+
+    //region private classes
+
+    class TitleViewHolder extends UIView {
+
+        private UIView view;
+
+        public void setView(UIView view) {
+
+            removeSubView(this.view);
+            this.view = view;
+            addSubView(view);
+            updateConstraints();
+        }
+
+        @Override
+        public void constraintLayout() {
+            super.constraintLayout();
+            if (view != null) {
+                updateConstraints();
+            }
+        }
+
+        private void updateConstraints() {
+
+            clearConstraints(view);
+            constraintForView(ConstraintSet.START, view);
+            constraintForView(ConstraintSet.END, view);
+            constraintForView(ConstraintSet.BOTTOM, view);
+            updateViewHeight();
+        }
+
+        protected void updateViewHeight() {
+            if (isLoaded()) {
+                constraintHeightForView(view, titleViewHeight);
+                applyConstraints();
+            }
+        }
+
+        public UIView getView() {
+            return view;
+        }
+    }
+
+    class BarButtonHolder extends UIViewHolder.Row <UIButton> {
     }
 
     //endregion

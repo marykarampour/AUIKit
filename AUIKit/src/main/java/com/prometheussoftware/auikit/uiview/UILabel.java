@@ -1,5 +1,6 @@
 package com.prometheussoftware.auikit.uiview;
 
+import android.graphics.Typeface;
 import android.widget.TextView;
 
 import com.prometheussoftware.auikit.classes.UIColor;
@@ -30,9 +31,9 @@ public class UILabel extends UISingleView <TextView> {
     }
 
     public void setFont(UIFont font) {
-        if (0 < font.size) view.setTextSize(font.size);
-        if (0 < font.style) {
-            view.setTypeface(font.get(), font.style);
+        if (0 < font.size()) view.setTextSize(font.size());
+        if (0 < font.style()) {
+            view.setTypeface(font.get(), font.style());
         }
         else {
             view.setTypeface(font.get());

@@ -391,6 +391,12 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintSet.clear(view.getId());
     }
 
+    public void clearConstraints(ArrayList<? extends UIView> views) {
+        for (UIView view : views) {
+            clearConstraints(view);
+        }
+    }
+
     public void constraintSidesForView (UIView view) {
         constraintSidesForView(view, new UIEdgeInsets());
     }
@@ -586,7 +592,8 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     }
 
     /** @param parentConstraints Specifies constraints on parent's edges, pass 0 for none, ConstraintSet.TOP or ConstraintSet.BOTTOM or both, other values are ignored
-     @param horizontalMargin Use CONSTRAINT_NO_PADDING to not constraint horizontally to the parent, it will center horizontally. */
+     @param horizontalMargin Use CONSTRAINT_NO_PADDING to not constraint horizontally to the parent, it will center horizontally.
+     @param verticalMargin The margin between the first item and the top of parent, and the last item and the bottom of parent. */
     public void constraintVertically (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights, int parentConstraints) {
 
         ArrayList<UIView> totalViews = new ArrayList<>();
@@ -632,7 +639,8 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     }
 
     /** @param parentConstraints Specifies constraints on parent's edges, pass 0 for none, ConstraintSet.START or ConstraintSet.END or both, other values are ignored
-     @param verticalMargin Use CONSTRAINT_NO_PADDING to not constraint vertically to the parent, it will center vertically. */
+     @param verticalMargin Use CONSTRAINT_NO_PADDING to not constraint vertically to the parent, it will center vertically.
+     @param horizontalMargin The margin between the first item and the start of parent, and the last item and the end of parent. */
     public void constraintHorizontally (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalWidths, int parentConstraints) {
 
         ArrayList<UIView> totalViews = new ArrayList<>();
