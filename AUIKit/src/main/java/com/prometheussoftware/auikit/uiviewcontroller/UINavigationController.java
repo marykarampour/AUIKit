@@ -4,6 +4,7 @@ import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.container.ChildViewController;
 import com.prometheussoftware.auikit.container.UIHeaderFooterContainerViewController;
 import com.prometheussoftware.auikit.model.BaseModel;
+import com.prometheussoftware.auikit.uiview.UIButton;
 import com.prometheussoftware.auikit.uiview.UINavigationBar;
 import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
 import com.prometheussoftware.auikit.uiview.UIView;
@@ -207,6 +208,8 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
                 !animated ? Navigation.TRANSITION_ANIMATION.NONE :
                         (isDismiss ? Navigation.TRANSITION_ANIMATION.LEFTRIGHT : Navigation.TRANSITION_ANIMATION.RIGHTLEFT);
 
+        headerView.setBackBarButtonItemHidden(backBarButtonItemIsHidden());
+
         Navigation.Node<UIViewController> bottom = navigationStack.bottomNode();
         if (bottom != null) {
             bottom.getNodeObject().setAnimated(animated);
@@ -218,6 +221,10 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
                 headerView.setTitle(visibleViewController.getNodeObject().getTitle());
             });
         }
+    }
+
+    public boolean backBarButtonItemIsHidden() {
+        return navigationStack.hasASingleNode() || navigationStack.hasNoNode();
     }
 
     public void updateHeaderView() {
@@ -243,7 +250,7 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
     }
 
     @Override public int headerHeight() {
-        return App.constants().Nav_Bar_Height();
+        return App.constants().Nav_Bar_Height() + App.constants().Status_Bar_Height();
     }
 
     @Override public void createChildVC() {

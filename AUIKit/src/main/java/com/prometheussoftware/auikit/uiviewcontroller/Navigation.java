@@ -123,5 +123,13 @@ public class Navigation {
                 nodes.remove(nodes.size() - 1);
             }
         }
+
+        public boolean hasASingleNode() {
+            return nodes.size() == 1;
+        }
+
+        public boolean hasNoNode() {
+            return nodes.size() == 0;
+        }
     }
 }

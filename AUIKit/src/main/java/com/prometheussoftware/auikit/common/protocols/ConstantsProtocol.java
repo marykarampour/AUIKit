@@ -16,6 +16,7 @@ public interface ConstantsProtocol {
     default Size Nav_Bar_Icon_Size() { return Dimensions.size(Dimensions.Int_32()); }
     default int Nav_Bar_Shadow_Size() { return Dimensions.Int_2(); }
     default int Nav_Bar_Height() { return Dimensions.Int_64(); }
+    default int Status_Bar_Height() { return Dimensions.Int_22(); }
 
     //data
     default String File_Provider_Authority() { return null; }

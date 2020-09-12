@@ -17,11 +17,13 @@ import java.util.ArrayList;
 
 public class UINavigationBar extends UIView {
 
+    private static final int HORIZONTAL_MARGIN = Dimensions.Int_8();
+    private static final int VERTICAL_MARGIN = Dimensions.Int_4();
+
     private UILabel titleLabel;
     private UIImageView shadow;
     private int titleViewHeight = Dimensions.Int_48();
-    /** Default is 16. */
-    private int statusBarHeight = statusBarHeight();
+    private int statusBarHeight = App.constants().Status_Bar_Height();
 
     private TitleViewHolder titleViewHolder;
     private BarButtonHolder leftItemsViewHolder;
@@ -76,26 +78,25 @@ public class UINavigationBar extends UIView {
         constraintWidthForView(leftItemsViewHolder, ConstraintSet.WRAP_CONTENT);
         constraintWidthForView(rightItemsViewHolder, ConstraintSet.WRAP_CONTENT);
 
-        constraintSidesForView(titleViewHolder, new UIEdgeInsets(statusBarHeight, 0, 0, 0));
+        constraintSidesForView(titleViewHolder, new UIEdgeInsets(statusBarHeight, 0, VERTICAL_MARGIN, 0));
         constraintForView(ConstraintSet.START, shadow);
         constraintForView(ConstraintSet.END, shadow);
         constraintForView(ConstraintSet.BOTTOM, shadow);
-        constraintForView(ConstraintSet.BOTTOM, leftItemsViewHolder);
-        constraintForView(ConstraintSet.BOTTOM, rightItemsViewHolder);
+        constraintForView(ConstraintSet.BOTTOM, leftItemsViewHolder, VERTICAL_MARGIN);
+        constraintForView(ConstraintSet.BOTTOM, rightItemsViewHolder, VERTICAL_MARGIN);
         constraintForView(ConstraintSet.TOP, leftItemsViewHolder, statusBarHeight);
         constraintForView(ConstraintSet.TOP, rightItemsViewHolder, statusBarHeight);
-        constraintForView(ConstraintSet.START, leftItemsViewHolder);
-        constraintForView(ConstraintSet.END, rightItemsViewHolder);
+        constraintForView(ConstraintSet.START, leftItemsViewHolder, HORIZONTAL_MARGIN);
+        constraintForView(ConstraintSet.END, rightItemsViewHolder, HORIZONTAL_MARGIN);
         applyConstraints();
     }
 
     //region items
-    //TODO: WIP - debugging
+
     private UIButton barButtonItem(UIImage image) {
         UIButton button = new UIButton();
         button.setImage(image);
         button.setTintColor(App.theme().Nav_Bar_Tint_Color());
-        button.setBackgroundColor(UIColor.red(1.0f));
         return button;
     }
 
@@ -165,10 +166,6 @@ public class UINavigationBar extends UIView {
         }
     }
 
-    protected int statusBarHeight() {
-        return Dimensions.Int_16();
-    }
-
     //endregion
 
     //region controls
@@ -217,6 +214,14 @@ public class UINavigationBar extends UIView {
 
     public UIButton rightBarButtonItem() {
         return ArrayUtility.firstObject(getRightBarButtonItems());
+    }
+
+    //TODO: maybe create a class for this back button to check if it is back button
+    public void setBackBarButtonItemHidden(boolean hidden) {
+        UIButton button = leftBarButtonItem();
+        if (button != null) {
+            button.setHidden(hidden);
+        }
     }
 
     //endregion
