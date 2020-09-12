@@ -7,9 +7,15 @@ import com.prometheussoftware.auikit.model.BaseModel;
 
 public class UIFont extends BaseModel {
 
+    public static enum STYLE {
+        REGULAR,
+        BOLD,
+        ITALIC
+    }
+
     private Typeface font;
-    public int size;
-    public int style;
+    private int size;
+    private STYLE style;
 
     public static UIFont systemFont() {
         UIFont font = new UIFont();
@@ -24,7 +30,7 @@ public class UIFont extends BaseModel {
         return font;
     }
 
-    public static UIFont systemFont(int size, int style) {
+    public static UIFont systemFont(int size, STYLE style) {
         UIFont font = new UIFont();
         font.font = Typeface.DEFAULT;
         font.size = size;
@@ -33,6 +39,19 @@ public class UIFont extends BaseModel {
     }
 
     public UIFont() {
+        super();
+    }
+
+    public int style() {
+        switch (this.style) {
+            case BOLD:  return Typeface.BOLD;
+            case ITALIC:return Typeface.ITALIC;
+            default:    return Typeface.NORMAL;
+        }
+    }
+
+    public int size() {
+        return size;
     }
 
     /** @param name Font name from assets.
@@ -49,7 +68,7 @@ public class UIFont extends BaseModel {
      * ITALIC = 2;
      * BOLD_ITALIC = 3;
      * */
-    public UIFont(String name, int style) {
+    public UIFont(String name, STYLE style) {
         font = Typeface.createFromAsset(AUIKitApplication.getWindow().getAssets(), name);
         this.style = style;
     }
@@ -62,7 +81,7 @@ public class UIFont extends BaseModel {
      * ITALIC = 2;
      * BOLD_ITALIC = 3;
      * */
-    public UIFont(String name, int style, int size) {
+    public UIFont(String name, STYLE style, int size) {
         font = Typeface.createFromAsset(AUIKitApplication.getWindow().getAssets(), name);
         this.style = style;
         this.size = size;

@@ -14,8 +14,8 @@ public class UIImage extends BaseModel {
 
     private Bitmap bitmap;
     private Drawable drawable;
-    private int tintColor;
     private int image;
+    private int tintColor;
 
     public UIImage() {
         super();
