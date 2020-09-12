@@ -13,6 +13,7 @@ public class UITableViewController <C extends UITableViewContentController> exte
     @Override public void viewDidLoad() {
         super.viewDidLoad();
         createContentController();
+        contentController.setDataController(createDataController());
     }
 
     protected void createContentController() {

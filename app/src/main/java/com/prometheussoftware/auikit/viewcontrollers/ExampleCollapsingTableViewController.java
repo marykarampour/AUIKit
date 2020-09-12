@@ -4,16 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.prometheussoftware.auikit.classes.UIColor;
+import com.prometheussoftware.auikit.classes.UIFont;
+import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.common.Assets;
+import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.genericviews.UICheckbox;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
+import com.prometheussoftware.auikit.tableview.UITableViewDataController;
 import com.prometheussoftware.auikit.tableview.UITableViewHolder;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
 import com.prometheussoftware.auikit.tableview.collapsing.CollapsingTableViewController;
 import com.prometheussoftware.auikit.tableview.collapsing.CollapsingTableViewDataController;
+import com.prometheussoftware.auikit.uiview.UIControl;
 import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIView;
 
@@ -28,11 +34,13 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
         super.viewDidLoad();
 
         setTitle("Collapsing");
-        getView().setBackgroundColor(UIColor.blue(1.0f));
-        contentController.setDataController(new DataController());
-        contentController.getTableView().setBackgroundColor(UIColor.red(1.0f));
         createTitles();
         loadData();
+    }
+
+    @Override
+    protected UITableViewDataController createDataController() {
+        return new DataController();
     }
 
     private void loadData() {
@@ -100,6 +108,11 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
             }
         }
 
+        @Override
+        public int heightForHeaderInSection(int section) {
+            return Dimensions.Int_44();
+        }
+
         class HeaderViewHolder extends UITableViewHolder.Header <UICheckbox> {
 
             public HeaderViewHolder(@NonNull UIView itemView) {
@@ -111,9 +124,20 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
                 super.bindDataForSection(item, section, delegate);
 
                 UILabel label = view.getTitleLabel();
+                label.setPadding(Dimensions.Int_4(), 0, 0, 0);
+                label.setFont(UIFont.systemFont(12, UIFont.STYLE.BOLD));
                 label.setText(item.object.title + "\n" + item.object.subTitle);
+                view.setBackgroundColor(UIColor.build(220, 220, 240, 1.0f));
                 view.getRightView().setOn(item.isExpanded);
-                view.setMinHeight(heightForHeaderInSection(section));
+                view.getRightView().setSelectedColor(UIColor.black(1.0f));
+                view.getRightView().setDeselectedColor(UIColor.black(1.0f));
+                view.getRightView().setOnImage(App.assets().Right_Chevron_Image());
+                view.getRightView().setOffImage(App.assets().Down_Chevron_Image());
+                view.getRightView().setDelegate((UIControl view, boolean selected) -> {
+                    if (delegate != null) {
+                        delegate.didSelectSectionAtIndex(item, section, selected);
+                    }
+                });
             }
         }
 

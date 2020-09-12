@@ -16,7 +16,12 @@ public class CollapsingTableViewContentController extends UITableViewContentCont
 
     @Override
     protected void createDataController() {
-        dataController = new CollapsingTableViewDataController();
+        setDataController(new CollapsingTableViewDataController());
+    }
+
+    @Override
+    public <T extends CollapsingTableViewDataController> void setDataController(T dataController) {
+        super.setDataController(dataController);
         dataController.setContentDelegate(this);
     }
 

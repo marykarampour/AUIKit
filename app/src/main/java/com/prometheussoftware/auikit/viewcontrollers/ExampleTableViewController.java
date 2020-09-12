@@ -24,9 +24,13 @@ public class ExampleTableViewController extends UITableViewController {
     public void viewDidLoad() {
         super.viewDidLoad();
 
-        contentController.setDataController(new DataController());
         createTitles();
         loadData();
+    }
+
+    @Override
+    protected UITableViewDataController createDataController() {
+        return new DataController();
     }
 
     private void loadData() {

@@ -121,6 +121,5 @@ public class UITableViewContentController <D extends UITableViewDataController> 
         createAdapter();
     }
 
-
     //endregion
 }

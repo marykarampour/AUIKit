@@ -138,6 +138,7 @@ public class BaseWindow <V extends UIViewController> extends FragmentActivity {
             Navigation.TRANSITION_ANIMATION animation,
             CompletionCallback completion) {
 
+        if (viewController == null) return;
         if (visibleViewController != null) {
             boolean animated = animation != Navigation.TRANSITION_ANIMATION.NONE;
             visibleViewController.setAnimated(animated);

@@ -90,6 +90,10 @@ public class UIColor extends BaseModel {
         return UIColor.build(Color.GREEN, alpha);
     }
 
+    public static UIColor gray(float alpha) {
+        return UIColor.build(Color.GRAY, alpha);
+    }
+
     public static UIColor red(float alpha) {
         return UIColor.build(Color.RED, alpha);
     }

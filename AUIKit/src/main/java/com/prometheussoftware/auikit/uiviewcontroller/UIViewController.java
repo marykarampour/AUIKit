@@ -72,7 +72,10 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
                                       CompletionCallback completion) {
 
         animated = animation != Navigation.TRANSITION_ANIMATION.NONE;
-        UIView.getWindow().dismissVisibleViewController(getPresentingViewController(), animation, completion);
+        UIViewController presentingViewController = getPresentingViewController();
+        if (presentingViewController != null) {
+            UIView.getWindow().dismissVisibleViewController(presentingViewController, animation, completion);
+        }
     }
 
     //region life cycle

@@ -12,10 +12,17 @@ public class UICheckbox <L extends UIAccessoryView, R extends UIAccessoryView> e
 
     public UICheckbox() {
         super();
+        init();
     }
 
     static {
         Identifier.Register(UICheckbox.class);
+    }
+
+    @Override
+    public void init() {
+        setSize();
+        super.init();
     }
 
     @Override public void initView() {

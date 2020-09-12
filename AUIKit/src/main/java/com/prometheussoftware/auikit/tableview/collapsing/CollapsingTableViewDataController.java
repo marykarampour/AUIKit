@@ -13,6 +13,7 @@ public class CollapsingTableViewDataController extends UITableViewDataController
      result in header button press programmatically, only reloads the rows in sections */
     public boolean multiExpandedSectionEnabled = true;
 
+    /** Responsible for performing updates when a section header is tapped */
     private UITableViewProtocol.Content contentDelegate;
 
     public CollapsingTableViewDataController() {
