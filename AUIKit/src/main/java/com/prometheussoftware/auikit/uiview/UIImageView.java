@@ -46,13 +46,12 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
     private void updateImage() {
         if (image != null) {
-
-            Bitmap bitmap = image.getBitmap();
+            Bitmap bitmap = image.bitmap();
             if (bitmap != null) {
                 view().setImageBitmap(bitmap);
             }
             else {
-                Drawable drawable = image.getDrawable();
+                Drawable drawable = image.drawable();
                 view().setImageDrawable(drawable);
             }
         }

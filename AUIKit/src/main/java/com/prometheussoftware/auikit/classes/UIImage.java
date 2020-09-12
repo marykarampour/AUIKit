@@ -55,26 +55,35 @@ public class UIImage extends BaseModel {
         this.bitmap = null;
     }
 
-    public Bitmap getBitmap() {
-        if (bitmap != null) return bitmap;
-        else if (drawable != null) {
-            drawable.setTint(tintColor);
-            return DataUtility.imageFromDrawable(drawable);
-        }
-        else if (0 < image) {
-            Drawable drawable = Assets.assetWithTint(image, tintColor);
-            return DataUtility.imageFromDrawable(drawable);
-        }
-        return null;
+    public Bitmap bitmap() {
+        return bitmap;
     }
 
-    public Drawable getDrawable() {
+    public Drawable drawable() {
         if (drawable != null) {
             drawable.setTint(tintColor);
             return drawable;
         }
+        else if (0 < image) {
+            Drawable drawable = Assets.assetWithTint(image, tintColor);
+            return drawable;
+        }
+        return null;
+    }
+
+    public Bitmap getBitmap() {
+        if (bitmap != null) return bitmap;
+        Drawable drawable = drawable();
+        return DataUtility.imageFromDrawable(drawable);
+    }
+
+    public Drawable getDrawable() {
+        Drawable drawable = drawable();
+        if (drawable != null) {
+            return drawable;
+        }
         else if (bitmap != null) {
-            Drawable drawable = new BitmapDrawable(AUIKitApplication.getWindow().getResources(), bitmap);
+            drawable = new BitmapDrawable(AUIKitApplication.getWindow().getResources(), bitmap);
             drawable.setTint(tintColor);
             return drawable;
         }
