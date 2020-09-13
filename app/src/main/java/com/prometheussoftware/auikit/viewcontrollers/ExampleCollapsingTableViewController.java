@@ -1,15 +1,16 @@
 package com.prometheussoftware.auikit.viewcontrollers;
 
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIFont;
-import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.common.App;
-import com.prometheussoftware.auikit.common.Assets;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.genericviews.UICheckbox;
+import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;
@@ -29,6 +30,10 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
 
     ArrayList<String> titles = new ArrayList<>();
 
+    static {
+        Identifier.Register(CheckboxView.class);
+    }
+
     @Override
     public void viewDidLoad() {
         super.viewDidLoad();
@@ -47,10 +52,10 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
 
         ArrayList<TableObject.Section> sections = new ArrayList();
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 1; i++) {
 
             TableObject.Section section = new TableObject.Section();
-            section.info = new TableObject.CellInfo(UICheckbox.class);
+            section.info = new TableObject.CellInfo(CheckboxView.class);
             section.object.title = "Section";
             section.object.subTitle = Integer.toString(i);
             section.expandedHeight = App.constants().TableView_Section_Header_Height();
@@ -113,7 +118,7 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
             return Dimensions.Int_44();
         }
 
-        class HeaderViewHolder extends UITableViewHolder.Header <UICheckbox> {
+        class HeaderViewHolder extends UITableViewHolder.Header <CheckboxView> {
 
             public HeaderViewHolder(@NonNull UIView itemView) {
                 super(itemView);
@@ -124,15 +129,7 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
                 super.bindDataForSection(item, section, delegate);
 
                 UILabel label = view.getTitleLabel();
-                label.setPadding(Dimensions.Int_4(), 0, 0, 0);
-                label.setFont(UIFont.systemFont(12, UIFont.STYLE.BOLD));
                 label.setText(item.object.title + "\n" + item.object.subTitle);
-                view.setBackgroundColor(UIColor.build(220, 220, 240, 1.0f));
-                view.getRightView().setBackgroundColor(UIColor.red(1.0f));
-                view.getRightView().setSelectedColor(UIColor.black(1.0f));
-                view.getRightView().setDeselectedColor(UIColor.black(1.0f));
-                view.getRightView().setOnImage(App.assets().Right_Chevron_Image());
-                view.getRightView().setOffImage(App.assets().Down_Chevron_Image());
                 view.getRightView().setDelegate((UIControl view, boolean selected) -> {
                     if (delegate != null) {
                         delegate.didSelectSectionAtIndex(item, section, selected);
@@ -153,6 +150,26 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
                 }
             }
             reloadData();
+        }
+    }
+
+    public static class CheckboxView extends UICheckbox {
+
+        @Override
+        public void initView() {
+            super.initView();
+
+            setBackgroundColor(UIColor.build(220, 220, 240, 1.0f));
+            getRightView().setBackgroundColor(UIColor.red(1.0f));
+            getRightView().setSelectedColor(UIColor.black(1.0f));
+            getRightView().setDeselectedColor(UIColor.black(1.0f));
+            getRightView().setOnImage(App.assets().Right_Chevron_Image());
+            getRightView().setOffImage(App.assets().Down_Chevron_Image());
+            getRightView().setEnabled(true);
+
+            UILabel label = getTitleLabel();
+            label.setPadding(Dimensions.Int_4(), 0, 0, 0);
+            label.setFont(UIFont.systemFont(12, UIFont.STYLE.BOLD));
         }
     }
 }

@@ -3,7 +3,6 @@ package com.prometheussoftware.auikit.viewcontrollers;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;

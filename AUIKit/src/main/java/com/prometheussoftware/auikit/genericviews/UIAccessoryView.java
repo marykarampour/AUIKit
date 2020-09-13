@@ -55,6 +55,7 @@ public abstract class UIAccessoryView extends UISwitch implements UIAccessoryVie
         return on;
     }
 
+    /** Call setEnabled or updateViews after on/off images and colors are set to update views */
     @Override public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         updateViews();

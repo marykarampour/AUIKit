@@ -195,6 +195,9 @@ public class TableObject {
             this.identifier = identifier;
         }
 
+        /** This class must be public for the data controller to automatically initialize it
+         * using the no argument constructor. Otherwise you must implement header(or cell)ForViewType
+         * and construct and return the appropriate view */
         public Class getCellClass() {
             return cellClass;
         }
