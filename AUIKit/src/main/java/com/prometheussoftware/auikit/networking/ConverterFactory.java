@@ -121,9 +121,9 @@ public class ConverterFactory  extends Converter.Factory {
         }
     }
 
-    protected static class GsonDefault extends GsonConverter {
+    public static class GsonDefault extends GsonConverter {
 
-        GsonDefault() {
+        public GsonDefault() {
             super();
             type = TYPE.DEFAULT.intValue();
         }

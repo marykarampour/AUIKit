@@ -6,6 +6,14 @@ import com.prometheussoftware.auikit.common.Dimensions;
 
 public interface ConstantsProtocol {
 
+    //environment and services
+    default int Server_Environment() { return 0; }
+    default String BaseURL() { return ""; }
+
+    //app
+    default String CopyRight_STR() { return ""; }
+
+
     //spinner
     default Size Spinner_Hud_Size() { return Dimensions.size(Dimensions.Int_52()); }
     default Size Small_Spinner_Hud_Size() { return Dimensions.size(Dimensions.Int_32()); }
