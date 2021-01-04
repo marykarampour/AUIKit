@@ -33,8 +33,6 @@ public class ExampleServerController extends ServerController <ExampleConverterF
         NetworkManager.getInstance().addBaseURL(EXConstants.EXBaseURL(), ExampleConverterFactory.TYPE.EXE.intValue(), converter());
     }
 
-    //region helpers
-
     public static void loginRequestWithCallback(User object, SuccessCallback callback) {
 
         ExampleServices service = NetworkManager.createService(ExampleServices.class);
@@ -57,6 +55,8 @@ public class ExampleServerController extends ServerController <ExampleConverterF
             }
         });
     }
+
+    //region helpers
 
     public static <S extends ServerResponse> void genericRequestWithCallback(Object object, ExampleServices.METHOD method, ServiceCallback callback) {
 

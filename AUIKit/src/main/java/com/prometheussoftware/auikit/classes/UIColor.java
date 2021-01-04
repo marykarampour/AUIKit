@@ -31,7 +31,7 @@ public class UIColor extends BaseModel {
      * @param blue Blue color component 0-255
      * @param alpha Between 0.0-1.0 is transparency */
     public static UIColor build(int red, int green, int blue, float alpha) {
-        int color = Color.argb(alpha, red/255.0f, green/255.0f, blue/255.0f);
+        int color = Color.argb((int) (alpha*255), red, green, blue);
         return new UIColor(color, 1.0f);
     }
 
@@ -41,7 +41,7 @@ public class UIColor extends BaseModel {
      * @param blue Blue color component 0.0-1.0
      * @param alpha Between 0.0-1.0 is transparency */
     public static UIColor build(float red, float green, float blue, float alpha) {
-        int color = Color.argb(alpha, red, green, blue);
+        int color = Color.argb((int) (alpha*255), (int) (red*255), (int) (green*255), (int) (blue*255));
         return new UIColor(color, 1.0f);
     }
 
