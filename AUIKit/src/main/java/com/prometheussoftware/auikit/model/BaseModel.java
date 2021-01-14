@@ -2,6 +2,8 @@ package com.prometheussoftware.auikit.model;
 
 import com.google.gson.Gson;
 
+import org.checkerframework.common.returnsreceiver.qual.This;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -40,12 +42,25 @@ public class BaseModel implements Serializable, Cloneable {
         }
     }
 
+    /** Call this method to enable reflection on the class.
+     * @apiNote This must be called early on in static methods.
+     * One option is to have a model registrar class called early
+     * on to register all the required classes. */
     public static void Register (Class subclass) {
         Register(subclass, true);
     }
 
+    /** Call this method to enable reflection on the class.
+     * @apiNote This must be called early on in static methods.
+     * One option is to have a model registrar class called early
+     * on to register all the required classes.
+     * @param usingAncestors Pass true if you want fields of the ancestors be included */
     public static void Register (Class subclass, boolean usingAncestors) {
-        Reflect reflect = new Reflect();
+
+        Reflect reflect = reflectForClass(subclass);
+        if (reflect != null) return;
+
+        reflect = new Reflect();
         reflect.usingAncestors = usingAncestors;
         reflect.self = subclass;
         reflect.propertyTypeNames = initializePropertyTypeNames(reflect);
@@ -192,6 +207,7 @@ public class BaseModel implements Serializable, Cloneable {
         }
     }
 
+    /** This method only works for public fields of a class and its ancestors */
     public void setValueForKey (Object value, String key) {
 
         try {
@@ -205,6 +221,24 @@ public class BaseModel implements Serializable, Cloneable {
             }
         } catch (NoSuchFieldException | InvocationTargetException e) {
         } catch (IllegalAccessException e) { }
+    }
+
+    /** This method iterates through all fields of a class and its ancestors
+     * even private and protected, and sets the value for the field if found.
+     * @apiNote This method is more demanding than setValueForKey, use
+     * setValueForKey instead unless necessary */
+    public void setValueForKeyForAllAccessLevels (Object value, String key) {
+
+        try {
+            Field field = fieldOrDeclared(key);
+            if (field != null) {
+
+                Method setter = setter(field);
+                if (setter != null) setter.invoke(this, value);
+                else field.set(this, value);
+                return;
+            }
+        } catch (InvocationTargetException | IllegalAccessException e) { }
     }
 
     public Object valueForKey (String key) {
@@ -222,25 +256,22 @@ public class BaseModel implements Serializable, Cloneable {
         }
     }
 
+    /** This method looks for the field in all fields of a class and its ancestors
+     * even private and protected. */
     private Field fieldOrDeclared (String key) {
 
-        Field field = null;
-        try {
-            field = getClass().getDeclaredField(key);
-        } catch (NoSuchFieldException e) { }
-
-        if (field == null) {
-
-            Class currentClass = getClass().getSuperclass();
-            while (currentClass != BaseModel.class) {
-                try {
-                    //TODO: this returns private as well, logically we need protected and public of ancestors
-                    field = currentClass.getDeclaredField(key);
-                } catch (NoSuchFieldException e) { }
-                currentClass = currentClass.getSuperclass();
+        Class cls = getClass();
+        while (cls != BaseModel.class) {
+            try {
+                Field field = cls.getDeclaredField(key);
+                if (field != null) {
+                    return field;
+                }
             }
+            catch (NoSuchFieldException e) { }
+            cls = cls.getSuperclass();
         }
-        return field;
+        return null;
     }
 
     public static boolean isSetter(Method method) {
@@ -280,7 +311,7 @@ public class BaseModel implements Serializable, Cloneable {
     public void nullify() {
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
         for (String name : properties) {
-            setValueForKey(null, name);
+            setValueForKeyForAllAccessLevels(null, name);
         }
     }
 
@@ -402,6 +433,25 @@ public class BaseModel implements Serializable, Cloneable {
             }
         } catch (NoSuchFieldException e) { }
         return null;
+    }
+
+    public void setWithObject(BaseModel object) {
+
+        if (!object.getClass().isInstance(this)) return;
+        Set<String> properties = BaseModel.propertyNamesForClass(object.getClass());
+        if (properties == null) return;
+
+        for (String name : properties) {
+
+            try {
+                Field objField = object.fieldOrDeclared(name);
+                if (objField != null) {
+                    objField.setAccessible(true);
+                    Object value = objField.get(object);
+                    setValueForKeyForAllAccessLevels(value, name);
+                }
+            } catch (IllegalAccessException e) { }
+        }
     }
 
     public static String stringJSON(BaseModel obj) {

@@ -73,6 +73,18 @@ public class Constants implements ConstantsProtocol {
         return StringResource(R.string.no);
     }
 
+    public static String Day_s_STR() {
+        return StringResource(R.string.day_s);
+    }
+
+    public static String Hour_s_STR() {
+        return StringResource(R.string.hour_s);
+    }
+
+    public static String Minute_s_STR() {
+        return StringResource(R.string.minute_s);
+    }
+
     //regex
 
     public int Max_Regex_Chars() {

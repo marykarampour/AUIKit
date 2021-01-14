@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">AndroidUIKit</string>
+    <string name="day_s">Day(s)</string>
+    <string name="hour_s">Hour(s)</string>
+    <string name="minute_s">Minute(s)</string>
 </resources>

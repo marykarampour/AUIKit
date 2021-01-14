@@ -171,8 +171,9 @@ public class StringUtility {
     public static Number numValue (String string) {
         String text = StringUtility.nonNull(string);
         if (StringUtility.isEmpty(text)) return 0;
+
         try {
-            return Integer.parseInt(text);
+            return Float.parseFloat(text);
         }
         catch (NumberFormatException e) {}
         try {
@@ -180,7 +181,7 @@ public class StringUtility {
         }
         catch (NumberFormatException e) {}
         try {
-            return Float.parseFloat(text);
+            return Integer.parseInt(text);
         }
         catch (NumberFormatException e) {}
         return 0;

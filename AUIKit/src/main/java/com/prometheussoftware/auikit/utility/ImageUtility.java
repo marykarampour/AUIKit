@@ -49,6 +49,20 @@ public class ImageUtility {
                 .into(view);
     }
 
+    public static void loadImageWithPath (ImageView view, String path, int placeholder) {
+        if (path == null || path.length() == 0) {
+            view.setImageResource(placeholder);
+            return;
+        }
+
+        Picasso.get()
+                .load(path)
+                .fit()
+                .centerCrop()
+                .placeholder(placeholder)
+                .into(view);
+    }
+
     public static void loadImageWithPath (ImageView view, String path, int height, int placeholder) {
         if (path == null || path.length() == 0) {
             view.setImageResource(placeholder);
@@ -59,10 +73,9 @@ public class ImageUtility {
                 .load(path)
                 .fit()
                 .centerCrop()
-                //.resize(0, height)
+                .resize(0, height)
                 .placeholder(placeholder)
                 .into(view);
-
     }
 
     public static void loadImageWithURLWithCallback (ImageView view, String URL, int height, int placeholder, Callback callback) {
