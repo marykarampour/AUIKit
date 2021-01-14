@@ -63,6 +63,15 @@ public class ImageUtility {
                 .into(view);
     }
 
+    public static void loadImageWithPath (ImageView view, String path) {
+
+        Picasso.get()
+                .load(path)
+                .fit()
+                .centerCrop()
+                .into(view);
+    }
+
     public static void loadImageWithPath (ImageView view, String path, int height, int placeholder) {
         if (path == null || path.length() == 0) {
             view.setImageResource(placeholder);

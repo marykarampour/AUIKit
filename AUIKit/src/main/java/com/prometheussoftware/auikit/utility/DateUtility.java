@@ -1,4 +1,4 @@
-package com.prometheussoftware.auikit.utility.kotlin;
+package com.prometheussoftware.auikit.utility;
 
 import com.prometheussoftware.auikit.common.App;
 
