@@ -27,6 +27,14 @@ This is very simple and convenient, since any view controller is just a Java cla
 8. Change styles file to use MaterialComponents
 9. Override `createRootViewController` of the `MainWindow` to return the root view controller of the porject. This is the first view controller that appears at launch.
 
+Note that the project needs to support Java 8. In project’s app build.gradle add:
+```
+compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+}
+```
+
 ## How to add services to your project
 
 1. Add the following implementations to your app's build.gradle: 
