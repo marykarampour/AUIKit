@@ -47,8 +47,8 @@ This is very simple and convenient, since any view controller is just a Java cla
 Sample service:
 ```
 @POST(ServerEndpoints.AUTH)
-@KAConverterFactory.Default
-Call<KAUser.LoggedInUser> login(@Header(DEVICE_TOKEN) String token, @Header(DEVICE_PLATFORM) String platform, @Body KAUser.Auth request);
+@ConverterFactory.Default
+Call<User.LoggedInUser> login(@Header(DEVICE_TOKEN) String token, @Header(DEVICE_PLATFORM) String platform, @Body User.Auth request);
 ```
 
 Sample ServerController service implementation:
