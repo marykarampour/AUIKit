@@ -16,7 +16,7 @@ public class UISingleView <V extends View> extends UIView {
 
     @Override public void initView() {
         super.initView();
-        view = (V)new View(getWindow());
+        view = (V)new View(getActivity());
     }
 
     @Override

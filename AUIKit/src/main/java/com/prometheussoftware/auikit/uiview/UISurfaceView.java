@@ -13,7 +13,7 @@ public class UISurfaceView extends UISingleView <SurfaceView> {
 
     @Override
     public void initView() {
-        view = new SurfaceView(getWindow());
+        view = new SurfaceView(getActivity());
         setHidden(false);
         setBackgroundColor(Color.TRANSPARENT);
     }

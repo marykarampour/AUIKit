@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 
 import com.prometheussoftware.auikit.common.AUIKitApplication;
 import com.prometheussoftware.auikit.common.Assets;
+import com.prometheussoftware.auikit.common.MainApplication;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.utility.DataUtility;
 
@@ -83,7 +84,7 @@ public class UIImage extends BaseModel {
             return drawable;
         }
         else if (bitmap != null) {
-            drawable = new BitmapDrawable(AUIKitApplication.getWindow().getResources(), bitmap);
+            drawable = new BitmapDrawable(MainApplication.getContext().getResources(), bitmap);
             drawable.setTint(tintColor);
             return drawable;
         }

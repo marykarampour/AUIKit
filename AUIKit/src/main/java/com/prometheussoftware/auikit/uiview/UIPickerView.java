@@ -28,7 +28,7 @@ public class UIPickerView <O> extends UISingleView <UIPickerView.NumberPickerVie
 
     @Override public void initView() {
         super.initView();
-        view = new NumberPickerView(getWindow(), style);
+        view = new NumberPickerView(getActivity(), style);
     }
 
     public void setObjects(ArrayList<O> objects) {

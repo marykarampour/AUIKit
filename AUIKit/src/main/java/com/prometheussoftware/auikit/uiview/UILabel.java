@@ -15,7 +15,7 @@ public class UILabel extends UISingleView <TextView> {
 
     @Override public void initView() {
         super.initView();
-        view = new TextView(getWindow());
+        view = new TextView(getActivity());
     }
 
     public String getText() {

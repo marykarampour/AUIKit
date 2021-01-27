@@ -2,7 +2,7 @@ package com.prometheussoftware.auikit.classes;
 
 import android.graphics.Typeface;
 
-import com.prometheussoftware.auikit.common.AUIKitApplication;
+import com.prometheussoftware.auikit.common.MainApplication;
 import com.prometheussoftware.auikit.model.BaseModel;
 
 public class UIFont extends BaseModel {
@@ -57,7 +57,7 @@ public class UIFont extends BaseModel {
     /** @param name Font name from assets.
      * Create a class AppTheme for retrieving font names */
     public UIFont(String name) {
-        font = Typeface.createFromAsset(AUIKitApplication.getWindow().getAssets(), name);
+        font = Typeface.createFromAsset(MainApplication.getContext().getAssets(), name);
     }
 
     /** @param name Font name from assets.
@@ -69,7 +69,7 @@ public class UIFont extends BaseModel {
      * BOLD_ITALIC = 3;
      * */
     public UIFont(String name, STYLE style) {
-        font = Typeface.createFromAsset(AUIKitApplication.getWindow().getAssets(), name);
+        font = Typeface.createFromAsset(MainApplication.getContext().getAssets(), name);
         this.style = style;
     }
 
@@ -82,7 +82,7 @@ public class UIFont extends BaseModel {
      * BOLD_ITALIC = 3;
      * */
     public UIFont(String name, STYLE style, int size) {
-        font = Typeface.createFromAsset(AUIKitApplication.getWindow().getAssets(), name);
+        font = Typeface.createFromAsset(MainApplication.getContext().getAssets(), name);
         this.style = style;
         this.size = size;
     }

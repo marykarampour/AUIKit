@@ -25,7 +25,7 @@ public class UISpinner extends UIView {
     @Override
     public void initView() {
         super.initView();
-        hud = new ProgressBar(getWindow());
+        hud = new ProgressBar(getActivity());
         setHudColor(App.theme().Spinner_Hud_Color());
     }
 
@@ -47,7 +47,7 @@ public class UISpinner extends UIView {
 
     public void show () {
         if (hud == null) return;
-        getWindow().runOnUiThread(() -> {
+        getActivity().runOnUiThread(() -> {
             setGone(false);
             bringToFront();
             hud.animate();
@@ -56,7 +56,7 @@ public class UISpinner extends UIView {
 
     public void hide () {
         if (hud == null) return;
-        getWindow().runOnUiThread(() -> {
+        getActivity().runOnUiThread(() -> {
             setGone(true);
             hud.clearAnimation();
         });

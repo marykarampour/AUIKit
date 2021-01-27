@@ -11,6 +11,6 @@ public class UIRefreshView extends UISingleView <SwipeRefreshLayout> {
 
     @Override public void initView() {
         super.initView();
-        view = new SwipeRefreshLayout(getWindow());
+        view = new SwipeRefreshLayout(getActivity());
     }
 }

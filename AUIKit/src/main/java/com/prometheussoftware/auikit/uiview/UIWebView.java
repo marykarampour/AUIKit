@@ -12,7 +12,7 @@ public class UIWebView extends UISingleView <WebView> {
     @Override
     public void initView() {
         super.initView();
-        view = new WebView(getWindow());
+        view = new WebView(getActivity());
     }
 
     public void loadUrl(String url) {

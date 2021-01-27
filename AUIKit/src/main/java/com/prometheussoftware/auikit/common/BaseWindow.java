@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -31,13 +32,7 @@ import com.prometheussoftware.auikit.utility.ViewUtility;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BaseWindow <V extends UIViewController> extends FragmentActivity {
-
-    public static final int DOCUMENT_PICKER_REQUEST_CODE = 1000;
-    public static final int IMAGE_PICKER_REQUEST_CODE = 2000;
-    public static final int CAMERA_PERMISSIONS_REQUEST_CODE = 3000;
-
-    protected int defaultOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+public class BaseWindow <V extends UIViewController> extends BaseActivity {
 
     public DataDelegate dataDelegate;
     public ResultDelegate resultDelegate;
@@ -49,10 +44,6 @@ public class BaseWindow <V extends UIViewController> extends FragmentActivity {
     private UITransitioningContainerView view;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
-
-        setRequestedOrientation(defaultOrientation);
-
-        AUIKitApplication.setWindow(this);
         super.onCreate(savedInstanceState);
 
         view = new UITransitioningContainerView();
@@ -67,6 +58,11 @@ public class BaseWindow <V extends UIViewController> extends FragmentActivity {
         setWindowProperties();
     }
 
+    @Override
+    protected void setWindow() {
+        AUIKitApplication.setWindow(this);
+    }
+
     protected void setWindowProperties() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_FULLSCREEN);
@@ -74,6 +70,10 @@ public class BaseWindow <V extends UIViewController> extends FragmentActivity {
         params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
         getWindow().setAttributes(params);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+    }
+
+    protected void setActionBarProperties() {
+        getSupportActionBar().hide();
     }
 
     @Override protected void onStart() {
@@ -353,53 +353,4 @@ public class BaseWindow <V extends UIViewController> extends FragmentActivity {
 
     //endregion
 
-    //region window helpers
-
-    public void dismissKeyboard() {
-
-        InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        View view = getCurrentFocus();
-        if (view == null) {
-            view = new View(this);
-        }
-        manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        view.clearFocus();
-    }
-
-    public void addPhoneCallAction(UIButton button, String phoneNumber) {
-        button.addTarget(this, v -> {
-            addPhoneCallAction(phoneNumber);
-        });
-    }
-
-    public void addPhoneCallAction(String phoneNumber) {
-
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + phoneNumber));
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            this.startActivity(callIntent);
-            return;
-        }
-    }
-
-    public void copyTextToClipboard(String text) {
-
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Copied Text", text);
-        clipboard.setPrimaryClip(clip);
-    }
-
-    public boolean hasCameraPermissions() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void getCameraPermissions() {
-        if (!hasCameraPermissions()) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    //endregion
 }

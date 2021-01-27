@@ -4,14 +4,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
-import com.prometheussoftware.auikit.common.AUIKitApplication;
 import com.prometheussoftware.auikit.common.Constants;
+import com.prometheussoftware.auikit.common.MainApplication;
 
 public class UIAlert {
 
     public static void OKAlert(String title, String message) {
-        AUIKitApplication.getWindow().runOnUiThread(() ->
-                new AlertDialog.Builder(AUIKitApplication.getWindow())
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow())
                         .setTitle(title)
                         .setMessage(message)
                         .setCancelable(false)
@@ -20,8 +20,8 @@ public class UIAlert {
     }
 
     public static void OKAlert(String title, String message, DialogInterface.OnClickListener listener) {
-        AUIKitApplication.getWindow().runOnUiThread(() ->
-                new AlertDialog.Builder(AUIKitApplication.getWindow())
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow())
                         .setTitle(title)
                         .setMessage(message)
                         .setCancelable(false)
@@ -30,8 +30,8 @@ public class UIAlert {
     }
 
     public static void OKAlert(String title) {
-        AUIKitApplication.getWindow().runOnUiThread(() ->
-                new AlertDialog.Builder(AUIKitApplication.getWindow())
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow())
                         .setMessage(title)
                         .setCancelable(false)
                         .setPositiveButton(Constants.OK_STR(), (DialogInterface d, int w) -> {})
@@ -39,8 +39,8 @@ public class UIAlert {
     }
 
     public static void OKAlert(String title, DialogInterface.OnClickListener listener) {
-        AUIKitApplication.getWindow().runOnUiThread(() ->
-                new AlertDialog.Builder(AUIKitApplication.getWindow())
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow())
                         .setMessage(title)
                         .setCancelable(false)
                         .setPositiveButton(Constants.OK_STR(), listener)
@@ -49,8 +49,8 @@ public class UIAlert {
     }
 
     public static void OKCancelAlert(String title, String message, DialogInterface.OnClickListener listener) {
-        AUIKitApplication.getWindow().runOnUiThread(() ->
-                new AlertDialog.Builder(AUIKitApplication.getWindow())
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow())
                         .setTitle(title)
                         .setMessage(message)
                         .setCancelable(false)
@@ -60,8 +60,8 @@ public class UIAlert {
     }
 
     public static void OKCancelAlert(String title, DialogInterface.OnClickListener listener, DialogInterface.OnClickListener cancelListener) {
-        AUIKitApplication.getWindow().runOnUiThread(() ->
-                new AlertDialog.Builder(AUIKitApplication.getWindow())
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow())
                         .setMessage(title)
                         .setCancelable(false)
                         .setPositiveButton(Constants.OK_STR(), listener)
@@ -70,8 +70,8 @@ public class UIAlert {
     }
 
     public static void OKCancelAlert(String title, String message, DialogInterface.OnClickListener listener, DialogInterface.OnClickListener cancelListener) {
-        AUIKitApplication.getWindow().runOnUiThread(() ->
-                new AlertDialog.Builder(AUIKitApplication.getWindow())
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow())
                         .setTitle(title)
                         .setMessage(message)
                         .setCancelable(false)
@@ -81,8 +81,8 @@ public class UIAlert {
     }
 
     public static void OKCancelAlert(String title, DialogInterface.OnClickListener listener) {
-        AUIKitApplication.getWindow().runOnUiThread(() ->
-                new AlertDialog.Builder(AUIKitApplication.getWindow())
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow())
                         .setMessage(title)
                         .setCancelable(false)
                         .setPositiveButton(Constants.OK_STR(), listener)
@@ -91,7 +91,7 @@ public class UIAlert {
     }
 
     public static void Toast(String title) {
-        AUIKitApplication.getWindow().runOnUiThread(() ->
-                Toast.makeText(AUIKitApplication.getWindow(), title, Toast.LENGTH_LONG).show());
+        MainApplication.getWindow().runOnUiThread(() ->
+                Toast.makeText(MainApplication.getWindow(), title, Toast.LENGTH_LONG).show());
     }
 }

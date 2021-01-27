@@ -79,7 +79,7 @@ public class UIControl extends UIView implements View.OnTouchListener {
 
     private void createEventListeners() {
 
-        gestureDetector = new GestureDetector(getWindow(), new GestureDetector.SimpleOnGestureListener() {
+        gestureDetector = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 lastTouch = e;
