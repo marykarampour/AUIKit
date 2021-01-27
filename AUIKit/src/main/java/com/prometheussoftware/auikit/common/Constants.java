@@ -27,7 +27,7 @@ public class Constants implements ConstantsProtocol {
     }
 
     public static String App_Name () {
-        return AUIKitApplication.getContext().getString(R.string.app_name);
+        return MainApplication.getContext().getString(R.string.app_name);
     }
 
     public static String Platform_Type () {
@@ -36,8 +36,8 @@ public class Constants implements ConstantsProtocol {
 
     public static Size Screen_Size_PIXEL() {
 
-        DisplayMetrics metrics = AUIKitApplication.getContext().getResources().getDisplayMetrics();
-        float density = AUIKitApplication.getContext().getResources().getDisplayMetrics().density;
+        DisplayMetrics metrics = MainApplication.getContext().getResources().getDisplayMetrics();
+        float density = MainApplication.getContext().getResources().getDisplayMetrics().density;
         int height = (int) (metrics.heightPixels / density);
         int width = (int) (metrics.widthPixels / density);
 
@@ -45,14 +45,14 @@ public class Constants implements ConstantsProtocol {
     }
 
     public static Size Screen_Size() {
-        DisplayMetrics metrics = AUIKitApplication.getContext().getResources().getDisplayMetrics();
+        DisplayMetrics metrics = MainApplication.getContext().getResources().getDisplayMetrics();
         return new Size(metrics.widthPixels, metrics.heightPixels);
     }
 
     //helpers
 
     protected static String StringResource(int source) {
-        return AUIKitApplication.getContext().getResources().getString(source);
+        return MainApplication.getContext().getResources().getString(source);
     }
 
     //strings

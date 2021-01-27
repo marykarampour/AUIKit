@@ -83,7 +83,7 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
         @Override public void initView() {
             super.initView();
-            view = new ImageView(getWindow());
+            view = new ImageView(getActivity());
         }
     }
 }

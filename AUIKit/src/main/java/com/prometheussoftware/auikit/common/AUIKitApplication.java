@@ -23,7 +23,7 @@ public abstract class AUIKitApplication extends MainApplication implements Appli
     }
 
     public static BaseWindow getWindow() {
-        return window;
+        return AUIKitApplication.window;
     }
 
     /** Initialize an instance of MainAppInfo here */

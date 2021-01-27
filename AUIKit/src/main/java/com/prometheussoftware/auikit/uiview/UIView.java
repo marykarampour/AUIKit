@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
+import com.prometheussoftware.auikit.common.BaseActivity;
 import com.prometheussoftware.auikit.common.BaseWindow;
 import com.prometheussoftware.auikit.uiview.protocols.UIViewProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.LifeCycleDelegate;
@@ -23,6 +24,11 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     /** A reference to the main window of the application */
     private static BaseWindow window;
+
+    /** A reference to the current activity of the application.
+     * If window is set, this is the application window */
+    private static BaseActivity activity;
+
     private int opacity = VISIBLE;
     private boolean userInteractionEnabled;
     private boolean selfSetOpacity;
@@ -37,7 +43,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     private LifeCycleDelegate.View lifeCycleDelegate;
 
     public UIView() {
-        super(window);
+        super(activity);
         ViewUtility.setViewID(this);
     }
 
@@ -179,20 +185,34 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     @Override
     public void constraintLayout() { }
 
-    public UIView(Context context) {
-        super(context);
-    }
-
     public static void setWindow(BaseWindow baseWindow) {
         window = baseWindow;
+        activity = window;
     }
 
     public static BaseWindow getWindow() {
         return window;
     }
 
+    public static BaseActivity getActivity() {
+        return activity;
+    }
+
+    public static void setActivity(BaseActivity activity) {
+        UIView.activity = activity;
+    }
+
+    public BaseWindow window() {
+        return window;
+    }
+
+    public BaseActivity activity() {
+        return activity;
+    }
+
     public static void runOnUiThread(Runnable run) {
-        window.runOnUiThread(run);
+        if (activity != null)
+            activity.runOnUiThread(run);
     }
 
     /** Call in subclass to set size */

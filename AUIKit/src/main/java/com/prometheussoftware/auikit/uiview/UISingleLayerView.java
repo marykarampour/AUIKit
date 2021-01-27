@@ -29,14 +29,20 @@ public class UISingleLayerView <U extends UIView> extends UIView {
 
     public UISingleLayerView() {
         super();
+        baseInit();
+    }
+
+    private void baseInit() {
         init();
         setBackgroundColor(Color.TRANSPARENT);
         setContentBackgroundColor(UIColor.clear());
     }
 
+    //endregion
+
     private void createLayer() {
 
-        layer = new MaterialCardView(getWindow());
+        layer = new MaterialCardView(getActivity());
 
         LinearLayout.LayoutParams layerParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,

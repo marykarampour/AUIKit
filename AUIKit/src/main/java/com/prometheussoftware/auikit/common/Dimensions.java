@@ -9,7 +9,7 @@ public class Dimensions {
     //helpers
 
     protected static int PixelDimension(int source) {
-        return AUIKitApplication.getContext().getResources().getDimensionPixelSize(source);
+        return MainApplication.getContext().getResources().getDimensionPixelSize(source);
     }
 
     public static Size size(int dimension) {

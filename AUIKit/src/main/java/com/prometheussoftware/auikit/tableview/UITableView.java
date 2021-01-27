@@ -24,10 +24,10 @@ public class UITableView extends UISingleView <RecyclerView> {
     @Override public void initView() {
         super.initView();
 
-        layoutManager = new LinearLayoutManager(getWindow());
+        layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(orientation);
 
-        view = new RecyclerView(getWindow());
+        view = new RecyclerView(getActivity());
         view.setLayoutManager(layoutManager);
         view.setDescendantFocusability(FOCUS_BEFORE_DESCENDANTS);
     }

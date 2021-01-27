@@ -26,7 +26,6 @@ import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.Range;
 import com.prometheussoftware.auikit.model.Text;
-import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.uiview.protocols.KeyboardEventListener;
 import com.prometheussoftware.auikit.utility.DEBUGLOG;
 import com.prometheussoftware.auikit.utility.StringUtility;
@@ -70,6 +69,8 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         super();
         init();
     }
+
+    //endregion
 
     @Override
     protected void createView() {
@@ -263,11 +264,11 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
     //region helpers
 
     public void hideKeyboard () {
-        getWindow().dismissKeyboard();
+        getActivity().dismissKeyboard();
     }
 
     private void dispatchTextViewDidBeginEditing() {
-        if (delegate != null && getWindow() != null)
+        if (delegate != null)
             runOnUiThread(() -> {
                 delegate.TextViewDidBeginEditing(self);
                 view().setSelection(getText().length());
@@ -275,12 +276,12 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
     }
 
     private void dispatchTextViewDidEndEditing() {
-        if (delegate != null && getWindow() != null)
+        if (delegate != null)
             runOnUiThread(() -> delegate.TextViewDidEndEditing(self));
     }
 
     private boolean dispatchTextViewShouldChangeCharactersInRange() {
-        if (delegate != null && getWindow() != null) {
+        if (delegate != null) {
             boolean hasMethod = delegate.implementsTextViewDidChangeCharactersInRange();
             if (hasMethod) {
                 return delegate.TextViewShouldChangeCharactersInRange(self, currentChange.range, currentChange.text.toString());
@@ -290,18 +291,18 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
     }
 
     private void dispatchTextViewDidChangeCharactersInRange() {
-        if (delegate != null && getWindow() != null)
+        if (delegate != null)
             runOnUiThread(() -> delegate.TextViewDidChangeCharactersInRange(self, currentChange.range));
     }
 
     private boolean dispatchTextViewShouldReturn() {
-        if (delegate != null && getWindow() != null)
+        if (delegate != null)
             return delegate.TextViewShouldReturn(self);
         return true;
     }
 
     private void dispatchTextViewDidReturn() {
-        if (delegate != null && getWindow() != null)
+        if (delegate != null)
             runOnUiThread(() -> delegate.TextViewDidReturn(self));
     }
 
@@ -514,7 +515,7 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
                         Object editorP = fieldP.get(editText);
 
                         // Get the drawable and set a color filter
-                        Drawable drawable = ContextCompat.getDrawable(getWindow(), drawableResId);
+                        Drawable drawable = ContextCompat.getDrawable(getActivity(), drawableResId);
                         drawable.setColorFilter(color.get(), PorterDuff.Mode.SRC_ATOP);
 
                         // Set the drawables
@@ -565,7 +566,7 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
 
         @Override public void initView() {
             super.initView();
-            view = new TextView(getWindow());
+            view = new TextView(getActivity());
             view.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
             view.setBackground(null);
             view.setSingleLine(true);

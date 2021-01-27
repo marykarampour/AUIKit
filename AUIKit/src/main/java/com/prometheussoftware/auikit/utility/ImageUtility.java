@@ -193,7 +193,7 @@ public class ImageUtility {
 
         final Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-        boolean canCopy = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && view.getWindow().getWindow().peekDecorView() != null;
+        boolean canCopy = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && UIView.getActivity().getWindow().peekDecorView() != null;
 
         if (canCopy) {
             try {
@@ -201,7 +201,7 @@ public class ImageUtility {
                 view.getLocationInWindow(location);
                 Rect rect = new Rect(location[0], location[1], location[0]+width, location[1]+height);
 
-                PixelCopy.request(view.getWindow().getWindow(), rect, bitmap, (int copyResult) -> {
+                PixelCopy.request(UIView.getActivity().getWindow(), rect, bitmap, (int copyResult) -> {
 
                     Bitmap smallBitmap = shouldResize ? DataUtility.shrinkToImage(bitmap, size) : bitmap;
                     if (copyResult == PixelCopy.SUCCESS) {

@@ -51,7 +51,7 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
      }
      */
     public UIViewController init() {
-        setWindow(UIView.getWindow());
+        setWindow(window());
         return this;
     }
 
@@ -64,7 +64,7 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         UIViewController presentingParent = presentingParent();
         viewControllerToPresent.setPresentingViewController(presentingParent);
         animated = animation != Navigation.TRANSITION_ANIMATION.NONE;
-        UIView.getWindow().presentVisibleViewController(viewControllerToPresent, animation, completion);
+        window().presentVisibleViewController(viewControllerToPresent, animation, completion);
     }
 
     /** The completion handler, if provided, will be invoked after the dismissed controller's viewDidDisappear: callback is invoked. */
@@ -74,7 +74,7 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         animated = animation != Navigation.TRANSITION_ANIMATION.NONE;
         UIViewController presentingViewController = getPresentingViewController();
         if (presentingViewController != null) {
-            UIView.getWindow().dismissVisibleViewController(presentingViewController, animation, completion);
+            window().dismissVisibleViewController(presentingViewController, animation, completion);
         }
     }
 
@@ -469,10 +469,7 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     //region helpers
 
     public BaseWindow window() {
-        if (view() != null) {
-            return view().getWindow();
-        }
-        return null;
+        return UIView.getWindow();
     }
 
     public void startActivityForResult(Intent intent, int requestCode) {
@@ -483,8 +480,8 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
     /** Call this in or after loadView to set a ResultDelegate object */
     public void setResultDelegate(BaseWindow.ResultDelegate delegate) {
-        if (delegate != null && view() != null) {
-            view().getWindow().resultDelegate = delegate;
+        if (delegate != null && window() != null) {
+            window().resultDelegate = delegate;
         }
     }
 

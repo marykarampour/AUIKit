@@ -36,13 +36,13 @@ public class UIScrollview extends UIView {
         switch (direction) {
             case VERTICAL: {
 
-                ScrollView view = new ScrollView(getWindow());
+                ScrollView view = new ScrollView(getActivity());
                 view.setFillViewport(false);
                 view.setScrollContainer(false);
                 return view;
             }
             default: {
-                HorizontalScrollView view = new HorizontalScrollView(getWindow());
+                HorizontalScrollView view = new HorizontalScrollView(getActivity());
                 view.setFillViewport(false);
                 view.setScrollContainer(false);
                 return view;
