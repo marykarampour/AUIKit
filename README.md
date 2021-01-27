@@ -10,8 +10,8 @@ This project includes AUIKit as a module, as well as an example app using it.
 
 Using AUIKit you can easily create a new screen using:
 ```
-ViewController vc = new ViewController();
-presentViewController(vc, Navigation.TRANSITION_ANIMATION.DOWNUP, null);
+    ViewController vc = new ViewController();
+    presentViewController(vc, Navigation.TRANSITION_ANIMATION.DOWNUP, null);
 ```
 This is very simple and convenient, since any view controller is just a Java class, you can have your custom constructor, set values at initialization, etc. no need for dealing with Intetns to pass values around from one screen to the other. 
 
@@ -34,30 +34,30 @@ This is very simple and convenient, since any view controller is just a Java cla
 3. implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 4. implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 5. implementation 'com.google.android.material:material:1.2.1'
-6. Crete a services package in your project and add the following classes:
+6. Create a services package in your project and add the following classes:
 7. Subclass ConverterFactory to handle JSON formatting
 8. Create a ModelsRegistrar class and in its static method registerModels() register all classes that need to be de/serialized or conform to copy.
 8. Subclass ServerController to add your services. 
-9. This subclass must override converter() method to return the converter created earlier, and override initialize() to call setBaseURL(url, converter())...
+9. This subclass must override converter() method to return the converter created earlier, and override initialize() to call setBaseURL(url, converter()).
 10. In static call ModelsRegistrar.registerModels().
 11. Create a ServerEndpoints class to return endpoints as static constants. 
-11. Create subinterface of Services and add the services.
+11. Create a subinterface of Services and add the services.
  
 
 Sample service:
 ```
-@POST(ServerEndpoints.AUTH)
-@ConverterFactory.Default
-Call<User.LoggedInUser> login(@Header(DEVICE_TOKEN) String token, @Header(DEVICE_PLATFORM) String platform, @Body User.Auth request);
+    @POST(ServerEndpoints.AUTH)
+    @ConverterFactory.Default
+    Call<User.LoggedInUser> login(@Header(DEVICE_TOKEN) String token, @Header(DEVICE_PLATFORM) String platform, @Body User.Auth request);
 ```
 
 Sample ServerController service implementation:
 ```
-public static void login(User.Auth object, SuccessCallback callback) {
+    public static void login(User.Auth object, SuccessCallback callback) {
 
         Services service = NetworkManager.createService(Services.class);
-        String token = "FCM";
-        String platform = MyApplication.getInstance().getFCMDeviceToken();
+        String token = MyApplication.getInstance().getFCMDeviceToken();
+        String platform = "FCM";
 
         Call<User.LoggedInUser> requestCall = service.login(token, platform, object);
 
