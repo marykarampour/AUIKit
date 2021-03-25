@@ -18,14 +18,15 @@ This is very simple and convenient, since any view controller is just a Java cla
 ## How to create a project using AUIKit
 
 1. Create an empty project
-2. In project's directory: git submodule add https://git.prometheussoftware.ca/androidlibraries/androiduikit.git
+2. In project's directory: `git submodule add https://git.prometheussoftware.ca/androidlibraries/androiduikit.git`
 3. In Android Studio: File -> Project structure -> Modules -> + -> Import Gradle Project -> select directory of lib (exclude example, i.e. app folder, only select the AUIKit folder) 
-4. In project’s app build.gradle: implementation project(path: ':AUIKit')
-5. Add common and viewcontrollers packages under java main package folder and add other files similar to the AUIKit's example, including `MainWindow` subclass of `BaseWindow`
-6. Modify the manifest file to use the custom application and base activity similar to example
-7. Add material lib to the app: implementation 'com.google.android.material:material:1.3.0-alpha02'
-8. Change styles file to use MaterialComponents
-9. Override `createRootViewController` of the `MainWindow` to return the root view controller of the porject. This is the first view controller that appears at launch.
+4. In project’s app build.gradle: `implementation project(path: ':AUIKit')`, `implementation 'androidx.core:core-ktx:1.3.2'`, `implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"` and `apply plugin: 'kotlin-android'`
+5. Add `classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"` to project's build.gradle dependencies, and add `ext.kotlin_version = '1.4.21'` in buildscript
+6. Add common and viewcontrollers packages under java main package folder and add other files similar to the AUIKit's example, including `MainWindow` subclass of `BaseWindow`
+7. Modify the manifest file to use the custom application and base activity similar to example
+8. Add material lib to the app: implementation 'com.google.android.material:material:1.3.0-alpha02'
+9. Change styles file to use MaterialComponents
+10. Override `createRootViewController` of the `MainWindow` to return the root view controller of the porject. This is the first view controller that appears at launch.
 
 Note that the project needs to support Java 8. In project’s app build.gradle add:
 ```
