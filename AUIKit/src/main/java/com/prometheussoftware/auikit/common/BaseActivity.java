@@ -55,7 +55,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void addPhoneCallAction(UIButton button, String phoneNumber) {
-        button.addTarget(this, v -> {
+        button.addTouchUpTarget(this, v -> {
             addPhoneCallAction(phoneNumber);
         });
     }

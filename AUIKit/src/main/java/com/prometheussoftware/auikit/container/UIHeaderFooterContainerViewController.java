@@ -15,7 +15,7 @@ import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 
-public abstract class UIHeaderFooterContainerViewController  <H extends UIView, F extends UIView, C extends UIView, VC extends UIViewController & HeaderFooterVCProtocol.Child> extends UIViewController implements HeaderFooterVCProtocol.Container {
+public abstract class UIHeaderFooterContainerViewController <H extends UIView, F extends UIView, C extends UIView, VC extends UIViewController & HeaderFooterVCProtocol.Child> extends UIViewController implements HeaderFooterVCProtocol.Container {
 
     private UIView backView;
     protected C contentView;

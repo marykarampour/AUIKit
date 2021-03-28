@@ -8,14 +8,20 @@ import android.view.ViewGroup;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.model.IndexPath;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UIControl extends UIView implements View.OnTouchListener {
 
-    private HashMap<Object, TargetDelegate> targets = new HashMap<>();
+    private HashMap<Object, ArrayList<TargetDelegate>> targets = new HashMap<>();
     public IndexPath IndexPath;
     private MotionEvent lastTouch;
+    private boolean isLongTouch;
     private GestureDetector gestureDetector;
+
+    /** Default is false. this gets set/cleared automatically when touch
+     * enters/exits during tracking and cleared on up */
+    private boolean highlighted;
 
     static {
         Identifier.Register(UIControl.class);
@@ -83,7 +89,22 @@ public class UIControl extends UIView implements View.OnTouchListener {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 lastTouch = e;
+                isLongTouch = false;
                 return true;
+            }
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                lastTouch = e;
+                isLongTouch = false;
+                return true;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+                super.onLongPress(e);
+                lastTouch = e;
+                isLongTouch = true;
             }
         });
 
@@ -104,13 +125,27 @@ public class UIControl extends UIView implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
 
         if (!isUserInteractionEnabled()) return false;
+        if (!isControlAction(event)) return true;
 
-        if (gestureDetector.onTouchEvent(event)) {
+        if (gestureDetector.onTouchEvent(event) || isLongTouch) {
             for (Object ID : targets.keySet()) {
-
-                TargetDelegate target = targets.get(ID);
-                if (target instanceof TargetDelegate) {
-                    target.controlPressed(this);
+                for (TargetDelegate target : targets.get(ID)) {
+                    if (target instanceof TargetDelegate) {
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            setHighlighted(false);
+                            if (target instanceof TouchUp) {
+                                TouchUp touchUp = (TouchUp)target;
+                                touchUp.controlReleased(this);
+                            }
+                        }
+                        else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            setHighlighted(true);
+                            if (target instanceof TouchDown) {
+                                TouchDown touchDown = (TouchDown)target;
+                                touchDown.controlPressed(this);
+                            }
+                        }
+                    }
                 }
             }
             return false;
@@ -118,29 +153,66 @@ public class UIControl extends UIView implements View.OnTouchListener {
         return true;
     }
 
+    private boolean isControlAction (MotionEvent event) {
+        return  (event.getAction() == MotionEvent.ACTION_UP) ||
+                (event.getAction() == MotionEvent.ACTION_DOWN);
+    }
+
     //endregion
 
-    public void setTarget(TargetDelegate target) {
-        targets.put(this, target);
+    //region targets
+
+    public void setTarget(TouchUp target) {
+
+        ArrayList<TargetDelegate> delegates = new ArrayList<>();
+        delegates.add(target);
+        targets.put(this, delegates);
     }
 
     public void addTarget(Object ID, TargetDelegate target) {
-        if (targets.get(ID) == null) {
-            targets.put(ID, target);
+
+        ArrayList<TargetDelegate> delegates = targets.get(ID);
+        if (delegates == null) {
+            delegates = new ArrayList<>();
         }
+        if (!delegates.contains(target)) {
+            delegates.add(target);
+            targets.put(ID, delegates);
+        }
+    }
+
+    public void addTouchDownTarget(Object ID, TouchDown target) {
+        addTarget(ID, target);
+    }
+
+    public void addTouchUpTarget(Object ID, TouchUp target) {
+        addTarget(ID, target);
     }
 
     public void removeTarget(TargetDelegate target) {
         targets.remove(target);
     }
 
-    public HashMap<Object, TargetDelegate> getTargets() {
+    public HashMap<Object, ArrayList<TargetDelegate>> getTargets() {
         return targets;
     }
 
+    public interface TargetDelegate { }
+
     @FunctionalInterface
-    public interface TargetDelegate {
+    public interface TouchDown extends TargetDelegate {
         void controlPressed(UIControl sender);
+    }
+
+    @FunctionalInterface
+    public interface TouchUp extends TargetDelegate {
+        void controlReleased(UIControl sender);
+    }
+
+    //endregion
+    //TODO: Add color updates
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
     }
 
 

@@ -122,6 +122,10 @@ public class UISingleLayerView <U extends UIView> extends UIView {
         layer.setStrokeColor(color);
     }
 
+    public void setBorderColor(UIColor color) {
+        layer.setStrokeColor(color.get());
+    }
+
     public void setBorderWidth(int width) {
         layer.setStrokeWidth(width);
     }

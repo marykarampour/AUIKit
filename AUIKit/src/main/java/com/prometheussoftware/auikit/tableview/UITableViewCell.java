@@ -220,8 +220,8 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
 
     //region actions
 
-    public void setSelectionAction(Object obj, UIControl.TargetDelegate target) {
-        interactionLayer.addTarget(obj, target);
+    public void setSelectionAction(Object obj, UIControl.TouchUp target) {
+        interactionLayer.addTouchUpTarget(obj, target);
     }
 
     //endregion

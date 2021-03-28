@@ -16,6 +16,8 @@
     <dimen name="dimen_2048">2048dp</dimen>
     <dimen name="dimen_4096">4096dp</dimen>
 
+    <dimen name="dimen_3">3dp</dimen>
+    <dimen name="dimen_5">5dp</dimen>
     <dimen name="dimen_6">6dp</dimen>
     <dimen name="dimen_10">10dp</dimen>
     <dimen name="dimen_12">12dp</dimen>

@@ -4,7 +4,6 @@ import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.container.ChildViewController;
 import com.prometheussoftware.auikit.container.UIHeaderFooterContainerViewController;
 import com.prometheussoftware.auikit.model.BaseModel;
-import com.prometheussoftware.auikit.uiview.UIButton;
 import com.prometheussoftware.auikit.uiview.UINavigationBar;
 import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
 import com.prometheussoftware.auikit.uiview.UIView;
@@ -235,7 +234,7 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
     @Override public void createHeaderView() {
         headerView = new UINavigationBar();
         headerView.setShadowTintColor(App.theme().Nav_Bar_Background_Color());
-        headerView.leftBarButtonItem().addTarget(this, v -> {
+        headerView.leftBarButtonItem().addTouchUpTarget(this, v -> {
             if (navigationStack.getNodes().size() < 2) {
                 dismiss();
             }

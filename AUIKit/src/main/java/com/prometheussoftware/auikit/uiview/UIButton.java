@@ -94,6 +94,18 @@ public class UIButton extends UIControl {
         imageView.setTintColor(tintColor);
     }
 
+    public void setBorderColor(UIColor tintColor) {
+        imageView.setBorderColor(tintColor);
+    }
+
+    public void setBorderWidth(int width) {
+        imageView.setBorderWidth(width);
+    }
+
+    public void setCornerRadius(float radius) {
+        imageView.setCornerRadius(radius);
+    }
+
     public void setScaleType(ImageView.ScaleType type) {
         imageView.setScaleType(type);
     }
