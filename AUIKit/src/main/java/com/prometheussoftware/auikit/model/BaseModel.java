@@ -187,6 +187,16 @@ public class BaseModel implements Serializable, Cloneable {
     }
 
     public BaseModel (BaseModel obj) {
+        super();
+        resetWithObject(obj);
+    }
+
+    public static BaseModel newInstance(BaseModel obj) {
+        return new BaseModel(obj);
+    }
+
+    public void resetWithObject (BaseModel obj) {
+
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
 
         if (properties == null) return;
@@ -312,6 +322,33 @@ public class BaseModel implements Serializable, Cloneable {
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
         for (String name : properties) {
             setValueForKeyForAllAccessLevels(null, name);
+        }
+    }
+
+    public void setDefaults() {
+        Set<String> properties = BaseModel.propertyNamesForClass(getClass());
+        for (String name : properties) {
+
+            try {
+                Field field = fieldOrDeclared(name);
+                if (field != null) {
+
+                    if (field.getType().isAssignableFrom(Number.class)) {
+                        field.set(this, 0);
+                    }
+                    else if (field.getType().isAssignableFrom(String.class)) {
+                        field.set(this, "");
+                    }
+                    else {
+                        Method setter = setter(field);
+                        if (setter != null) {
+                            setter.invoke(this, null);
+                        }
+                        else field.set(this, null);
+                    }
+                    return;
+                }
+            } catch (InvocationTargetException | IllegalAccessException e) { }
         }
     }
 

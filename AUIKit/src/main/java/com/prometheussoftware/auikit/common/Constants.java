@@ -73,6 +73,10 @@ public class Constants implements ConstantsProtocol {
         return StringResource(R.string.no);
     }
 
+    public static String OR_STR() {
+        return StringResource(R.string.or);
+    }
+
     public static String Day_s_STR() {
         return StringResource(R.string.day_s);
     }

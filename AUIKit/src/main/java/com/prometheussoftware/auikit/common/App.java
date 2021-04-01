@@ -32,10 +32,9 @@ public class App {
         return assetsInstance;
     }
 
+    /** Call this in or after setWindow of your subclass of BaseActivity */
     public static void initializeInstances(Context context) {
-
         AppSpinner.spinner();
-        serverInstance.initialize();
         info.initializeInstances(context);
     }
 
@@ -43,8 +42,10 @@ public class App {
     public static void initInfo(MainAppInfo main) {
         info = main;
         constantsInstance = info.initializeConstants();
-        serverInstance = info.initializeServer();
         assetsInstance = info.initializeAssets();
         appThemeInstance = info.initializeAppTheme();
+
+        serverInstance = info.initializeServer();
+        serverInstance.initialize();
     }
 }
