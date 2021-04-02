@@ -319,14 +319,22 @@ public class BaseModel implements Serializable, Cloneable {
     }
 
     public void nullify() {
+
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
+
+        if (properties == null) return;
+
         for (String name : properties) {
             setValueForKeyForAllAccessLevels(null, name);
         }
     }
 
     public void setDefaults() {
+
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
+
+        if (properties == null) return;
+
         for (String name : properties) {
 
             try {
@@ -475,7 +483,9 @@ public class BaseModel implements Serializable, Cloneable {
     public void setWithObject(BaseModel object) {
 
         if (!object.getClass().isInstance(this)) return;
+
         Set<String> properties = BaseModel.propertyNamesForClass(object.getClass());
+
         if (properties == null) return;
 
         for (String name : properties) {
