@@ -18,6 +18,9 @@ public interface ThemeProtocol {
 
     //controls
     default int Picker_View_Style() { return 0; }
+    default UIColor TextField_Background_Color() { return UIColor.white(1.0f); }
+    default UIColor TextField_Placeholder_Color() { return UIColor.gray(1.0f); }
+    default UIColor TextField_Text_Color() { return UIColor.black(1.0f); }
 
     //accessory
     default UIColor Accessory_Disabled_Color() { return UIColor.white(1.0f); }
@@ -52,4 +55,53 @@ public interface ThemeProtocol {
 
     default UIFont Medium_Bold_Font() { return UIFont.systemFont(); }
 
+    //colors
+
+    default UIColor Black_Blue_Color() { return UIColor.black(1.0f); }
+    default UIColor Dark_Blue_Color() { return UIColor.black(1.0f); }
+    default UIColor Medium_Blue_Color() { return UIColor.blue(1.0f); }
+    default UIColor Bright_Blue_Color() { return UIColor.blue(1.0f); }
+    default UIColor Light_Blue_Color() { return UIColor.white(1.0f); }
+    default UIColor Mist_Blue_Color() { return UIColor.white(1.0f); }
+    default UIColor White_Blue_Color() { return UIColor.white(1.0f); }
+
+    default UIColor Black_Red_Color() { return UIColor.black(1.0f); }
+    default UIColor Dark_Red_Color() { return UIColor.black(1.0f); }
+    default UIColor Medium_Red_Color() { return UIColor.red(1.0f); }
+    default UIColor Bright_Red_Color() { return UIColor.red(1.0f); }
+    default UIColor Light_Red_Color() { return UIColor.white(1.0f); }
+    default UIColor Mist_Red_Color() { return UIColor.white(1.0f); }
+    default UIColor White_Red_Color() { return UIColor.white(1.0f); }
+
+    default UIColor Black_Yellow_Color() { return UIColor.black(1.0f); }
+    default UIColor Dark_Yellow_Color() { return UIColor.black(1.0f); }
+    default UIColor Medium_Yellow_Color() { return UIColor.yellow(1.0f); }
+    default UIColor Bright_Yellow_Color() { return UIColor.yellow(1.0f); }
+    default UIColor Light_Yellow_Color() { return UIColor.white(1.0f); }
+    default UIColor Mist_Yellow_Color() { return UIColor.white(1.0f); }
+    default UIColor White_Yellow_Color() { return UIColor.white(1.0f); }
+
+    default UIColor Black_Green_Color() { return UIColor.black(1.0f); }
+    default UIColor Dark_Green_Color() { return UIColor.black(1.0f); }
+    default UIColor Medium_Green_Color() { return UIColor.green(1.0f); }
+    default UIColor Bright_Green_Color() { return UIColor.green(1.0f); }
+    default UIColor Light_Green_Color() { return UIColor.white(1.0f); }
+    default UIColor Mist_Green_Color() { return UIColor.white(1.0f); }
+    default UIColor White_Green_Color() { return UIColor.white(1.0f); }
+
+    default UIColor Black_Gold_Color() { return UIColor.black(1.0f); }
+    default UIColor Dark_Gold_Color() { return UIColor.black(1.0f); }
+    default UIColor Medium_Gold_Color() { return UIColor.yellow(1.0f); }
+    default UIColor Bright_Gold_Color() { return UIColor.yellow(1.0f); }
+    default UIColor Light_Gold_Color() { return UIColor.white(1.0f); }
+    default UIColor Mist_Gold_Color() { return UIColor.white(1.0f); }
+    default UIColor White_Gold_Color() { return UIColor.white(1.0f); }
+
+    default UIColor Black_Silver_Color() { return UIColor.black(1.0f); }
+    default UIColor Dark_Silver_Color() { return UIColor.black(1.0f); }
+    default UIColor Medium_Silver_Color() { return UIColor.gray(1.0f); }
+    default UIColor Bright_Silver_Color() { return UIColor.gray(1.0f); }
+    default UIColor Light_Silver_Color() { return UIColor.white(1.0f); }
+    default UIColor Mist_Silver_Color() { return UIColor.white(1.0f); }
+    default UIColor White_Silver_Color() { return UIColor.white(1.0f); }
 }

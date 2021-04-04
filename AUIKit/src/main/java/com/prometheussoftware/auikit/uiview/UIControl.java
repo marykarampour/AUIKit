@@ -210,11 +210,9 @@ public class UIControl extends UIView implements View.OnTouchListener {
     }
 
     //endregion
-    //TODO: Add color updates
     public void setHighlighted(boolean highlighted) {
         this.highlighted = highlighted;
     }
-
 
 //     TODO: need to remove targets, but when to add them? same in UIResponder
 //     TODO: make this work with lambda

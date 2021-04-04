@@ -16,6 +16,9 @@ public class UIButton extends UIControl {
     private UIEdgeInsets titleEdgeInsets = new UIEdgeInsets();
     private UIEdgeInsets imageEdgeInsets = new UIEdgeInsets();
 
+    private UIColor normalTextColor;
+    private UIColor highlightTextColor;
+
     public UIButton() {
         super();
         init();
@@ -77,21 +80,11 @@ public class UIButton extends UIControl {
         titleLabel.setFont(font);
     }
 
-    public void setTextColor(UIColor color) {
-        titleLabel.setTextColor(color);
-    }
-
     public void setImage(UIImage image) {
         if (imageView.getTintColor() == null) {
             imageView.setTintColor(getTintColor());
         }
         imageView.setImage(image);
-    }
-
-    @Override
-    public void setTintColor(UIColor tintColor) {
-        super.setTintColor(tintColor);
-        imageView.setTintColor(tintColor);
     }
 
     public void setBorderColor(UIColor tintColor) {
@@ -108,5 +101,32 @@ public class UIButton extends UIControl {
 
     public void setScaleType(ImageView.ScaleType type) {
         imageView.setScaleType(type);
+    }
+
+    public void setTextColor(UIColor color) {
+        titleLabel.setTextColor(color);
+    }
+
+    @Override
+    public void setTintColor(UIColor tintColor) {
+        super.setTintColor(tintColor);
+        imageView.setTintColor(tintColor);
+    }
+
+    @Override
+    public void setHighlighted(boolean highlighted) {
+        super.setHighlighted(highlighted);
+        if (highlightTextColor != null) {
+            setTextColor(highlighted ? highlightTextColor : normalTextColor);
+        }
+    }
+
+    public void setHighlightTextColor(UIColor highlightTextColor) {
+        this.highlightTextColor = highlightTextColor;
+    }
+
+    public void setNormalTextColor(UIColor normalTextColor) {
+        this.normalTextColor = normalTextColor;
+        setTextColor(normalTextColor);
     }
 }

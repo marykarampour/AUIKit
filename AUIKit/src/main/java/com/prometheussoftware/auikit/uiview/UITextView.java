@@ -184,9 +184,17 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         view().setHint(StringUtility.isEmpty(s) ? hint : "");
     }
 
+    public void setTextColor(UIColor color) {
+        view().setTextColor(color.get());
+    }
+
     public void setHint(CharSequence s) {
         this.hint = s;
         view().setHint(StringUtility.isEmpty(getText()) ? hint : "");
+    }
+
+    public void setHintTextColor(UIColor color) {
+        view().setHintTextColor(color.get());
     }
 
     /** Call this method to set text ignoring regex validation */

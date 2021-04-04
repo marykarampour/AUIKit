@@ -15,7 +15,7 @@ public class Constants implements ConstantsProtocol {
     public static final int NOT_FOUND_ID = -1;
 
     public static String OS_Version_Device () {
-        return Build.DEVICE + ", " + Build.MODEL + ", Android " + Build.VERSION.SDK_INT;
+        return Build.DEVICE + ", " + Build.MODEL + ", " + Android_STR() + Build.VERSION.SDK_INT;
     }
 
     public static String App_Version () {
@@ -87,6 +87,30 @@ public class Constants implements ConstantsProtocol {
 
     public static String Minute_s_STR() {
         return StringResource(R.string.minute_s);
+    }
+
+    public static String Username_STR() {
+        return StringResource(R.string.username);
+    }
+
+    public static String Password_STR() {
+        return StringResource(R.string.password);
+    }
+
+    public static String Fullname_STR() {
+        return StringResource(R.string.fullname);
+    }
+
+    public static String Version_STR() {
+        return StringResource(R.string.version);
+    }
+
+    public static String Android_STR() {
+        return StringResource(R.string.android);
+    }
+
+    public static String Sign_In_STR() {
+        return StringResource(R.string.sign_in);
     }
 
     //regex

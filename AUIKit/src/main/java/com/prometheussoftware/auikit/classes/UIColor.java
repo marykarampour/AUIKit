@@ -56,6 +56,18 @@ public class UIColor extends BaseModel {
         return (color & 0x00FFFFFF) | ((int)(alpha*255) << 24);
     }
 
+    /** Creates a color from a hex string */
+    public static UIColor build(String hex) {
+        int color = Color.parseColor(hex);
+        return new UIColor(color, 1.0f);
+    }
+
+    /** Creates a color with transparency from a hex string */
+    public static UIColor build(String hex, float alpha) {
+        int color = Color.parseColor(hex);
+        return new UIColor(color, alpha);
+    }
+
     public int get() {
         return hex;
     }

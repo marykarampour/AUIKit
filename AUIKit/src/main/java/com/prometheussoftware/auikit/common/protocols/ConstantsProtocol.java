@@ -26,6 +26,9 @@ public interface ConstantsProtocol {
     default int Nav_Bar_Height() { return Dimensions.Int_64(); }
     default int Status_Bar_Height() { return Dimensions.Int_22(); }
 
+    //controls
+    default int TextField_Height() { return Dimensions.Int_44(); }
+
     //data
     default String File_Provider_Authority() { return null; }
     default int Max_Transition_Bitmap_Size() { return Dimensions.Int_512(); }

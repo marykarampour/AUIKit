@@ -6,5 +6,14 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="or">OR</string>
+    <string name="day_s">Day(s)</string>
+    <string name="hour_s">Hour(s)</string>
+    <string name="minute_s">Minute(s)</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="fullname">Fullname</string>
+    <string name="version">version</string>
+    <string name="android">Android</string>
+    <string name="sign_in">Sign in</string>
 
 </resources>
