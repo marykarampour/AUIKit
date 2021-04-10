@@ -7,6 +7,7 @@ import android.widget.ImageView;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIImage;
+import com.prometheussoftware.auikit.common.App;
 
 public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
@@ -51,6 +52,9 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
                 view().setImageBitmap(bitmap);
             }
             else {
+                if (getTintColor() != null && image != null) {
+                    image.setTintColor(getTintColor().get());
+                }
                 Drawable drawable = image.drawable();
                 view().setImageDrawable(drawable);
             }

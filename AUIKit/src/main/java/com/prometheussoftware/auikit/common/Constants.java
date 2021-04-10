@@ -113,6 +113,10 @@ public class Constants implements ConstantsProtocol {
         return StringResource(R.string.sign_in);
     }
 
+    public static String Accept_STR() {
+        return StringResource(R.string.accept);
+    }
+
     //regex
 
     public int Max_Regex_Chars() {

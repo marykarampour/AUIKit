@@ -42,7 +42,7 @@ public class UINavigationBar extends UIView {
         titleLabel.setTextColor(App.theme().Nav_Bar_Tint_Color());
         titleViewHolder.setView(titleLabel);
 
-        UIButton leftButton = barButtonItem(App.assets().Left_Chevron_Image());
+        UIBarButton leftButton = barButtonItem(App.assets().Left_Chevron_Image());
         leftItemsViewHolder.setView(leftButton);
     }
 
@@ -93,8 +93,8 @@ public class UINavigationBar extends UIView {
 
     //region items
 
-    private UIButton barButtonItem(UIImage image) {
-        UIButton button = new UIButton();
+    private UIBarButton barButtonItem(UIImage image) {
+        UIBarButton button = new UIBarButton();
         button.setImage(image);
         button.setTintColor(App.theme().Nav_Bar_Tint_Color());
         return button;
@@ -143,6 +143,14 @@ public class UINavigationBar extends UIView {
         return App.constants().Nav_Bar_Icon_Size();
     }
 
+    public void setLeftItemSize (Size size) {
+        leftItemsViewHolder.setItemSize(size);
+    }
+
+    public void setRightItemSize (Size size) {
+        rightItemsViewHolder.setItemSize(size);
+    }
+
     public void setTitleViewHeight(int titleViewHeight) {
         this.titleViewHeight = titleViewHeight;
         updateTitleViewHeight();
@@ -174,19 +182,19 @@ public class UINavigationBar extends UIView {
         return titleViewHolder.getView();
     }
 
-    public ArrayList<UIButton> getLeftBarButtonItems() {
+    public ArrayList<UIBarButton> getLeftBarButtonItems() {
         return leftItemsViewHolder.getViews();
     }
 
-    public ArrayList<UIButton> getRightBarButtonItems() {
+    public ArrayList<UIBarButton> getRightBarButtonItems() {
         return rightItemsViewHolder.getViews();
     }
 
-    public void setLeftBarButtonItems(ArrayList<UIButton> leftBarButtonItems) {
+    public void setLeftBarButtonItems(ArrayList<UIBarButton> leftBarButtonItems) {
         leftItemsViewHolder.setViews(leftBarButtonItems);
     }
 
-    public void setRightBarButtonItems(ArrayList<UIButton> rightBarButtonItems) {
+    public void setRightBarButtonItems(ArrayList<UIBarButton> rightBarButtonItems) {
         rightItemsViewHolder.setViews(rightBarButtonItems);
     }
 
@@ -195,7 +203,7 @@ public class UINavigationBar extends UIView {
      * Setting this property to null removes the first item in the array.
      * If the bar button item is already in the array, it is moved from its current location to the front of the array.
      * */
-    public void setLeftBarButtonItem(UIButton item) {
+    public void setLeftBarButtonItem(UIBarButton item) {
         leftItemsViewHolder.setView(item);
     }
 
@@ -204,21 +212,21 @@ public class UINavigationBar extends UIView {
      * Setting this property to null removes the first item in the array.
      * If the bar button item is already in the array, it is moved from its current location to the front of the array.
      * */
-    public void setRightBarButtonItem(UIButton item) {
+    public void setRightBarButtonItem(UIBarButton item) {
         rightItemsViewHolder.setView(item);
     }
 
-    public UIButton leftBarButtonItem() {
+    public UIBarButton leftBarButtonItem() {
         return ArrayUtility.firstObject(getLeftBarButtonItems());
     }
 
-    public UIButton rightBarButtonItem() {
+    public UIBarButton rightBarButtonItem() {
         return ArrayUtility.firstObject(getRightBarButtonItems());
     }
 
     //TODO: maybe create a class for this back button to check if it is back button
     public void setBackBarButtonItemHidden(boolean hidden) {
-        UIButton button = leftBarButtonItem();
+        UIBarButton button = leftBarButtonItem();
         if (button != null) {
             button.setHidden(hidden);
         }
@@ -269,7 +277,7 @@ public class UINavigationBar extends UIView {
         }
     }
 
-    class BarButtonHolder extends UIViewHolder.Row <UIButton> {
+    class BarButtonHolder extends UIViewHolder.Row <UIBarButton> {
     }
 
     //endregion

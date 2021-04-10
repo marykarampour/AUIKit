@@ -343,6 +343,12 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         }
     }
 
+    /** Returns the navigation controller which this view is pushed into.
+     * If that's null, and presenting parent is navigation controller,
+     * returns presenting parent.
+     * If that's null returns presenting parent's navigation controller.
+     * Otherwise returns this if it is a navigation controller.
+     * If everything fails, it returns null. */
     public UINavigationController getNavigationController() {
 
         if (navigationController != null) {
@@ -350,8 +356,17 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         }
 
         UIViewController presentingParent = presentingParent();
-        if (presentingParent != null && presentingParent != this) {
-            return presentingParent.getNavigationController();
+        if (presentingParent != null) {
+
+            if (presentingParent instanceof UINavigationController)
+                return (UINavigationController) presentingParent;
+            else {
+                UINavigationController nav = presentingParent.getNavigationController();
+                if (nav != null) return nav;
+            }
+        }
+        else if (this instanceof UINavigationController) {
+            return (UINavigationController) this;
         }
         return null;
     }
@@ -466,10 +481,14 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
     //endregion
 
-    //region helpers
+    //region window helpers
 
     public BaseWindow window() {
         return UIView.getWindow();
+    }
+
+    public void endEditing() {
+        window().dismissKeyboard();
     }
 
     public void startActivityForResult(Intent intent, int requestCode) {

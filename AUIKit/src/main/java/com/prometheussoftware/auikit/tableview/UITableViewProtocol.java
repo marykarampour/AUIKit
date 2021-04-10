@@ -25,7 +25,7 @@ public interface UITableViewProtocol {
         }
 
         default UITableViewCell cellForRowAtIndexPath(UITableView tableView, IndexPath indexPath) {
-            return new UITableViewCell();
+            return new UITableViewCell.Concrete();
         }
 
         default int numberOfSectionsInTableView(UITableView tableView) {
@@ -70,7 +70,7 @@ public interface UITableViewProtocol {
         }
 
         default UITableViewCell cellForRowAtIndexPath(IndexPath indexPath) {
-            return new UITableViewCell();
+            return new UITableViewCell.Concrete();
         }
 
         default int numberOfSectionsInTableView() {

@@ -65,6 +65,9 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
 
     protected void setItemSize(Size itemSize) {
         this.itemSize = itemSize;
+        if (views.size() != 0) {
+            updateConstraints();
+        }
     }
 
     public static class Row <T extends UIView> extends UIViewHolder <T> {
@@ -98,8 +101,6 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
             applyConstraints();
         }
     }
-
-
 }
 
 interface HolderProtocol {

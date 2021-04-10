@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.model.IndexPath;
+import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,20 @@ public class UIControl extends UIView implements View.OnTouchListener {
 
     private HashMap<Object, ArrayList<TargetDelegate>> targets = new HashMap<>();
     public IndexPath IndexPath;
+
+    /** Default is true. IF true it allows a single key in targets map
+     * have multiple targets, that is addTarget will add to this array,
+     * and all of the corresponding actions will be triggered on a touch
+     * event.
+     * This allows:
+     * true  -> t1a1 t2a1 - t1a1 t1a1 - t1a1 t1a2 - t1a1 t2a2
+     * false -> t1a1 t2a1 -           -           - t1a1 t2a2
+     *
+     * @apiNote Set this to false in case of table views since they tend
+     * to relaod and recycle views multiple times, resulting in targets
+     * being re-added inadvertently. */
+    private boolean multiTargetEnabled = true;
+
     private MotionEvent lastTouch;
     private boolean isLongTouch;
     private GestureDetector gestureDetector;
@@ -169,16 +184,54 @@ public class UIControl extends UIView implements View.OnTouchListener {
         targets.put(this, delegates);
     }
 
+    /** @apiNote It does not distinguish between different instances
+     * of the same lambda, user must be careful not to add the
+     * same target multiple times, that would result in the
+     * lambda being executed multiple times. Set
+     *  multiTargetEnabled = false to guarantee unique action on each
+     *  touch event */
     public void addTarget(Object ID, TargetDelegate target) {
 
         ArrayList<TargetDelegate> delegates = targets.get(ID);
         if (delegates == null) {
             delegates = new ArrayList<>();
         }
-        if (!delegates.contains(target)) {
-            delegates.add(target);
-            targets.put(ID, delegates);
+
+        if (0 == delegates.size() || multiTargetEnabled) {
+            addTargetToDelegates(ID, target, delegates);
         }
+        else {
+            boolean hasTarget = false;
+
+            for (TargetDelegate tar: delegates) {
+                if (identifierForTarget(target).equals(identifierForTarget(tar))) {
+                    hasTarget = true;
+                    break;
+                }
+            }
+            if (!hasTarget) {
+                addTargetToDelegates(ID, target, delegates);
+            }
+        }
+    }
+
+    /** Sample identifier of:
+     * com.prometheussoftware.auikit.tableview.-$$Lambda$UITableViewHolder$Cell$v2easIbfya2-GSyqkKBKhC2F3Oo
+     * would be:
+     * com.prometheussoftware.auikit.tableview.-$$Lambda$UITableViewHolder$Cell */
+    private String identifierForTarget (TargetDelegate target) {
+
+        ArrayList components = ArrayUtility.arrayList(target.getClass().toString().split("\\$"));
+        if (1 < components.size()) {
+            components.remove(components.size()-1);
+            return components.toString();
+        }
+        return "";
+    }
+
+    private void addTargetToDelegates(Object ID, TargetDelegate target, ArrayList<TargetDelegate> delegates) {
+        delegates.add(target);
+        targets.put(ID, delegates);
     }
 
     public void addTouchDownTarget(Object ID, TouchDown target) {
@@ -195,6 +248,14 @@ public class UIControl extends UIView implements View.OnTouchListener {
 
     public HashMap<Object, ArrayList<TargetDelegate>> getTargets() {
         return targets;
+    }
+
+    public boolean isMultiTargetEnabled() {
+        return multiTargetEnabled;
+    }
+
+    public void setMultiTargetEnabled(boolean multiTargetEnabled) {
+        this.multiTargetEnabled = multiTargetEnabled;
     }
 
     public interface TargetDelegate { }

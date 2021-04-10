@@ -330,4 +330,13 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
     }
 
     //endregion
+
+    //helpers and fields
+
+    public void setMultiSelectEnabled(boolean multiSelectEnabled) {
+        this.multiSelectEnabled = multiSelectEnabled;
+    }
+
+
+    //endregion
 }

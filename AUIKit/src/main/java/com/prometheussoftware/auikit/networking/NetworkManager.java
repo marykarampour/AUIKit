@@ -37,6 +37,13 @@ public final class NetworkManager {
         return T.cast(retrofits.get(type).create(T));
     }
 
+    public String preparedURL (String URL) {
+        if (!URL.endsWith("/")) {
+            URL = URL + "/";
+        }
+        return URL;
+    }
+
     public void setBaseURL (String URL) {
         addBaseURL(URL, 0);
     }
@@ -52,7 +59,7 @@ public final class NetworkManager {
     public void addBaseURL (String URL, Integer type) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
+                .baseUrl(preparedURL(URL))
                 .client(httpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -63,7 +70,7 @@ public final class NetworkManager {
     public <C extends ConverterFactory> void addBaseURL (String URL, Integer type, C converter) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
+                .baseUrl(preparedURL(URL))
                 .client(httpClient())
                 .addConverterFactory(converter)
                 .build();
@@ -78,7 +85,7 @@ public final class NetworkManager {
         if (serializer != null) gson.registerTypeAdapter(Date.class, serializer);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
+                .baseUrl(preparedURL(URL))
                 .client(httpClient())
                 .addConverterFactory(GsonConverterFactory.create(gson.create()))
                 .build();

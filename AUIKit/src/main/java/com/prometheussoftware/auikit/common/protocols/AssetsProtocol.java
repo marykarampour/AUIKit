@@ -1,6 +1,7 @@
 package com.prometheussoftware.auikit.common.protocols;
 
 import com.prometheussoftware.auikit.classes.UIImage;
+import com.prometheussoftware.auikit.common.AssetIDs;
 
 public interface AssetsProtocol {
 
@@ -11,4 +12,10 @@ public interface AssetsProtocol {
     UIImage Right_Chevron_Image();
     UIImage Up_Chevron_Image();
     UIImage Down_Chevron_Image();
+
+    //tableview
+    UIImage Checkmark_Image();
+    UIImage Disclosure_Image();
+    UIImage Details_Disclosure_Image();
+    UIImage Details_Image();
 }

@@ -4,6 +4,7 @@ import android.util.Size;
 
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
 
@@ -94,5 +95,9 @@ public class UIGroupedView <V extends UIView> extends UIView {
 
     public int estimatedHeight() {
         return views.size() * itemHeight + (views.size() - 1) * interItemMargin;
+    }
+
+    public V viewAtIndex(int index) {
+        return ArrayUtility.safeGet(views, index);
     }
 }

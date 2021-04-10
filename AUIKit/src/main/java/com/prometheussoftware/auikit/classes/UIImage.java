@@ -62,7 +62,7 @@ public class UIImage extends BaseModel {
 
     public Drawable drawable() {
         if (drawable != null) {
-            drawable.setTint(tintColor);
+            if (tintColor != 0) drawable.setTint(tintColor);
             return drawable;
         }
         else if (0 < image) {

@@ -19,7 +19,7 @@ public class Assets implements AssetsProtocol {
 
         Drawable drawable = ContextCompat.getDrawable(context(), id);
         drawable.mutate();
-        drawable.setTint(color);
+        if (color != 0) drawable.setTint(color);
         return drawable;
     }
 
@@ -40,21 +40,41 @@ public class Assets implements AssetsProtocol {
 
     @Override
     public UIImage Left_Chevron_Image() {
-        return imageFromID(AssetIDs.Left_Chevron__ID());
+        return imageFromID(AssetIDs.Left_Chevron_ID());
     }
 
     @Override
     public UIImage Right_Chevron_Image() {
-        return imageFromID(AssetIDs.Right_Chevron__ID());
+        return imageFromID(AssetIDs.Right_Chevron_ID());
     }
 
     @Override
     public UIImage Up_Chevron_Image() {
-        return imageFromID(AssetIDs.Up_Chevron__ID());
+        return imageFromID(AssetIDs.Up_Chevron_ID());
     }
 
     @Override
     public UIImage Down_Chevron_Image() {
-        return imageFromID(AssetIDs.Down_Chevron__ID());
+        return imageFromID(AssetIDs.Down_Chevron_ID());
+    }
+
+    @Override
+    public UIImage Checkmark_Image() {
+        return imageFromID(AssetIDs.Checkmark_ID());
+    }
+
+    @Override
+    public UIImage Disclosure_Image() {
+        return imageFromID(AssetIDs.Disclosure_ID());
+    }
+
+    @Override
+    public UIImage Details_Disclosure_Image() {
+        return imageFromID(AssetIDs.Details_Disclosure_ID());
+    }
+
+    @Override
+    public UIImage Details_Image() {
+        return imageFromID(AssetIDs.Details_ID());
     }
 }

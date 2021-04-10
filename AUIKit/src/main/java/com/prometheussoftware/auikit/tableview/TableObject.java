@@ -25,42 +25,51 @@ public class TableObject {
 
         public RowData() { }
 
+        /** Will create an array of pairs of CellInfo and item */
         public RowData(ArrayList items, Class cellClass) {
             addItems(items, cellClass);
         }
 
+        /** Will create a pair of CellInfo and item */
         public RowData(Object item, Class cellClass) {
             this.items.addPair(new CellInfo(cellClass, true), item);
         }
 
+        /** Will create a pair of CellInfo and item */
         public RowData(Object item, Class cellClass, int estimatedHeight, boolean instanceId) {
             this.items.addPair(new CellInfo(cellClass, estimatedHeight, instanceId), item);
         }
 
+        /** Will create a pair of CellInfo and item */
         public RowData(Object item, Class cellClass, int estimatedHeight, int identifier) {
             this.items.addPair(new CellInfo(cellClass, estimatedHeight, identifier), item);
         }
 
+        /** Will create an array of pairs of CellInfo and item */
         public RowData(ArrayList items, Class cellClass, int estimatedHeight) {
             addItems(items, new CellInfo(cellClass, estimatedHeight));
         }
 
+        /** Will create a pair of CellInfo and item */
         public void addItem(Object item, CellInfo info) {
             this.items.addPair(info, item);
         }
 
+        /** Will create an array of pairs of CellInfo and item */
         public void addItems(ArrayList items, CellInfo info) {
             for (Object obj : items) {
                 this.items.addPair(info, obj);
             }
         }
 
+        /** Will create an array of pairs of CellInfo and item */
         public void addItems(ArrayList items, Class cellClass, int estimatedHeight) {
             for (Object obj : items) {
                 this.items.addPair(new CellInfo(cellClass, estimatedHeight), obj);
             }
         }
 
+        /** Will create an array of pairs of CellInfo and item */
         private void addItems(ArrayList items, Class cellClass) {
             for (Object obj : items) {
                 this.items.addPair(new CellInfo(cellClass), obj);

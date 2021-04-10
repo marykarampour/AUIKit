@@ -7,7 +7,7 @@ import com.prometheussoftware.auikit.model.BaseModel;
 
 public class UIFont extends BaseModel {
 
-    public static enum STYLE {
+    public enum STYLE {
         REGULAR,
         BOLD,
         ITALIC
@@ -15,7 +15,7 @@ public class UIFont extends BaseModel {
 
     private Typeface font;
     private int size;
-    private STYLE style;
+    private STYLE style = STYLE.REGULAR;
 
     public static UIFont systemFont() {
         UIFont font = new UIFont();
