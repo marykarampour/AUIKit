@@ -16,5 +16,6 @@
     <string name="version">version</string>
     <string name="android">Android</string>
     <string name="sign_in">Sign in</string>
+    <string name="logout">Logout</string>
 
 </resources>

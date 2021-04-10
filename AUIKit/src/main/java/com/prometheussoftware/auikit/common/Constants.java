@@ -113,6 +113,10 @@ public class Constants implements ConstantsProtocol {
         return StringResource(R.string.sign_in);
     }
 
+    public static String Logout_STR() {
+        return StringResource(R.string.logout);
+    }
+
     public static String Accept_STR() {
         return StringResource(R.string.accept);
     }
