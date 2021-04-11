@@ -45,6 +45,6 @@ public class App {
         appThemeInstance = info.initializeAppTheme();
 
         serverInstance = info.initializeServer();
-        serverInstance.initialize();
+        if (serverInstance != null) serverInstance.initialize();
     }
 }
