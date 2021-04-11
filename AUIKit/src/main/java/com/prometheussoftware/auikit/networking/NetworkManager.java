@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
+import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ public final class NetworkManager {
     }
 
     public String preparedURL (String URL) {
+
+        if (StringUtility.isEmpty(URL)) return "";
         if (!URL.endsWith("/")) {
             URL = URL + "/";
         }
@@ -58,6 +61,8 @@ public final class NetworkManager {
 
     public void addBaseURL (String URL, Integer type) {
 
+        if (StringUtility.isEmpty(URL)) return;
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(preparedURL(URL))
                 .client(httpClient())
@@ -69,6 +74,8 @@ public final class NetworkManager {
 
     public <C extends ConverterFactory> void addBaseURL (String URL, Integer type, C converter) {
 
+        if (StringUtility.isEmpty(URL)) return;
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(preparedURL(URL))
                 .client(httpClient())
@@ -79,6 +86,8 @@ public final class NetworkManager {
     }
 
     public void addBaseURL (String URL, Integer type, @Nullable JsonDeserializer<Date> deserializer, @Nullable JsonSerializer<Date> serializer) {
+
+        if (StringUtility.isEmpty(URL)) return;
 
         GsonBuilder gson = new GsonBuilder();
         if (deserializer != null) gson.registerTypeAdapter(Date.class, deserializer);

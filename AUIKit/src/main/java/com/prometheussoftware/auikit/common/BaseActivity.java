@@ -29,9 +29,9 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setRequestedOrientation(defaultOrientation);
-        setWindow();
         super.onCreate(savedInstanceState);
         setActionBarProperties();
+        setWindow();
     }
 
     protected void setActionBarProperties() { }

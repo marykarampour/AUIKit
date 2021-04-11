@@ -47,7 +47,7 @@ public class UISpinner extends UIView {
 
     public void show () {
         if (hud == null) return;
-        getActivity().runOnUiThread(() -> {
+        runOnUiThread(() -> {
             setGone(false);
             bringToFront();
             hud.animate();
@@ -56,7 +56,7 @@ public class UISpinner extends UIView {
 
     public void hide () {
         if (hud == null) return;
-        getActivity().runOnUiThread(() -> {
+        runOnUiThread(() -> {
             setGone(true);
             hud.clearAnimation();
         });

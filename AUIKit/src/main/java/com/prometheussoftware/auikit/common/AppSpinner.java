@@ -23,9 +23,9 @@ public class AppSpinner {
         hud = new UISpinner();
 
         spinnerLayer = new UISingleLayerView<>();
-        spinnerLayer.setViewBackgroundColor(App.theme().spinner_Frame_Color());
-        spinnerLayer.setViewRadius(App.constants().Spinner_Corner_Radius());
         spinnerLayer.setView(hud);
+        spinnerLayer.setContentBackgroundColor(App.theme().spinner_Frame_Color());
+        spinnerLayer.setCornerRadius(App.constants().Spinner_Corner_Radius());
 
         backView = new UIView();
         backView.setBackgroundColor(Color.TRANSPARENT);

@@ -34,7 +34,6 @@ public class App {
 
     /** Call this in or after setWindow of your subclass of BaseActivity */
     public static void initializeInstances(Context context) {
-        AppSpinner.spinner();
         info.initializeInstances(context);
     }
 

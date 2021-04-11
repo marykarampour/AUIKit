@@ -114,10 +114,6 @@ public class UISingleLayerView <U extends UIView> extends UIView {
         layer.setCardBackgroundColor(color.get());
     }
 
-    public void setViewRadius(float radius) {
-        layer.setRadius(radius);
-    }
-
     public void setBorderColor(int color) {
         layer.setStrokeColor(color);
     }

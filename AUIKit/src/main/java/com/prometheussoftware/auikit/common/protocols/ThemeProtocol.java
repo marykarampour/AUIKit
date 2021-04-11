@@ -9,7 +9,7 @@ public interface ThemeProtocol {
 
     //spinner
     default UIColor Spinner_Hud_Color() { return UIColor.white(1.0f); }
-    default UIColor spinner_Frame_Color() { return UIColor.black(1.0f); }
+    default UIColor spinner_Frame_Color() { return UIColor.black(0.7f); }
 
     //nav bar
     default UIColor Nav_Bar_Tint_Color() { return UIColor.black(1.0f); }

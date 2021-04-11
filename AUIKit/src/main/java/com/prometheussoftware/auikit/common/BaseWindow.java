@@ -46,21 +46,27 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        view = new UITransitioningContainerView();
-        ViewUtility.setViewID(view);
-
-        setRootViewController(createRootViewController());
-        setContentView(view);
-
-        addOverlay(AppSpinner.spinner().view());
-
+        setView();
         dispatchDataDelegateWithIntent(getIntent());
         setWindowProperties();
+    }
+
+    /** Called in onCreate, it is setting view of window,
+     * it also adds the spinner.
+     * Subclass must call before custom implementation */
+    protected void setView() {
+
+        view = new UITransitioningContainerView();
+        ViewUtility.setViewID(view);
+        setRootViewController(createRootViewController());
+        setContentView(view);
+        addOverlay(AppSpinner.spinner().view());
     }
 
     @Override
     protected void setWindow() {
         AUIKitApplication.setWindow(this);
+        App.initializeInstances(AUIKitApplication.getContext());
     }
 
     protected void setWindowProperties() {
