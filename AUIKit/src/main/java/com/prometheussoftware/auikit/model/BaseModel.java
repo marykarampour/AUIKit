@@ -1,6 +1,7 @@
 package com.prometheussoftware.auikit.model;
 
 import com.google.gson.Gson;
+import com.prometheussoftware.auikit.utility.DEBUGLOG;
 
 import org.checkerframework.common.returnsreceiver.qual.This;
 
@@ -204,16 +205,23 @@ public class BaseModel implements Serializable, Cloneable {
         for (String name : properties) {
 
             try {
-                Field field = getClass().getField(name);
-                if (field != null) {
-                    Object value = field.get(this);
+                Field field = fieldOrDeclared(name);
+                Field objField = obj.fieldOrDeclared(name);
+
+                if (field != null && objField != null) {
+
+                    field.setAccessible(true);
+                    objField.setAccessible(true);
+
+                    Object value = objField.get(obj);
                     if (value != null) {
-                        field.set(obj, value);
+                        field.set(this, value);
                     }
                 }
 
-            } catch (NoSuchFieldException e) {
-            } catch (IllegalAccessException e) { }
+            } catch (IllegalAccessException e) {
+                DEBUGLOG.s(e);
+            }
         }
     }
 
