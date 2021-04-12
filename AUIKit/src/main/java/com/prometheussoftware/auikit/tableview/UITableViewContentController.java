@@ -96,6 +96,10 @@ public class UITableViewContentController <D extends UITableViewDataController> 
         view.addSubView(refreshView);
     }
 
+    public UIRefreshView getRefreshView() {
+        return refreshView;
+    }
+
     @Override public void reloadData() {
         if (view != null) view.post(() -> adapter.notifyDataSetChanged());
     }
