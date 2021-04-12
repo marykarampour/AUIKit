@@ -5,9 +5,12 @@ import android.graphics.Color;
 import android.os.Handler;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
+import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.BaseWindow;
 import com.prometheussoftware.auikit.model.BaseModel;
+import com.prometheussoftware.auikit.uiview.UIBarButton;
 import com.prometheussoftware.auikit.uiview.UIButton;
+import com.prometheussoftware.auikit.uiview.UINavigationBar;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 
@@ -34,6 +37,9 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     /** If this view controller has been pushed onto a navigation controller, return it. */
     private UINavigationController navigationController;
 
+    /** Created on-demand so that a view controller may customize its navigation appearance. */
+    private UINavigationBar navigationBar;
+
     private Handler animationHandler = new Handler();
 
     private boolean animated;
@@ -42,7 +48,9 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
     private String title;
 
-    public UIViewController() { }
+    public UIViewController() {
+        createDefaultNavigationBar();
+    }
 
     /** Add this to your custom constructors or call it after default constructor
      *
@@ -435,48 +443,40 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public void setTitle(String title) {
         this.title = title;
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            nav.getHeaderView().setTitle(title);
-        }
+        navigationBar.setTitle(title);
     }
 
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public void setRightNavItemHidden(boolean hidden) {
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            nav.getHeaderView().rightBarButtonItem().setHidden(hidden);
-        }
+        navigationBar.rightBarButtonItem().setHidden(hidden);
     }
 
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public void setLeftNavItemHidden(boolean hidden) {
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            nav.getHeaderView().leftBarButtonItem().setHidden(hidden);
-        }
+        navigationBar.leftBarButtonItem().setHidden(hidden);
     }
 
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public UIButton getRightNavItem() {
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            return nav.getHeaderView().rightBarButtonItem();
-        }
-        return null;
+        return navigationBar.rightBarButtonItem();
     }
 
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public UIButton getLeftNavItem() {
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            return nav.getHeaderView().leftBarButtonItem();
-        }
-        return null;
+        return navigationBar.leftBarButtonItem();
     }
 
     public String getTitle() {
         return title;
+    }
+
+    private void createDefaultNavigationBar() {
+        navigationBar = new UINavigationBar();
+        navigationBar.setShadowTintColor(App.theme().Nav_Bar_Background_Color());
+    }
+
+    public UINavigationBar getNavigationBar() {
+        return navigationBar;
     }
 
     //endregion

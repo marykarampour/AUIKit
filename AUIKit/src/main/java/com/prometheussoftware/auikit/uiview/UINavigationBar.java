@@ -41,9 +41,6 @@ public class UINavigationBar extends UIView {
         titleLabel.setFont(App.theme().Nav_Bar_Font());
         titleLabel.setTextColor(App.theme().Nav_Bar_Tint_Color());
         titleViewHolder.setView(titleLabel);
-
-        UIBarButton leftButton = barButtonItem(App.assets().Left_Chevron_Image());
-        leftItemsViewHolder.setView(leftButton);
     }
 
     @Override
@@ -93,7 +90,7 @@ public class UINavigationBar extends UIView {
 
     //region items
 
-    private UIBarButton barButtonItem(UIImage image) {
+    public static UIBarButton barButtonItem(UIImage image) {
         UIBarButton button = new UIBarButton();
         button.setImage(image);
         button.setTintColor(App.theme().Nav_Bar_Tint_Color());
