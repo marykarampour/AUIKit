@@ -31,29 +31,29 @@ public interface ThemeProtocol {
     default UIColor Tableview_Separator_Color() { return UIColor.build(0.7f, 0.6f, 0.7f, 1.0f); }
 
     //fonts
-    default UIFont Small_Regular_Font() { return UIFont.systemFont(); }
-    default UIFont XS_mall_Regular_Font() { return UIFont.systemFont(); }
-    default UIFont XX_Small_Regular_Font() { return UIFont.systemFont(); }
-    default UIFont XXX_Small_Regular_Font() { return UIFont.systemFont(); }
+    default UIFont Small_Regular_Font() { return UIFont.systemFont(14, UIFont.STYLE.REGULAR); }
+    default UIFont XS_mall_Regular_Font() { return UIFont.systemFont(12, UIFont.STYLE.REGULAR); }
+    default UIFont XX_Small_Regular_Font() { return UIFont.systemFont(10, UIFont.STYLE.REGULAR); }
+    default UIFont XXX_Small_Regular_Font() { return UIFont.systemFont(8, UIFont.STYLE.REGULAR); }
 
-    default UIFont Large_Regular_Font() { return UIFont.systemFont(); }
-    default UIFont XS_Large_Regular_Font() { return UIFont.systemFont(); }
-    default UIFont XX_Large_Regular_Font() { return UIFont.systemFont(); }
-    default UIFont XXX_Large_Regular_Font() { return UIFont.systemFont(); }
+    default UIFont Large_Regular_Font() { return UIFont.systemFont(18, UIFont.STYLE.REGULAR); }
+    default UIFont XS_Large_Regular_Font() { return UIFont.systemFont(20, UIFont.STYLE.REGULAR); }
+    default UIFont XX_Large_Regular_Font() { return UIFont.systemFont(22, UIFont.STYLE.REGULAR); }
+    default UIFont XXX_Large_Regular_Font() { return UIFont.systemFont(24, UIFont.STYLE.REGULAR); }
 
-    default UIFont Medium_Regular_Font() { return UIFont.systemFont(); }
+    default UIFont Medium_Regular_Font() { return UIFont.systemFont(16, UIFont.STYLE.REGULAR); }
 
-    default UIFont Small_Bold_Font() { return UIFont.systemFont(); }
-    default UIFont XS_mall_Bold_Font() { return UIFont.systemFont(); }
-    default UIFont XX_Small_Bold_Font() { return UIFont.systemFont(); }
-    default UIFont XXX_Small_Bold_Font() { return UIFont.systemFont(); }
+    default UIFont Small_Bold_Font() { return UIFont.systemFont(14, UIFont.STYLE.BOLD); }
+    default UIFont XS_mall_Bold_Font() { return UIFont.systemFont(12, UIFont.STYLE.BOLD); }
+    default UIFont XX_Small_Bold_Font() { return UIFont.systemFont(10, UIFont.STYLE.BOLD); }
+    default UIFont XXX_Small_Bold_Font() { return UIFont.systemFont(8, UIFont.STYLE.BOLD); }
 
-    default UIFont Large_Bold_Font() { return UIFont.systemFont(); }
-    default UIFont XS_Large_Bold_Font() { return UIFont.systemFont(); }
-    default UIFont XX_Large_Bold_Font() { return UIFont.systemFont(); }
-    default UIFont XXX_Large_Bold_Font() { return UIFont.systemFont(); }
+    default UIFont Large_Bold_Font() { return UIFont.systemFont(18, UIFont.STYLE.BOLD); }
+    default UIFont XS_Large_Bold_Font() { return UIFont.systemFont(20, UIFont.STYLE.BOLD); }
+    default UIFont XX_Large_Bold_Font() { return UIFont.systemFont(22, UIFont.STYLE.BOLD); }
+    default UIFont XXX_Large_Bold_Font() { return UIFont.systemFont(24, UIFont.STYLE.BOLD); }
 
-    default UIFont Medium_Bold_Font() { return UIFont.systemFont(); }
+    default UIFont Medium_Bold_Font() { return UIFont.systemFont(16, UIFont.STYLE.BOLD); }
 
     //colors
 

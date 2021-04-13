@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.prometheussoftware.auikit.common.Constants;
+import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;
@@ -87,7 +88,8 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
                     view.getTitleLabel().setTextColor(obj.textColor);
                     view.getTitleLabel().setText(obj.title);
                     view.getTitleLabel().setFont(obj.font);
-                    view.setHeight(obj.hidden ? 0 : view.estimatedSize().getHeight());
+                    view.setHeight(obj.hidden ? 0 : heightForRowAtIndexPath(item, indexPath));
+                    view.setAccessoryType(UITableViewCell.ACCESSORY_TYPE.DISCLOSURE_INDICATOR);
                 }
             }
         }
@@ -104,6 +106,11 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
                     transitionToView(obj, Navigation.TRANSITION_ANIMATION.UPDOWN);
                 }
             }
+        }
+
+        @Override
+        public int heightForRowAtIndexPath(Object item, IndexPath indexPath) {
+            return Dimensions.Int_52();
         }
     }
 

@@ -16,6 +16,7 @@ public class MenuObject {
     public boolean hidden;
     public Action action;
     private Class VCClass;
+
     /** In case the VC is a subclass initialized based on type
      * set trueVCClass to that class, default is VCClass.
      * This is set in viewController() */
