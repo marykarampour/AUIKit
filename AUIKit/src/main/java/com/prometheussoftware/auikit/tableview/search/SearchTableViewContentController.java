@@ -8,12 +8,17 @@ import com.prometheussoftware.auikit.tableview.UITableViewContentController;
 import com.prometheussoftware.auikit.uiview.UISearchBar;
 import com.prometheussoftware.auikit.uiview.UIView;
 
-public class SearchTableViewContentController extends UITableViewContentController {
+public class SearchTableViewContentController extends UITableViewContentController <SearchTableViewDataController> {
 
     private UISearchBar searchView;
 
-    public SearchTableViewContentController(UIView view) {
-        super(view);
+    public SearchTableViewContentController(UIView view, SearchTableViewDataController dataController) {
+        super(view, dataController);
+    }
+
+    /** Call load in your subclass version of this constructor */
+    public SearchTableViewContentController(SearchTableViewDataController dataController) {
+        super(dataController);
     }
 
     @Override
@@ -33,7 +38,7 @@ public class SearchTableViewContentController extends UITableViewContentControll
         if (searchView == null) return;
 
         this.searchView = searchView;
-        view.addSubView(searchView);
+        getView().addSubView(searchView);
     }
 
     @Override
@@ -41,13 +46,13 @@ public class SearchTableViewContentController extends UITableViewContentControll
 
         UIEdgeInsets insets = new UIEdgeInsets(searchBarHeight(), 0, 0, 0);
 
-        view.constraintHeightForView(searchView, insets.top);
-        view.constraintForView(ConstraintSet.TOP, searchView);
-        view.constraintForView(ConstraintSet.START, searchView);
-        view.constraintForView(ConstraintSet.END, searchView);
-        view.constraintSidesForView(tableView, insets);
-        view.constraintSidesForView(getRefreshView(), insets);
-        view.applyConstraints();
+        getView().constraintHeightForView(searchView, insets.top);
+        getView().constraintForView(ConstraintSet.TOP, searchView);
+        getView().constraintForView(ConstraintSet.START, searchView);
+        getView().constraintForView(ConstraintSet.END, searchView);
+        getView().constraintSidesForView(getTableView(), insets);
+        getView().constraintSidesForView(getRefreshView(), insets);
+        getView().applyConstraints();
     }
 
     public UISearchBar getSearchView() {

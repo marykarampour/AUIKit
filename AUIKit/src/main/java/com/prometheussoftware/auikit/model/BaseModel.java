@@ -198,6 +198,11 @@ public class BaseModel implements Serializable, Cloneable {
 
     public void resetWithObject (BaseModel obj) {
 
+        if (obj == null) {
+            nullify();
+            return;
+        }
+
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
 
         if (properties == null) return;

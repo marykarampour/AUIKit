@@ -57,7 +57,7 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
         contentController.setData(sections);
     }
 
-    @Override protected UITableViewDataController createDataController() {
+    @Override protected MenuDataController createDataController() {
         return new MenuDataController();
     }
 

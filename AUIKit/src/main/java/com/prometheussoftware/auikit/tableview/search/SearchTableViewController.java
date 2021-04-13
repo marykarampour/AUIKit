@@ -1,42 +1,57 @@
 package com.prometheussoftware.auikit.tableview.search;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.prometheussoftware.auikit.model.BaseModel;
-import com.prometheussoftware.auikit.model.IndexPath;
-import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewController;
-import com.prometheussoftware.auikit.tableview.UITableViewDataController;
-import com.prometheussoftware.auikit.tableview.UITableViewHolder;
-import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
-import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.uiview.protocols.UISearchDelegate;
+import com.prometheussoftware.auikit.utility.ArrayUtility;
+import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-public class SearchTableViewController <T extends BaseModel & SearchTableViewController.DataSource> extends UITableViewController <SearchTableViewContentController> {
+public class SearchTableViewController <T extends BaseModel & SearchTableViewController.DataSource> extends UITableViewController <SearchTableViewDataController, SearchTableViewContentController> implements UISearchDelegate {
 
     private ArrayList<T> items;
-    private ArrayList<T> resultItems;
+    private ArrayList<T> searchItems;
     private T selectedItem;
+
+    public SearchTableViewController() {
+        super();
+    }
+
+    @Override
+    public void viewDidLoad() {
+        super.viewDidLoad();
+        loadData();
+    }
 
     public void setItems(ArrayList<T> items) {
         this.items = items;
-        loadData();
+        setSelectedItem(preSelected());
+        setSearchItems(items);
     }
 
     public ArrayList<T> getItems() {
         return items;
     }
 
-    protected ArrayList<T> preSelected() {
-        return new ArrayList<>();
+    private void setSearchItems(ArrayList<T> searchItems) {
+        this.searchItems = searchItems;
+        updateData();
+    }
+
+    protected T preSelected() {
+        return null;
     }
 
     public T getSelectedItem() {
         return selectedItem;
+    }
+
+    public void setSelectedItem(T selectedItem) {
+        this.selectedItem = selectedItem;
     }
 
     protected void loadData() {
@@ -44,66 +59,81 @@ public class SearchTableViewController <T extends BaseModel & SearchTableViewCon
         ArrayList<TableObject.Section> sections = new ArrayList();
         TableObject.Section section = new TableObject.Section();
 
-        TableObject.RowData data = new TableObject.RowData(items, UITableViewCell.Concrete.class);
-        ArrayList<T> selected = preSelected();
-        data.setSelected(selected);
-
         section.expandedHeight = 0;
         section.setCollapsible(false);
-        section.rows = data;
         sections.add(section);
 
         contentController.getDataController().setMultiSelectEnabled(false);
-        contentController.disableRecycling(data.getItemsInfo().array.get(0).getFirst().getIdentifier());
         contentController.setData(sections);
     }
 
-    @Override
-    protected UITableViewDataController createDataController() {
-        return new DataController();
+    public void updateData() {
+
+        TableObject.RowData rowData = rowData(selectedItem);
+        ArrayList<TableObject.Section> sections = BaseModel.cloneArray(contentController.getDataController().getSections());
+
+        if (0 < sections.size()) {
+            sections.get(0).rows = rowData;
+            if (0 < rowData.getItemsInfo().array.size()) {
+                contentController.disableRecycling(rowData.getItemsInfo().array.get(0).getFirst().getIdentifier());
+            }
+        }
+        contentController.setData(sections);
+    }
+
+    private TableObject.RowData rowData (T selectedItem) {
+
+        TableObject.RowData data = new TableObject.RowData(searchItems, UITableViewCell.Concrete.class);
+        ArrayList<T> selected = ArrayUtility.arrayOf(selectedItem);
+        data.setSelected(selected);
+        return data;
     }
 
     @Override
-    protected void createContentController() {
-        setContentController(new SearchTableViewContentController(view()));
+    protected SearchTableViewDataController createDataController() {
+        return new SearchTableViewDataController(this);
     }
 
-    class DataController extends UITableViewDataController {
+    @Override
+    protected SearchTableViewContentController createContentController(SearchTableViewDataController dataController) {
 
-        @Override
-        public <V extends UITableViewHolder, C extends UITableViewCell> V viewHolderForCell(C cell) {
-            return (V) new CellViewHolder(cell);
+        SearchTableViewContentController controller = new SearchTableViewContentController(view(), dataController);
+        controller.getSearchView().setDelegate(this);
+        return controller;
+    }
+
+    //region search delegate and filtering
+
+    @Override
+    public boolean searchBarDidSubmitText(String query) {
+        filterSearchItems(query);
+        return true;
+    }
+
+    @Override
+    public boolean searchBarDidChangeText(String newText) {
+        filterSearchItems(newText);
+        return true;
+    }
+
+    @Override
+    public boolean searchBarCloseButtonPressed() {
+        filterSearchItems("");
+        return true;
+    }
+
+    private void filterSearchItems(String query) {
+        if (StringUtility.isEmpty(query)) {
+            setSearchItems(items);
         }
-
-        class CellViewHolder extends UITableViewHolder.Cell <UITableViewCell.Concrete> {
-
-            public CellViewHolder(@NonNull UIView itemView) {
-                super(itemView);
-            }
-
-            @Override
-            public void bindDataForRow(Object item, IndexPath indexPath, @Nullable UITableViewProtocol.Data delegate) {
-                super.bindDataForRow(item, indexPath, delegate);
-
-                if (item instanceof Pair) {
-                    Pair<TableObject.CellInfo, T> obj = (Pair<TableObject.CellInfo, T>)item;
-                    view.getTitleLabel().setText(obj.getSecond().title());
-                    view.setAccessoryType(obj.getFirst().selected ? UITableViewCell.ACCESSORY_TYPE.CHECKMARK : UITableViewCell.ACCESSORY_TYPE.NONE);
-                }
-            }
-        }
-
-        @Override
-        public void didSelectRowAtIndexPath(Object item, IndexPath indexPath) {
-            super.didSelectRowAtIndexPath(item, indexPath);
-
-            if (item instanceof Pair) {
-                Pair<TableObject.CellInfo, T> obj = (Pair<TableObject.CellInfo, T>)item;
-                selectedItem = obj.getSecond();
-            }
-            reloadData();
+        else {
+            ArrayList<T> list = new ArrayList<>();
+            list.addAll(items.stream().filter(item -> item.title().toUpperCase().contains(query.toUpperCase())).collect(Collectors.toList()));
+            setSearchItems(list);
         }
     }
+
+    //endregion
 
     public interface DataSource {
         String title();

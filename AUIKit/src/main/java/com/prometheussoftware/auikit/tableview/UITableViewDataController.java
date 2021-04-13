@@ -274,6 +274,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
     @Override public int numberOfRowsInSection(int section) {
         if (sections.size() <= section) return 0;
+        if (sections.get(section).rows == null) return 0;
         return sections.get(section).rows.getItems().size();
     }
 

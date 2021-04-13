@@ -10,13 +10,8 @@ import java.util.ArrayList;
 
 public class CollapsingTableViewContentController extends UITableViewContentController <CollapsingTableViewDataController> implements UITableViewProtocol.Content {
 
-    public CollapsingTableViewContentController(UIView view) {
-        super(view);
-    }
-
-    @Override
-    protected void createDataController() {
-        setDataController(new CollapsingTableViewDataController());
+    public CollapsingTableViewContentController(UIView view, CollapsingTableViewDataController dataController) {
+        super(view, dataController);
     }
 
     @Override
@@ -27,7 +22,7 @@ public class CollapsingTableViewContentController extends UITableViewContentCont
 
     @Override public void performUpdateForDidSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {
 
-        CollapsingTableViewDataController controller = dataController;
+        CollapsingTableViewDataController controller = getDataController();
 
         boolean isExpanded = item.isExpanded;
 
@@ -73,7 +68,7 @@ public class CollapsingTableViewContentController extends UITableViewContentCont
         }
 
         item.isExpanded = isExpanded;
-        if (isExpanded && getAdapter().getItemCount() > position) tableView.getView().smoothScrollToPosition(position);
+        if (isExpanded && getAdapter().getItemCount() > position) getTableView().getView().smoothScrollToPosition(position);
     }
 
     @Override public void performUpdateForDidSelectSectionAtIndex(TableObject.Section item, int section) {

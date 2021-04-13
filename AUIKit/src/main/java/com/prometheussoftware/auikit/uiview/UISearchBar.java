@@ -6,8 +6,11 @@ import android.widget.SearchView;
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.Dimensions;
+import com.prometheussoftware.auikit.uiview.protocols.UISearchDelegate;
 
 public class UISearchBar extends UISingleView <UISearchBar.UISearchLayer> {
+
+    private UISearchDelegate delegate;
 
     public UISearchBar() {
         super();
@@ -24,6 +27,45 @@ public class UISearchBar extends UISingleView <UISearchBar.UISearchLayer> {
     @Override
     public UISearchLayer getView() {
         return super.getView();
+    }
+
+    public void setDelegate(UISearchDelegate delegate) {
+        this.delegate = delegate;
+
+        if (delegate == null) return;
+
+        view.getView().getView().setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (delegate != null) return delegate.searchBarDidSubmitText(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (delegate != null) return delegate.searchBarDidChangeText(newText);
+                return false;
+            }
+        });
+
+        view.getView().getView().setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                if (delegate != null) return delegate.searchBarDidSelectSuggestion(position);
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                if (delegate != null) return delegate.searchBarDidPressSuggestion(position);
+                return false;
+            }
+        });
+
+        view.getView().getView().setOnCloseListener( () -> {
+            if (delegate != null) return delegate.searchBarCloseButtonPressed();
+            return false;
+        });
     }
 
     @Override

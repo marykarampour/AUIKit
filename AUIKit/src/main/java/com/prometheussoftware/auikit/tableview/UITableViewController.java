@@ -2,7 +2,7 @@ package com.prometheussoftware.auikit.tableview;
 
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 
-public class UITableViewController <C extends UITableViewContentController> extends UIViewController {
+public class UITableViewController <D extends UITableViewDataController, C extends UITableViewContentController<D>> extends UIViewController {
 
     protected C contentController;
 
@@ -12,17 +12,17 @@ public class UITableViewController <C extends UITableViewContentController> exte
 
     @Override public void viewDidLoad() {
         super.viewDidLoad();
-        createContentController();
-        contentController.setDataController(createDataController());
-    }
-
-    protected void createContentController() {
-        setContentController((C) new UITableViewContentController(view()));
+        setContentController(createContentController(createDataController()));
     }
 
     /** Subclass must implement to return custom controller */
-    protected UITableViewDataController createDataController() {
-        return new UITableViewDataController();
+    protected C createContentController(D dataController) {
+        return (C) new UITableViewContentController(view(), dataController);
+    }
+
+    /** Subclass must implement to return custom controller */
+    protected D createDataController() {
+        return (D) new UITableViewDataController();
     }
 
     protected void setContentController(C contentController) {

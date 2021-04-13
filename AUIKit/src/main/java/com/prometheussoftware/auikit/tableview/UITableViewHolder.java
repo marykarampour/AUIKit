@@ -28,9 +28,9 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
 
             if (view.getAccessoryView() != null) {
                 view.getAccessoryView().setVisibility(View.GONE);
-                view.getAccessoryView().setOnClickListener(v -> {
+                view.getAccessoryView().addTouchUpTarget(this, b -> {
                     if (delegate != null) {
-                        delegate.didDeselectRowAtIndexPath(item, indexPath);
+                        delegate.didSelectRowAtIndexPath(item, indexPath);
                     }
                 });
             }
