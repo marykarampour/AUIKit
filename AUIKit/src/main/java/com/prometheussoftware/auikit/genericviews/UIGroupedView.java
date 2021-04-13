@@ -16,6 +16,7 @@ public class UIGroupedView <V extends UIView> extends UIView {
     private UIEdgeInsets insets = new UIEdgeInsets();
     private int interItemMargin;
     private int itemHeight;
+    private DataDelegate<V> dataDelegate;
 
     public UIGroupedView() {
         super();
@@ -45,6 +46,7 @@ public class UIGroupedView <V extends UIView> extends UIView {
             views.add(v);
         }
         init();
+        if (dataDelegate != null) dataDelegate.groupDidSetViews(this, views);
     }
 
     @Override
@@ -97,5 +99,13 @@ public class UIGroupedView <V extends UIView> extends UIView {
 
     public V viewAtIndex(int index) {
         return ArrayUtility.safeGet(views, index);
+    }
+
+    public void setDataDelegate(DataDelegate<V> dataDelegate) {
+        this.dataDelegate = dataDelegate;
+    }
+
+    public interface DataDelegate <V> {
+        void groupDidSetViews (UIGroupedView groupedView, ArrayList<V> views);
     }
 }

@@ -118,6 +118,8 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         return view;
     }
 
+    /** If nextTextView == null keyboard will be EditorInfo.IME_ACTION_DONE
+     * else EditorInfo.IME_ACTION_NEXT */
     public void setNextTextView(UITextView nextTextView) {
         this.nextTextView = nextTextView;
         setKeyboardOption(nextTextView == null ? EditorInfo.IME_ACTION_DONE : EditorInfo.IME_ACTION_NEXT);
