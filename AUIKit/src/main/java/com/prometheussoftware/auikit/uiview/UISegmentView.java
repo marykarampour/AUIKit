@@ -1,6 +1,5 @@
 package com.prometheussoftware.auikit.uiview;
 
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.Size;
 import android.view.Gravity;

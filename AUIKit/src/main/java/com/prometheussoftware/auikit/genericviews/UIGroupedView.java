@@ -1,7 +1,5 @@
 package com.prometheussoftware.auikit.genericviews;
 
-import android.util.Size;
-
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.utility.ArrayUtility;

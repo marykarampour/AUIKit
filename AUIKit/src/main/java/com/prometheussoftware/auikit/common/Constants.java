@@ -8,8 +8,6 @@ import com.prometheussoftware.auikit.R;
 import com.prometheussoftware.auikit.BuildConfig;
 import com.prometheussoftware.auikit.common.protocols.ConstantsProtocol;
 
-import java.util.HashMap;
-
 public class Constants implements ConstantsProtocol {
 
     public static final int NOT_FOUND_ID = -1;

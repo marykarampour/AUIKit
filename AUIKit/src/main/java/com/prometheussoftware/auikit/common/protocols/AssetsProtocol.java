@@ -1,7 +1,6 @@
 package com.prometheussoftware.auikit.common.protocols;
 
 import com.prometheussoftware.auikit.classes.UIImage;
-import com.prometheussoftware.auikit.common.AssetIDs;
 
 public interface AssetsProtocol {
 

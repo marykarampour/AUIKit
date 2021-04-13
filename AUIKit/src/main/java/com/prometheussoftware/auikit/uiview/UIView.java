@@ -1,6 +1,5 @@
 package com.prometheussoftware.auikit.uiview;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.util.Size;
 import android.view.View;

@@ -10,7 +10,6 @@ import android.view.animation.AccelerateInterpolator;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
-import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;

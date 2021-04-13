@@ -2,7 +2,6 @@ package com.prometheussoftware.auikit.classes;
 
 import android.graphics.Color;
 
-import com.prometheussoftware.auikit.R;
 import com.prometheussoftware.auikit.common.MainApplication;
 import com.prometheussoftware.auikit.model.BaseModel;
 

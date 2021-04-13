@@ -1,11 +1,9 @@
 package com.prometheussoftware.auikit.classes;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.prometheussoftware.auikit.common.AUIKitApplication;
 import com.prometheussoftware.auikit.common.Assets;
 import com.prometheussoftware.auikit.common.MainApplication;
 import com.prometheussoftware.auikit.model.BaseModel;

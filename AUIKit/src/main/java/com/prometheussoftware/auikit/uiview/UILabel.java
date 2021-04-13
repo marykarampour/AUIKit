@@ -1,6 +1,5 @@
 package com.prometheussoftware.auikit.uiview;
 
-import android.graphics.Typeface;
 import android.widget.TextView;
 
 import com.prometheussoftware.auikit.classes.UIColor;

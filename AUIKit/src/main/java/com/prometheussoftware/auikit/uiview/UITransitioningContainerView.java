@@ -15,7 +15,6 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
 import com.prometheussoftware.auikit.classes.UIColor;
-import com.prometheussoftware.auikit.common.AppTheme;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.uiviewcontroller.Navigation;
 import com.prometheussoftware.auikit.utility.ImageUtility;

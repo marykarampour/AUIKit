@@ -8,7 +8,6 @@ import com.prometheussoftware.auikit.callback.CompletionCallback;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.BaseWindow;
 import com.prometheussoftware.auikit.model.BaseModel;
-import com.prometheussoftware.auikit.uiview.UIBarButton;
 import com.prometheussoftware.auikit.uiview.UIButton;
 import com.prometheussoftware.auikit.uiview.UINavigationBar;
 import com.prometheussoftware.auikit.uiview.UIView;

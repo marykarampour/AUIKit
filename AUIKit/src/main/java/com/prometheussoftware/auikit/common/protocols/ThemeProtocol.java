@@ -1,7 +1,5 @@
 package com.prometheussoftware.auikit.common.protocols;
 
-import android.util.Size;
-
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIFont;
 

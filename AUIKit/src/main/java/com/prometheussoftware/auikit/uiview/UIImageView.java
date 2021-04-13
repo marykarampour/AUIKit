@@ -1,13 +1,11 @@
 package com.prometheussoftware.auikit.uiview;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIImage;
-import com.prometheussoftware.auikit.common.App;
 
 public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
