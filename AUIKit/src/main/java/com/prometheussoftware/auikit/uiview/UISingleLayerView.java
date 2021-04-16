@@ -91,7 +91,7 @@ public class UISingleLayerView <U extends UIView> extends UIView {
     @Override
     public void viewDidLoad() {
         super.viewDidLoad();
-        setLayerBackgroundColor(UIColor.clear());
+        setCardLayerBackgroundColor(UIColor.clear());
     }
 
     @Override public void constraintLayout() {
@@ -109,9 +109,14 @@ public class UISingleLayerView <U extends UIView> extends UIView {
         view.setBackgroundColor(color);
     }
 
+    /** Background color of the layer's card view, it is the card's background color */
+    public void setCardLayerBackgroundColor(UIColor color) {
+        layer.setCardBackgroundColor(color.get());
+    }
+
     /** Background color of the layer view, it is the card's background color */
     public void setLayerBackgroundColor(UIColor color) {
-        layer.setCardBackgroundColor(color.get());
+        layer.setBackgroundColor(color.get());
     }
 
     public void setBorderColor(int color) {

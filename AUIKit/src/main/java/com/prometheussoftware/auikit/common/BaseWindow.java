@@ -10,9 +10,6 @@ import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
 import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;

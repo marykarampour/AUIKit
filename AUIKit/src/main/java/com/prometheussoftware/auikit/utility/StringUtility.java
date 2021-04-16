@@ -112,7 +112,16 @@ public class StringUtility {
         if (maxChars != Constants.NOT_FOUND_ID && maxChars < string.length()) return false;
 
         String regex = regexForFormat(format, maxChars);
-        if (!isNotEmpty(regex)) return true;
+        if (isEmpty(regex)) return true;
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(string);
+        return matcher.matches();
+    }
+
+    public static boolean hasValidCharacers (String string, String regex) {
+        if (StringUtility.isEmpty(string)) return true;
+        if (isEmpty(regex)) return true;
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(string);
@@ -120,9 +129,11 @@ public class StringUtility {
     }
 
     public static String regexForFormat (Text.REGEX_FORMAT format, int length) {
+
+        length = (length < 0 ? App.constants().Max_Regex_Chars() : length);
         switch (format) {
-            case INT: return String.format("^([-]?[0-9]{0,%s})$", Math.max(length, App.constants().Max_Regex_Chars()));
-            case INT_POSITIVE: return String.format("^([0-9]{0,%s})$", Math.max(length, App.constants().Max_Regex_Chars()));
+            case INT: return String.format("^([-]?[0-9]{0,%s})$", length);
+            case INT_POSITIVE: return String.format("^([0-9]{0,%s})$", length);
             case ALPHABET: return "^([a-zA-Z])$";
             case ALPHANUMERIC: return "^([a-zA-Z0-9])$";
             case PASSWORD: return App.constants().Regex_Password();
@@ -217,6 +228,10 @@ public class StringUtility {
         Set<String> set = new HashSet<>();
         set.add(str);
         return removeCharactersInSet(s, set);
+    }
+
+    public static String numbersOnly (String s) {
+        return s.replaceAll("[^0-9]", "");
     }
 
     public static int height(String string, int fontSize, int width) {

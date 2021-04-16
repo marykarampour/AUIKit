@@ -3,8 +3,6 @@ package com.prometheussoftware.auikit.model;
 import com.google.gson.Gson;
 import com.prometheussoftware.auikit.utility.DEBUGLOG;
 
-import org.checkerframework.common.returnsreceiver.qual.This;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

@@ -122,7 +122,7 @@ public class Constants implements ConstantsProtocol {
     //regex
 
     public int Max_Regex_Chars() {
-        return Integer.MAX_VALUE;
+        return 10000;
     }
 
     public String Regex_Password() {
