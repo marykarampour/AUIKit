@@ -1,8 +1,9 @@
 package com.prometheussoftware.auikit.tableview;
 
+import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 
-public class UITableViewController <D extends UITableViewDataController, C extends UITableViewContentController<D>> extends UIViewController {
+public class UITableViewController <D extends UITableViewDataController, C extends UITableViewContentController<D>> extends UIViewController implements UITableViewProtocol.UpdateDelegate {
 
     protected C contentController;
 
@@ -13,6 +14,7 @@ public class UITableViewController <D extends UITableViewDataController, C exten
     @Override public void viewDidLoad() {
         super.viewDidLoad();
         setContentController(createContentController(createDataController()));
+        contentController.getDataController().setUpdateDelegate(this);
     }
 
     /** Subclass must implement to return custom controller */
@@ -33,7 +35,25 @@ public class UITableViewController <D extends UITableViewDataController, C exten
         return contentController;
     }
 
+    protected D dataController() {
+        return contentController.getDataController();
+    }
+
     public void reloadData() {
         contentController.reloadData();
     }
+
+    @Override
+    public void performUpdateForDidSelectSectionAtIndex(TableObject.Section item, int section) {
+        performUpdateForDidSelectSectionAtIndex(item, section, true);
+    }
+
+    @Override
+    public void performUpdateForDidSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {
+    }
+
+    @Override
+    public void performUpdateForDidSelectRowAtIndexPath(Object item, IndexPath indexPath) {
+    }
+
 }

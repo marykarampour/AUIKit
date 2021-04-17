@@ -4,11 +4,12 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.Dimensions;
+import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.tableview.UITableViewContentController;
 import com.prometheussoftware.auikit.uiview.UISearchBar;
 import com.prometheussoftware.auikit.uiview.UIView;
 
-public class SearchTableViewContentController extends UITableViewContentController <SearchTableViewDataController> {
+public class SearchTableViewContentController <T extends BaseModel & BaseCellDataSource> extends UITableViewContentController <SearchTableViewDataController<T>> {
 
     private UISearchBar searchView;
 
@@ -62,4 +63,5 @@ public class SearchTableViewContentController extends UITableViewContentControll
     protected int searchBarHeight() {
         return Dimensions.Int_52();
     }
+
 }

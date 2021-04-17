@@ -13,6 +13,9 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
     public boolean multiSelectEnabled = true;
     public boolean exclusiveExpandForSelected;
     protected ArrayList<TableObject.Section> sections = new ArrayList();
+
+    /** Responsible for performing updates when a section header is tapped */
+    protected UITableViewProtocol.UpdateDelegate updateDelegate;
     private UITableViewProtocol.TableView viewDelegate;
     private ArrayList<TableObject.CellInfo> cellInfos = new ArrayList();
     private ArrayList<TableObject.CellInfo> sectionInfos = new ArrayList();
@@ -312,6 +315,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
                 }
             }
         }
+
+        if (updateDelegate != null) updateDelegate.performUpdateForDidSelectRowAtIndexPath(item, indexPath);
     }
 
     //endregion
@@ -326,11 +331,37 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         return viewDelegate;
     }
 
-    private void reloadData() {
+    protected void reloadData() {
         if (viewDelegate != null) viewDelegate.reloadData();
     }
 
     //endregion
+
+
+    //region update protocol
+
+    @Override public void didSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {
+
+        if (!item.isEnabled || !item.isCollapsible()) return;
+        if (updateDelegate != null) {
+            updateDelegate.performUpdateForDidSelectSectionAtIndex(item, section, selected);
+        }
+    }
+
+    @Override public void didSelectSectionAtIndex(TableObject.Section item, int section) {
+
+        if (!item.isEnabled || !item.isCollapsible()) return;
+        if (updateDelegate != null) {
+            updateDelegate.performUpdateForDidSelectSectionAtIndex(item, section);
+        }
+    }
+
+    public void setUpdateDelegate(UITableViewProtocol.UpdateDelegate updateDelegate) {
+        this.updateDelegate = updateDelegate;
+    }
+
+    //endregion
+
 
     //helpers and fields
 

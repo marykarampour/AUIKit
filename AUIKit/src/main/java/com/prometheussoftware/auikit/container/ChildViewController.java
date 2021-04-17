@@ -16,7 +16,7 @@ public class ChildViewController <V extends UIView, O, C extends UIViewControlle
     }
 
     @Override public C headerDelegate() {
-        return null;
+        return headerDelegate;
     }
 
     @Override

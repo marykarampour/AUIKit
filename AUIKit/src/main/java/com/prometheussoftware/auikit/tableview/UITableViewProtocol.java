@@ -13,9 +13,10 @@ public interface UITableViewProtocol {
         void reloadData();
     }
 
-    interface Content {
+    interface UpdateDelegate {
         void performUpdateForDidSelectSectionAtIndex (TableObject.Section item, int section);
         void performUpdateForDidSelectSectionAtIndex (TableObject.Section item, int section, boolean selected);
+        void performUpdateForDidSelectRowAtIndexPath (Object item, IndexPath indexPath);
     }
 
     interface Data {

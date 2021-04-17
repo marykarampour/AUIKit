@@ -1,6 +1,8 @@
 package com.prometheussoftware.auikit.tableview.search;
 
 import com.prometheussoftware.auikit.model.BaseModel;
+import com.prometheussoftware.auikit.model.IndexPath;
+import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewController;
@@ -11,20 +13,15 @@ import com.prometheussoftware.auikit.utility.StringUtility;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class SearchTableViewController <T extends BaseModel & SearchTableViewController.DataSource> extends UITableViewController <SearchTableViewDataController, SearchTableViewContentController> implements UISearchDelegate {
+public class SearchTableViewController <T extends BaseModel & BaseCellDataSource> extends UITableViewController <SearchTableViewDataController<T>, SearchTableViewContentController<T>> implements UISearchDelegate {
 
     private ArrayList<T> items;
     private ArrayList<T> searchItems;
     private T selectedItem;
 
-    public SearchTableViewController() {
-        super();
-    }
-
-    @Override
-    public void viewDidLoad() {
-        super.viewDidLoad();
-        loadData();
+    public void setSearchItems(ArrayList<T> searchItems) {
+        this.searchItems = searchItems;
+        updateData();
     }
 
     public void setItems(ArrayList<T> items) {
@@ -37,13 +34,8 @@ public class SearchTableViewController <T extends BaseModel & SearchTableViewCon
         return items;
     }
 
-    private void setSearchItems(ArrayList<T> searchItems) {
-        this.searchItems = searchItems;
-        updateData();
-    }
-
-    protected T preSelected() {
-        return null;
+    public ArrayList<T> getSearchItems() {
+        return searchItems;
     }
 
     public T getSelectedItem() {
@@ -52,6 +44,16 @@ public class SearchTableViewController <T extends BaseModel & SearchTableViewCon
 
     public void setSelectedItem(T selectedItem) {
         this.selectedItem = selectedItem;
+    }
+
+    public SearchTableViewController() {
+        super();
+    }
+
+    @Override
+    public void viewDidLoad() {
+        super.viewDidLoad();
+        loadData();
     }
 
     protected void loadData() {
@@ -63,14 +65,14 @@ public class SearchTableViewController <T extends BaseModel & SearchTableViewCon
         section.setCollapsible(false);
         sections.add(section);
 
-        contentController.getDataController().setMultiSelectEnabled(false);
+        dataController().setMultiSelectEnabled(false);
         contentController.setData(sections);
     }
 
     public void updateData() {
 
-        TableObject.RowData rowData = rowData(selectedItem);
-        ArrayList<TableObject.Section> sections = BaseModel.cloneArray(contentController.getDataController().getSections());
+        TableObject.RowData rowData = rowData(getSelectedItem());
+        ArrayList<TableObject.Section> sections = BaseModel.cloneArray(dataController().getSections());
 
         if (0 < sections.size()) {
             sections.get(0).rows = rowData;
@@ -83,7 +85,7 @@ public class SearchTableViewController <T extends BaseModel & SearchTableViewCon
 
     private TableObject.RowData rowData (T selectedItem) {
 
-        TableObject.RowData data = new TableObject.RowData(searchItems, UITableViewCell.Concrete.class);
+        TableObject.RowData data = new TableObject.RowData(getSearchItems(), UITableViewCell.Concrete.class);
         ArrayList<T> selected = ArrayUtility.arrayOf(selectedItem);
         data.setSelected(selected);
         return data;
@@ -91,7 +93,7 @@ public class SearchTableViewController <T extends BaseModel & SearchTableViewCon
 
     @Override
     protected SearchTableViewDataController createDataController() {
-        return new SearchTableViewDataController(this);
+        return new SearchTableViewDataController();
     }
 
     @Override
@@ -102,6 +104,22 @@ public class SearchTableViewController <T extends BaseModel & SearchTableViewCon
         return controller;
     }
 
+    @Override
+    public void performUpdateForDidSelectRowAtIndexPath(Object item, IndexPath indexPath) {
+        super.performUpdateForDidSelectRowAtIndexPath(item, indexPath);
+
+        if (item instanceof Pair) {
+            Pair<TableObject.CellInfo, T> obj = (Pair<TableObject.CellInfo, T>)item;
+            boolean isSelected = obj.getSecond().equals(getSelectedItem());
+            setSelectedItem(isSelected ? null : obj.getSecond());
+        }
+        reloadData();
+    }
+
+    protected T preSelected() {
+        return null;
+    }
+    
     //region search delegate and filtering
 
     @Override
@@ -124,18 +142,15 @@ public class SearchTableViewController <T extends BaseModel & SearchTableViewCon
 
     private void filterSearchItems(String query) {
         if (StringUtility.isEmpty(query)) {
-            setSearchItems(items);
+            setSearchItems(getItems());
         }
         else {
             ArrayList<T> list = new ArrayList<>();
-            list.addAll(items.stream().filter(item -> item.title().toUpperCase().contains(query.toUpperCase())).collect(Collectors.toList()));
+            list.addAll(getItems().stream().filter(item -> item.title().toUpperCase().contains(query.toUpperCase())).collect(Collectors.toList()));
             setSearchItems(list);
         }
     }
 
     //endregion
 
-    public interface DataSource {
-        String title();
-    }
 }

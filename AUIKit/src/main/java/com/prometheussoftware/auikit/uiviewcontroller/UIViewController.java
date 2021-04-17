@@ -486,6 +486,11 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         return UIView.getWindow();
     }
 
+    public void runOnUiThread(Runnable run) {
+        if (window() != null)
+            window().runOnUiThread(run);
+    }
+
     public void endEditing() {
         window().dismissKeyboard();
     }
