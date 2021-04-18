@@ -33,6 +33,10 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
         this.rootViewController = rootViewController;
     }
 
+    public UIViewController getRootViewController() {
+        return rootViewController;
+    }
+
     private void setRootViewController(UIViewController rootViewController) {
         setTopViewController(rootViewController, true, false, true);
     }
