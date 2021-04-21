@@ -81,6 +81,7 @@ public class MenuObject {
         }
         if (nextViewController != null) {
             trueVCClass = nextViewController.getClass();
+            nextViewController.setTitle(title);
         }
         return (VC) nextViewController;
     }

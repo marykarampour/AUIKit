@@ -236,6 +236,7 @@ public class StringUtility {
 
     public static int height(String string, int fontSize, int width) {
 
+        if (StringUtility.isEmpty(string)) return 0;
         if (width <= 0) return 0;
 
         Paint paint = new Paint();
@@ -246,5 +247,18 @@ public class StringUtility {
         paint.getTextBounds(string, 0, string.length(), rect);
         int lines = (rect.width() / width) + 1;
         return rect.height() * lines;
+    }
+
+    public static int width(String string, int fontSize) {
+
+        if (StringUtility.isEmpty(string)) return 0;
+
+        Paint paint = new Paint();
+        paint.setTextSize(fontSize);
+        paint.setStyle(Paint.Style.FILL);
+
+        Rect rect = new Rect();
+        paint.getTextBounds(string, 0, string.length(), rect);
+        return rect.width();
     }
 }

@@ -10,8 +10,10 @@ import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.common.AppTheme;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
+import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.util.ArrayList;
 
@@ -201,6 +203,11 @@ public class UINavigationBar extends UIView {
      * If the bar button item is already in the array, it is moved from its current location to the front of the array.
      * */
     public void setLeftBarButtonItem(UIBarButton item) {
+
+        String title = item.getTitleLabel().getText();
+        if (StringUtility.isNotEmpty(title)) {
+            setLeftItemSize(AppTheme.Bar_Button_Size(title));
+        }
         leftItemsViewHolder.setView(item);
     }
 
@@ -210,6 +217,11 @@ public class UINavigationBar extends UIView {
      * If the bar button item is already in the array, it is moved from its current location to the front of the array.
      * */
     public void setRightBarButtonItem(UIBarButton item) {
+
+        String title = item.getTitleLabel().getText();
+        if (StringUtility.isNotEmpty(title)) {
+            setRightItemSize(AppTheme.Bar_Button_Size(title));
+        }
         rightItemsViewHolder.setView(item);
     }
 

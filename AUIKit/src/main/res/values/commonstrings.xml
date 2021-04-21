@@ -5,6 +5,8 @@
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
     <string name="or">OR</string>
     <string name="accept">Accept</string>
     <string name="day_s">Day(s)</string>

@@ -54,6 +54,11 @@ public class UIFont extends BaseModel {
         return size;
     }
 
+    public int pixelSize() {
+        float density = MainApplication.getContext().getResources().getDisplayMetrics().density;
+        return size * Math.round(density);
+    }
+
     /** @param name Font name from assets.
      * Create a class AppTheme for retrieving font names */
     public UIFont(String name) {

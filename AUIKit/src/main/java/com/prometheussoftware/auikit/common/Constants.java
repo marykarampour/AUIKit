@@ -71,6 +71,14 @@ public class Constants implements ConstantsProtocol {
         return StringResource(R.string.no);
     }
 
+    public static String Next_STR() {
+        return StringResource(R.string.next);
+    }
+
+    public static String Back_STR() {
+        return StringResource(R.string.back);
+    }
+
     public static String OR_STR() {
         return StringResource(R.string.or);
     }
