@@ -127,6 +127,16 @@ public class Constants implements ConstantsProtocol {
         return StringResource(R.string.accept);
     }
 
+    @Override
+    public String Generic_Success_Message() {
+        return null;
+    }
+
+    @Override
+    public String Generic_Failure_Message() {
+        return null;
+    }
+
     //regex
 
     public int Max_Regex_Chars() {

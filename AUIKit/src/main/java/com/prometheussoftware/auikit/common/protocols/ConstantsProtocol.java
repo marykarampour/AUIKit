@@ -50,4 +50,8 @@ public interface ConstantsProtocol {
     default Size TableView_Accessory_Size() { return Dimensions.size(Dimensions.Int_28()); }
     default int Default_Row_Height() { return Dimensions.Int_44(); }
     default int TableView_Section_Header_Height() { return 0; }
+
+    //strings
+    String Generic_Success_Message();
+    String Generic_Failure_Message();
 }
