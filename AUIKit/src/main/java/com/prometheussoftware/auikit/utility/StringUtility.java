@@ -198,6 +198,12 @@ public class StringUtility {
         return 0;
     }
 
+    public static Float floatValue (String string) {
+        String text = StringUtility.nonNull(string);
+        if (StringUtility.isEmpty(text)) return 0.0f;
+        return Float.parseFloat(text);
+    }
+
     public static long positiveLongValue(String string) {
         String text = StringUtility.nonNull(string);
         return StringUtility.isNotEmpty(text) ? Long.parseLong(text.replaceAll("[\\D]","")) : 0;

@@ -127,6 +127,10 @@ public class Constants implements ConstantsProtocol {
         return StringResource(R.string.accept);
     }
 
+    public static String Save_STR() {
+        return StringResource(R.string.save);
+    }
+
     @Override
     public String Generic_Success_Message() {
         return null;
