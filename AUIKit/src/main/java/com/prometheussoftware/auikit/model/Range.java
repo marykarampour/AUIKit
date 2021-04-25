@@ -15,9 +15,17 @@ public class Range extends BaseModel implements Comparable<Range> {
         this.length = 0;
     }
 
+    public static Range build (int location, int length) {
+        return new Range(location, length);
+    }
+
     @Override public int compareTo(Range o) {
         if (this.location > o.location) return 1;
         if (this.location < o.location) return -1;
         return 0;
+    }
+
+    public static boolean isEmpty (Range range) {
+        return range == null || (range.length <= 0 && range.location <= 0);
     }
 }

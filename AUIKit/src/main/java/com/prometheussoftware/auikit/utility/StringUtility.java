@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import com.google.common.base.CaseFormat;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Constants;
+import com.prometheussoftware.auikit.model.Range;
 import com.prometheussoftware.auikit.model.Text;
 
 import java.util.ArrayList;
@@ -238,6 +239,15 @@ public class StringUtility {
 
     public static String numbersOnly (String s) {
         return s.replaceAll("[^0-9]", "");
+    }
+
+    /** Use range.length = 0 for ranges intended to the end of string */
+    public static String substringWithRange (String text, Range range) {
+        if (Range.isEmpty(range)) return text;
+        if (range.length == 0)
+            return text.substring(range.location);
+        else
+            return text.substring(range.location, range.length+range.location);
     }
 
     public static int height(String string, int fontSize, int width) {
