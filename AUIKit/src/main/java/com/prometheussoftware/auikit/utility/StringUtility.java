@@ -241,9 +241,26 @@ public class StringUtility {
         return s.replaceAll("[^0-9]", "");
     }
 
+    public static boolean isNumbersOnly (String s) {
+        if (isEmpty(s)) return false;
+        return s.equals(numbersOnly(s));
+    }
+
+        /** Use range.length = 0 for ranges intended to the end of string */
+    public static String substringWithRange (String text, int startIndex, int length) {
+
+        Range range = Range.build(startIndex, length);
+        if (Range.isEmpty(range)) return text;
+
+        if (range.length == 0)
+            return text.substring(range.location);
+        else
+            return text.substring(range.location, range.length+range.location);
+    }
+
     /** Use range.length = 0 for ranges intended to the end of string */
     public static String substringWithRange (String text, Range range) {
-        if (Range.isEmpty(range)) return text;
+        if (range == null) return "";
         if (range.length == 0)
             return text.substring(range.location);
         else
