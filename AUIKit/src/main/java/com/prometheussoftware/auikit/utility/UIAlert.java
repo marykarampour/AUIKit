@@ -94,4 +94,9 @@ public class UIAlert {
         MainApplication.getWindow().runOnUiThread(() ->
                 Toast.makeText(MainApplication.getWindow(), title, Toast.LENGTH_LONG).show());
     }
+
+    public static void ShortToast(String title) {
+        MainApplication.getWindow().runOnUiThread(() ->
+                Toast.makeText(MainApplication.getWindow(), title, Toast.LENGTH_SHORT).show());
+    }
 }
