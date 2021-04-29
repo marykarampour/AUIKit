@@ -29,6 +29,10 @@ public class UISearchBar extends UISingleView <UISearchBar.UISearchLayer> {
         return super.getView();
     }
 
+    public void clear() {
+        view.getView().getView().setQuery("", false);
+    }
+
     public void setDelegate(UISearchDelegate delegate) {
         this.delegate = delegate;
 

@@ -18,7 +18,7 @@ import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.uiviewcontroller.Navigation;
 import com.prometheussoftware.auikit.utility.ImageUtility;
-
+//TODO: run these animation handlers on main thread high priority
 public class UITransitioningContainerView extends UIView {
 
     /** For views where the layout needs time to load, e.g. recyclerview

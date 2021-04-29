@@ -56,6 +56,12 @@ public class SearchTableViewController <T extends BaseModel & BaseCellDataSource
         loadData();
     }
 
+    @Override
+    public void viewWillAppear(boolean animated) {
+        super.viewWillAppear(animated);
+        getContentController().getSearchView().clear();
+    }
+
     protected void loadData() {
 
         ArrayList<TableObject.Section> sections = new ArrayList();

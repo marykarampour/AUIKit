@@ -361,7 +361,7 @@ public class BaseModel implements Serializable, Cloneable {
                     else {
                         Method setter = setter(field);
                         if (setter != null) {
-                            setter.invoke(this, null);
+                            setter.invoke(this, (Object) null);
                         }
                         else field.set(this, null);
                     }
