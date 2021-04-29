@@ -201,7 +201,7 @@ public class StringUtility {
 
     public static Float floatValue (String string) {
         String text = StringUtility.nonNull(string);
-        if (StringUtility.isEmpty(text)) return 0.0f;
+        if (StringUtility.isEmpty(text) || ".".equals(text)) return 0.0f;
         return Float.parseFloat(text);
     }
 
