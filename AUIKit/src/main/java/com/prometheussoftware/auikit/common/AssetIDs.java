@@ -39,4 +39,8 @@ public class AssetIDs {
     public static int Details_ID() {
         return R.drawable.details;
     }
+
+    public static int X_Mark_Round_ID() {
+        return R.drawable.x_mark_round;
+    }
 }

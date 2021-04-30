@@ -264,16 +264,22 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         contentView = (C) new UIView();
     }
 
-    /** It will NOT set the view if view is already loaded */
+//    /** It will NOT set the view if view is already loaded */
     public void setLeftView(L leftView) {
-        if (!isLoaded())
+//        if (!isLoaded())
+        contentView.removeSubView(this.leftView);
         this.leftView = leftView;
+        contentView.addSubView(leftView);
+        constraintLayout();
     }
 
-    /** It will NOT set the view if view is already loaded */
+//    /** It will NOT set the view if view is already loaded */
     public void setRightView(R rightView) {
-        if (!isLoaded())
+//        if (!isLoaded())
+        contentView.removeSubView(this.rightView);
         this.rightView = rightView;
+        contentView.addSubView(rightView);
+        constraintLayout();
     }
 
     public R getRightView() {

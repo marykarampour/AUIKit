@@ -77,4 +77,10 @@ public class Assets implements AssetsProtocol {
     public UIImage Details_Image() {
         return imageFromID(AssetIDs.Details_ID());
     }
+
+    @Override
+    public UIImage X_Mark_Round_Image() {
+        return imageFromID(AssetIDs.X_Mark_Round_ID());
+    }
+
 }

@@ -17,4 +17,5 @@ public interface AssetsProtocol {
     UIImage Disclosure_Image();
     UIImage Details_Disclosure_Image();
     UIImage Details_Image();
+    UIImage X_Mark_Round_Image();
 }
