@@ -18,8 +18,9 @@ public class CollapsingTableViewController extends UITableViewController <Collap
         return new CollapsingTableViewDataController();
     }
 
-    @Override public void viewWillAppear(boolean animated) {
-        super.viewWillAppear(animated);
+    @Override
+    public void viewDidAppear(boolean animated) {
+        super.viewDidAppear(animated);
         contentController.reloadData();
     }
 

@@ -57,8 +57,14 @@ public class SearchTableViewController <T extends BaseModel & BaseCellDataSource
     }
 
     @Override
-    public void viewWillAppear(boolean animated) {
-        super.viewWillAppear(animated);
+    public void viewDidAppear(boolean animated) {
+        super.viewDidAppear(animated);
+        getContentController().getSearchView().clear();
+    }
+
+    @Override
+    public void viewDidDisappear(boolean animated) {
+        super.viewDidDisappear(animated);
         getContentController().getSearchView().clear();
     }
 

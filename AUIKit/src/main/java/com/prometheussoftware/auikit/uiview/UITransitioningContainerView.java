@@ -18,13 +18,13 @@ import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.uiviewcontroller.Navigation;
 import com.prometheussoftware.auikit.utility.ImageUtility;
-//TODO: run these animation handlers on main thread high priority
+
 public class UITransitioningContainerView extends UIView {
 
     /** For views where the layout needs time to load, e.g. recyclerview
      * this value is used to cause a delay that allows enough time for
      * the view to load. */
-    private static final int LAYOUT_LOAD_WAIT_DURATION = 200;
+    public static final int LAYOUT_LOAD_WAIT_DURATION = 200;
 
     /** The content view which is visible */
     private UIView currentContentView;

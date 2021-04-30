@@ -10,6 +10,7 @@ import com.prometheussoftware.auikit.common.BaseWindow;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.uiview.UIButton;
 import com.prometheussoftware.auikit.uiview.UINavigationBar;
+import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 
@@ -43,7 +44,7 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
     private boolean animated;
 
-    public int animationDuration = 200;
+    public int animationDuration = UITransitioningContainerView.LAYOUT_LOAD_WAIT_DURATION;
 
     private String title;
 
@@ -171,7 +172,9 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         if (animated) {
             animationHandler.postDelayed(() -> {
                 viewWillAppear(true);
-                viewDidAppear(true);
+                animationHandler.postDelayed(() -> {
+                    viewDidAppear(true);
+                }, animationDuration);
             }, 2*animationDuration);
         }
         else {
