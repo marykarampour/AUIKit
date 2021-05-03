@@ -35,6 +35,10 @@ public class DEBUGLOG {
         DEBUGLOG.s(str, new Gson().toJson(obj));
     }
 
+    public static void s (String str, Exception e) {
+        DEBUGLOG.s(str, e.getStackTrace());
+    }
+
     public static void s (Exception e) {
         if (!isDebug) return;
         Log.d("Exception -> ", e.getStackTrace().toString());

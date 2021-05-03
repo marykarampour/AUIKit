@@ -153,7 +153,7 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
         }
     }
 
-    public static class CheckboxView extends UICheckbox {
+    public static class CheckboxView extends UICheckbox.Right {
 
         @Override
         public void initView() {

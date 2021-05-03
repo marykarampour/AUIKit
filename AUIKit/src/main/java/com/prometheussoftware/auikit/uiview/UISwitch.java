@@ -11,7 +11,6 @@ public class UISwitch extends UIControl {
     }
 
     private SelectionDelegate delegate;
-//    public IndexPath indexPath;
 
     static {
         Identifier.Register(UISwitch.class);

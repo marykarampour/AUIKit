@@ -294,6 +294,10 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         return titleLabel;
     }
 
+    public C getContentView() {
+        return contentView;
+    }
+
     //endregion
 
     //region sizes
@@ -336,6 +340,10 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         if (leftView != null && isLoaded()) {
             constraintLayout();
         }
+    }
+
+    public void setHeight(int height) {
+        setMinHeight(height);
     }
 
     //endregion

@@ -67,7 +67,7 @@ public class UITableViewContentController <D extends UITableViewDataController> 
         return adapter;
     }
 
-    public void setData(ArrayList<TableObject.Section> data) {
+    public <S extends TableObject.Section> void setData(ArrayList<S> data) {
         adapter.getDataController().setSections(data);
     }
 

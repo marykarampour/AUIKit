@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.utility.DEBUGLOG;
 
 import java.util.ArrayList;
 
@@ -28,8 +29,12 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
                 try {
                     return (V) info.getCellClass().newInstance();
                 }
-                catch (IllegalAccessException e) { }
-                catch (InstantiationException e) { }
+                catch (IllegalAccessException e) {
+                    DEBUGLOG.s("TableView cell creation failed --> ", e);
+                }
+                catch (InstantiationException e) {
+                    DEBUGLOG.s("TableView cell creation failed --> ", e);
+                }
             }
         }
         return null;
@@ -176,7 +181,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         return sections;
     }
 
-    public void setSections (ArrayList<TableObject.Section> sections) {
+    public <S extends TableObject.Section> void setSections (ArrayList<S> sections) {
 
         this.sections.clear();
         if (sections == null) return;
@@ -188,7 +193,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
                 sectionInfos.add(sect.info);
             }
             if (sect.rows != null) {
-                for (Pair<TableObject.CellInfo, Object> info : sect.rows.getItemsInfo().array) {
+                ArrayList<Pair<TableObject.CellInfo, Object>> array = sect.rows.itemsArray();
+                for (Pair<TableObject.CellInfo, Object> info : array) {
                     if (info.getFirst() != null && !cellInfos.contains(info.getFirst())) {
                         cellInfos.add(info.getFirst());
                     }
@@ -218,7 +224,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
         if (indexPath.row == null) return sections.get(indexPath.section);
 
-        ArrayList values = sections.get(indexPath.section).rows.getItems().array;
+        ArrayList values = sections.get(indexPath.section).rows.itemsArray();
         if (values.size() <= indexPath.row) return null;
 
         return values.get(indexPath.row);
@@ -227,9 +233,11 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
     protected TableObject.CellInfo infoForRowAtIndexPath (IndexPath indexPath) {
         if (indexPath.section != null && sections.size() <= indexPath.section || indexPath.row == null) return null;
 
-        ArrayList<Pair<TableObject.CellInfo, Object>> values = sections.get(indexPath.section).rows.getItems().array;
-        if (values.size() <= indexPath.row) return null;
+        TableObject.Section sect = sections.get(indexPath.section);
+        ArrayList<Pair<TableObject.CellInfo, Object>> values = sect.rows.itemsArray();
 
+        if (values.size() <= indexPath.row)
+            return null;
         return values.get(indexPath.row).getFirst();
     }
 
@@ -244,7 +252,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         int count = 0;
 
         if (sect != null) {
-            for (Pair<TableObject.CellInfo, Object> info : sect.rows.getItems().array) {
+            ArrayList<Pair<TableObject.CellInfo, Object>> array = sect.rows.itemsArray();
+            for (Pair<TableObject.CellInfo, Object> info : array) {
                 if (info.getFirst().selected) {
                     count ++;
                 }
@@ -258,7 +267,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         int count = 0;
 
         if (sect != null) {
-            for (Pair<TableObject.CellInfo, Object> info : sect.rows.getItems().array) {
+            ArrayList<Pair<TableObject.CellInfo, Object>> array = sect.rows.itemsArray();
+            for (Pair<TableObject.CellInfo, Object> info : array) {
                 if (info.getFirst().selected) {
                     count ++;
                 }
@@ -308,7 +318,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
         if (!multiSelectEnabled) {
             for (TableObject.Section sect : sections) {
-                for (Pair<TableObject.CellInfo, Object> info : sect.rows.getItemsInfo().array) {
+                ArrayList<Pair<TableObject.CellInfo, Object>> array = sect.rows.itemsArray();
+                for (Pair<TableObject.CellInfo, Object> info : array) {
                     if (info.getFirst() != cell) {
                         info.getFirst().selected = false;
                     }

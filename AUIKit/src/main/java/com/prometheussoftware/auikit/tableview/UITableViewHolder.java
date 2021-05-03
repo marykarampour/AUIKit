@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.prometheussoftware.auikit.genericviews.UICheckbox;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiview.UIControl;
 import com.prometheussoftware.auikit.uiview.UISwitch;
@@ -28,7 +29,7 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
 
             if (view.getAccessoryView() != null) {
                 view.getAccessoryView().setVisibility(View.GONE);
-                view.getAccessoryView().addTouchUpTarget(this, b -> {
+                view.getAccessoryView().setTarget(b -> {
                     if (delegate != null) {
                         delegate.didSelectRowAtIndexPath(item, indexPath);
                     }
@@ -62,6 +63,22 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
             public void bindDataForSection(TableObject.Section item, Integer section, @Nullable UITableViewProtocol.Data delegate) {
                 super.bindDataForSection(item, section, delegate);
                 view.setDelegate((UIControl view, boolean selected) -> {
+                    if (delegate != null) {
+                        delegate.didSelectSectionAtIndex(item, section, selected);
+                    }
+                });
+            }
+        }
+
+        public static class Checkbox <C extends UICheckbox> extends Header <C> {
+
+            public Checkbox(@NonNull UIView itemView) {
+                super(itemView);
+            }
+
+            public void bindDataForSection(TableObject.Section item, Integer section, @Nullable UITableViewProtocol.Data delegate) {
+                super.bindDataForSection(item, section, delegate);
+                view.checkView().setDelegate((UIControl view, boolean selected) -> {
                     if (delegate != null) {
                         delegate.didSelectSectionAtIndex(item, section, selected);
                     }

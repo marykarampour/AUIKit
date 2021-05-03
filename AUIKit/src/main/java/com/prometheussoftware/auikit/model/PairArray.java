@@ -6,7 +6,11 @@ import java.util.ArrayList;
 
 public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
 
-    public ArrayList<P> array = new ArrayList<>();
+    private ArrayList<P> array = new ArrayList<>();
+
+    public ArrayList<P> getArray() {
+        return array;
+    }
 
     public PairArray() { }
 

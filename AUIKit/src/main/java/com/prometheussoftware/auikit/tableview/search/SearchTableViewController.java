@@ -88,8 +88,9 @@ public class SearchTableViewController <T extends BaseModel & BaseCellDataSource
 
         if (0 < sections.size()) {
             sections.get(0).rows = rowData;
-            if (0 < rowData.getItemsInfo().array.size()) {
-                contentController.disableRecycling(rowData.getItemsInfo().array.get(0).getFirst().getIdentifier());
+            if (0 < rowData.itemsArray().size()) {
+                ArrayList<Pair<TableObject.CellInfo, Object>> array = rowData.itemsArray();
+                contentController.disableRecycling(array.get(0).getFirst().getIdentifier());
             }
         }
         contentController.setData(sections);

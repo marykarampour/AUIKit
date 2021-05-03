@@ -1,18 +1,20 @@
 package com.prometheussoftware.auikit.tableview.menu;
 
-import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
+import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
+import com.prometheussoftware.auikit.genericviews.UICheckbox;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewHolder;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
+import com.prometheussoftware.auikit.tableview.collapsing.CollapsingSectionsMenuProtocol;
 import com.prometheussoftware.auikit.tableview.collapsing.CollapsingTableViewController;
 import com.prometheussoftware.auikit.tableview.collapsing.CollapsingTableViewDataController;
 import com.prometheussoftware.auikit.uiview.UIView;
@@ -22,18 +24,17 @@ import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 
 import java.util.ArrayList;
 
-public class CollapsingSectionsMenuViewController extends CollapsingTableViewController {
+public abstract class CollapsingSectionsMenuViewController extends CollapsingTableViewController implements CollapsingSectionsMenuProtocol {
 
-    //TODO: Add sections
-    private ArrayList<MenuObject> menuItems;
+    private ArrayList<MenuObject.Section> menuItems;
 
-    /** Call in or after viewDidLoad */
-    public void setMenuItems(ArrayList<MenuObject> menuItems) {
-        this.menuItems = menuItems;
-        createMenu();
+    /** Call in or after viewDidLoad. It is called in viewDidLoad by default. */
+    public void setMenuSections(ArrayList<MenuObject.Section> sections) {
+        this.menuItems = sections;
+        contentController.setData(sections);
     }
 
-    public ArrayList<MenuObject> getMenuItems() {
+    public ArrayList<MenuObject.Section> getMenuItems() {
         return menuItems;
     }
 
@@ -41,20 +42,7 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
 
     @Override public void viewDidLoad() {
         super.viewDidLoad();
-    }
-
-    protected void createMenu() {
-
-        ArrayList<TableObject.Section> sections = new ArrayList();
-
-        TableObject.Section section = new TableObject.Section();
-        section.setCollapsible(false);
-
-        TableObject.RowData data = new TableObject.RowData(menuItems, UITableViewCell.class);
-        section.rows = data;
-        sections.add(section);
-
-        contentController.setData(sections);
+        setMenuSections(menuSections());
     }
 
     @Override protected MenuDataController createDataController() {
@@ -63,16 +51,16 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
 
     class MenuDataController extends CollapsingTableViewDataController {
 
-        @Override public <V extends UITableViewCell> V cellForViewType(ViewGroup parent, int viewType) {
-            UITableViewCell cell = new UITableViewCell.Concrete();
-            return (V) cell;
-        }
-
         @Override public <V extends UITableViewHolder, C extends UITableViewCell> V viewHolderForCell(C cell) {
             return (V) new MenuCellViewHolder(cell);
         }
 
-        class MenuCellViewHolder extends UITableViewHolder.Cell <UITableViewCell> {
+        @Override
+        public <V extends UITableViewHolder, W extends UIView> V viewHolderForHeader(W header) {
+            return (V) new MenuHeaderViewHolder(header);
+        }
+
+        class MenuCellViewHolder extends UITableViewHolder.Cell <UITableViewCell.Concrete> {
 
             public MenuCellViewHolder(@NonNull UIView itemView) {
                 super(itemView);
@@ -82,7 +70,7 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
                 super.bindDataForRow(item, indexPath, delegate);
 
                 if (item instanceof Pair) {
-                    MenuObject obj = (MenuObject) ((Pair) item).getSecond();
+                    MenuObject.Item obj = (MenuObject.Item) ((Pair) item).getSecond();
 
                     view.getTitleLabel().setTextColor(obj.textColor);
                     view.getTitleLabel().setText(obj.title);
@@ -93,11 +81,34 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
             }
         }
 
+        class MenuHeaderViewHolder extends UITableViewHolder.Header.Checkbox <CheckboxHeader> {
+
+            public MenuHeaderViewHolder(@NonNull UIView itemView) {
+                super(itemView);
+            }
+
+            @Override
+            public void bindDataForSection(TableObject.Section item, Integer section, @Nullable UITableViewProtocol.Data delegate) {
+                super.bindDataForSection(item, section, delegate);
+
+                if (item instanceof MenuObject.Section) {
+                    MenuObject.Section obj = (MenuObject.Section) item;
+
+                    view.getTitleLabel().setTextColor(obj.object.textColor);
+                    view.getTitleLabel().setText(obj.object.title);
+                    view.getTitleLabel().setFont(obj.object.font);
+                    view.getContentView().setBackgroundColor(obj.object.backgroundColor);
+                    view.setHeight(obj.estimatedHeight());
+                    view.checkView().setOn(obj.isExpanded);
+                }
+            }
+        }
+
         @Override public void didSelectRowAtIndexPath(Object item, IndexPath indexPath) {
             super.didSelectRowAtIndexPath(item, indexPath);
 
             if (item instanceof Pair) {
-                MenuObject obj = (MenuObject) ((Pair) item).getSecond();
+                MenuObject.Item obj = (MenuObject.Item) ((Pair) item).getSecond();
                 if (obj.getAction() != null) {
                     obj.getAction().itemPressed(obj);
                 }
@@ -113,12 +124,29 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
         }
     }
 
+    public static class CheckboxHeader extends UICheckbox.Right {
+
+        @Override
+        public void initView() {
+            super.initView();
+            checkView().setOnImage(App.assets().Down_Chevron_Image());
+            checkView().setOffImage(App.assets().Right_Chevron_Image());
+            checkView().setPadding(Dimensions.Int_4(), Dimensions.Int_4(), Dimensions.Int_4(), Dimensions.Int_4());
+            setRightViewSize(Dimensions.size(Dimensions.Int_32()));
+        }
+
+        @Override
+        protected UIEdgeInsets insets() {
+            return new UIEdgeInsets(Dimensions.Int_8(), Dimensions.Int_16(), Dimensions.Int_8(), Dimensions.Int_8());
+        }
+    }
+
     //endregion
 
 
     //region transition
 
-    public void transitionToView (MenuObject item, Navigation.TRANSITION_ANIMATION animation) {
+    public void transitionToView (MenuObject.Item item, Navigation.TRANSITION_ANIMATION animation) {
 
         UIViewController navigationVC = getNavigationController();
         boolean animated = animation != Navigation.TRANSITION_ANIMATION.NONE;
@@ -155,7 +183,7 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
 
                             if (menuItems.size() <= i) break;
 
-                            MenuObject obj = menuItems.get(i);
+                            MenuObject.Item obj = itemAtIndex(i);
                             UIViewController nextVC = viewControllerForObject(obj);
                             if (nextVC != null) {
                                 Navigation.Node<UIViewController> nextVCNode = UINavigationController.navigationNode(nextVC, false);
@@ -188,12 +216,69 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
     //region items and class
 
     public int indexOfVC (UIViewController VC) {
-        for (MenuObject item : menuItems) {
-            if (VCIsInMenuItemClass(VC, item.getTrueVCClass())) {
-                return menuItems.indexOf(item);
+
+        for (MenuObject.Section section : menuItems) {
+
+            ArrayList<Pair<TableObject.CellInfo, MenuObject.Item>> array = itemsArrayInSection(section);
+            for (Pair<TableObject.CellInfo, MenuObject.Item> pair : array) {
+
+                MenuObject.Item item = pair.getSecond();
+                if (VCIsInMenuItemClass(VC, item.getTrueVCClass())) {
+                    return menuItems.indexOf(item);
+                }
             }
         }
         return Constants.NOT_FOUND_ID;
+    }
+
+    /** @param index is the index of the item in the menu, not its own section */
+    protected MenuObject.Item itemAtIndex (int index) {
+
+        int rowCount = 0;
+        for (int i = 0; i < dataController().numberOfSectionsInTableView(); i++) {
+            int currentRowCount = rowCount;
+            rowCount += dataController().numberOfRowsInSection(i);
+            //sec1 5
+            //sec2 6
+            //sec3 3
+            //sec4 7
+            //sec5 5
+            //sec6 8
+            //rows = 34
+            //index = 23
+            //5+6+3+7 = 21
+            //5+6+3+7+5 = 26
+            if (index <= rowCount) {
+                int row = index - currentRowCount;
+                MenuObject.Section section = menuItems.get(i);
+                ArrayList<Pair<TableObject.CellInfo, MenuObject.Item>> array = itemsArrayInSection(section);
+                return array.get(row).getSecond();
+            }
+        }
+        return null;
+    }
+
+    /** @return Returns index is the index of the item in the menu, not its own section */
+    protected int indexOfItem (MenuObject.Item item) {
+
+        int row = 0;
+        for (MenuObject.Section section : menuItems) {
+
+            ArrayList<Pair<TableObject.CellInfo, MenuObject.Item>> array = itemsArrayInSection(section);
+            for (Pair<TableObject.CellInfo, MenuObject.Item> pair : array) {
+
+                MenuObject.Item obj = pair.getSecond();
+                if (obj.equals(item))
+                    return array.indexOf(pair) + row;
+                else
+                    row ++;
+            }
+        }
+        return Constants.NOT_FOUND_ID;
+    }
+
+    protected ArrayList<Pair<TableObject.CellInfo, MenuObject.Item>> itemsArrayInSection (MenuObject.Section section) {
+        return section.rows.itemsArray();
     }
 
     protected boolean VCIsInMenuItemClass (UIViewController VC, Class parentClass) {
@@ -216,7 +301,7 @@ public class CollapsingSectionsMenuViewController extends CollapsingTableViewCon
         return false;
     }
 
-    public static <VC extends UIViewController> VC viewControllerForObject (MenuObject item) {
+    public static <VC extends UIViewController> VC viewControllerForObject (MenuObject.Item item) {
         return item.viewController();
     }
 

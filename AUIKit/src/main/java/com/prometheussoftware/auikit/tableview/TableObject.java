@@ -15,13 +15,18 @@ public class TableObject {
     /** Used to indicate view should configure height based on content */
     public static final int AutomaticDimension = -1;
 
-    public static class RowData extends BaseModel {
+    public interface RowDataProtocol <T> {
+        PairArray<CellInfo, T, Pair<CellInfo, T>> items();
+        ArrayList<Pair<TableObject.CellInfo, T>> itemsArray();
+    }
+
+    public static class RowData <T> extends BaseModel implements RowDataProtocol<T> {
 
         static {
             BaseModel.Register(RowData.class);
         }
 
-        private PairArray<CellInfo, Object, Pair<CellInfo, Object>> items = new PairArray();
+        private PairArray<CellInfo, T, Pair<CellInfo, T>> items = new PairArray();
 
         public RowData() { }
 
@@ -31,19 +36,19 @@ public class TableObject {
         }
 
         /** Will create a pair of CellInfo and item */
-        public RowData(Object item, Class cellClass) {
+        public RowData(T item, Class cellClass) {
             if (items == null) items = new PairArray();;
             this.items.addPair(new CellInfo(cellClass, true), item);
         }
 
         /** Will create a pair of CellInfo and item */
-        public RowData(Object item, Class cellClass, int estimatedHeight, boolean instanceId) {
+        public RowData(T item, Class cellClass, int estimatedHeight, boolean instanceId) {
             if (items == null) items = new PairArray();;
             this.items.addPair(new CellInfo(cellClass, estimatedHeight, instanceId), item);
         }
 
         /** Will create a pair of CellInfo and item */
-        public RowData(Object item, Class cellClass, int estimatedHeight, int identifier) {
+        public RowData(T item, Class cellClass, int estimatedHeight, int identifier) {
             if (items == null) items = new PairArray();;
             this.items.addPair(new CellInfo(cellClass, estimatedHeight, identifier), item);
         }
@@ -54,38 +59,38 @@ public class TableObject {
         }
 
         /** Will create a pair of CellInfo and item */
-        public void addItem(Object item, CellInfo info) {
+        public void addItem(T item, CellInfo info) {
             if (items == null) items = new PairArray();;
             this.items.addPair(info, item);
         }
 
         /** Will create an array of pairs of CellInfo and item */
-        public void addItems(ArrayList items, CellInfo info) {
+        public void addItems(ArrayList<T> items, CellInfo info) {
             if (items == null) return;
-            for (Object obj : items) {
+            for (T obj : items) {
                 this.items.addPair(info, obj);
             }
         }
 
         /** Will create an array of pairs of CellInfo and item */
-        public void addItems(ArrayList items, Class cellClass, int estimatedHeight) {
+        public void addItems(ArrayList<T> items, Class cellClass, int estimatedHeight) {
             if (items == null) return;
-            for (Object obj : items) {
+            for (T obj : items) {
                 this.items.addPair(new CellInfo(cellClass, estimatedHeight), obj);
             }
         }
 
         /** Will create an array of pairs of CellInfo and item */
-        private void addItems(ArrayList items, Class cellClass) {
+        private void addItems(ArrayList<T> items, Class cellClass) {
             if (items == null) return;
-            for (Object obj : items) {
+            for (T obj : items) {
                 this.items.addPair(new CellInfo(cellClass), obj);
             }
         }
 
-        public void setSelected (ArrayList selected) {
-            if (items == null || items.array == null) return;
-            for (Pair<CellInfo, Object> obj : items.array) {
+        public void setSelected (ArrayList<T> selected) {
+            if (items == null || items.getArray() == null) return;
+            for (Pair<CellInfo, T> obj : items.getArray()) {
                 obj.getFirst().selected = selected.contains(obj.getSecond());
             }
         }
@@ -94,17 +99,23 @@ public class TableObject {
             this.items = items;
         }
 
-        public PairArray<CellInfo, Object, Pair<CellInfo, Object>> getItems() {
+        @Override
+        public PairArray<CellInfo, T, Pair<CellInfo, T>> items() {
             return items;
         }
 
-        public PairArray<CellInfo, Object, Pair<CellInfo, Object>> getItemsInfo() {
+        public PairArray<CellInfo, T, Pair<CellInfo, T>> getItems() {
             return items;
+        }
+
+        @Override
+        public ArrayList<Pair<TableObject.CellInfo, T>> itemsArray() {
+            return items.getArray();
         }
 
         public CellInfo infoAtIndex (int index) {
             if (items == null || items.size() <= index) return null;
-            return items.array.get(index).getFirst();
+            return items.getArray().get(index).getFirst();
         }
     }
 
@@ -224,7 +235,7 @@ public class TableObject {
         }
     }
 
-    public static class Section <R extends RowData, T extends SectionData> extends BaseModel {
+    public static class Section <T extends SectionData> extends BaseModel {
 
         private boolean isCollapsible;
         /** only used if isCollapsible is true */

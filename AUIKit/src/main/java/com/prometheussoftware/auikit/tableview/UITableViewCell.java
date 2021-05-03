@@ -127,10 +127,6 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         contentView.applyConstraints();
     }
 
-    public void setHeight(int height) {
-        setMinHeight(height);
-    }
-
     public void setAccessorySize(Size size) {
         setRightViewSize(size);
     }
@@ -251,6 +247,18 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
                 rightView.setOffImage(App.assets().Disclosure_Image());
             }
             break;
+            case DROPDOWN_INDICATOR_EXPANDED: {
+                rightView.setGone(false);
+                rightView.setOnImage(App.assets().Down_Chevron_Image());
+                rightView.setOffImage(App.assets().Down_Chevron_Image());
+            }
+            break;
+            case DROPDOWN_INDICATOR_COLLAPSED: {
+                rightView.setGone(false);
+                rightView.setOnImage(App.assets().Right_Chevron_Image());
+                rightView.setOffImage(App.assets().Right_Chevron_Image());
+            }
+            break;
             case DETAIL_DISCLOSURE_BUTTON: {
                 rightView.setGone(false);
                 rightView.setOnImage(App.assets().Details_Disclosure_Image());
@@ -270,6 +278,8 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
     public enum ACCESSORY_TYPE {
         NONE,
         DISCLOSURE_INDICATOR,
+        DROPDOWN_INDICATOR_COLLAPSED,
+        DROPDOWN_INDICATOR_EXPANDED,
         DETAIL_DISCLOSURE_BUTTON,
         CHECKMARK,
         DETAIL_BUTTON
