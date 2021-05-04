@@ -135,6 +135,8 @@ public class StringUtility {
         switch (format) {
             case INT: return String.format("^([-]?[0-9]{0,%s})$", length);
             case INT_POSITIVE: return String.format("^([0-9]{0,%s})$", length);
+            case FLOAT: return String.format("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$", length);
+            case FLOAT_POSITIVE: return String.format("^([0-9]+([.][0-9]*)?|[.][0-9]+)$", length);
             case ALPHABET: return "^([a-zA-Z])$";
             case ALPHANUMERIC: return "^([a-zA-Z0-9])$";
             case PASSWORD: return App.constants().Regex_Password();
@@ -202,7 +204,12 @@ public class StringUtility {
     public static Float floatValue (String string) {
         String text = StringUtility.nonNull(string);
         if (StringUtility.isEmpty(text) || ".".equals(text)) return 0.0f;
-        return Float.parseFloat(text);
+        try {
+            return Float.parseFloat(text);
+        }
+        catch (NumberFormatException e) {
+            return 0.0f;
+        }
     }
 
     public static long positiveLongValue(String string) {

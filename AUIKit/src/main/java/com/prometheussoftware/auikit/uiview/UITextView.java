@@ -222,6 +222,11 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
                 view().setInputType(InputType.TYPE_CLASS_NUMBER);
             }
             break;
+            case FLOAT:
+            case FLOAT_POSITIVE:{
+                view().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+            break;
             case PASSWORD: {
                 view().setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
             }
@@ -359,7 +364,7 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
             }
         }
     }
-
+    //TODO: fix return not dismissing keyboard in textfield and validation not working
     @Override
     public void afterTextChanged(Editable s) {
         if (!isFocused) return;

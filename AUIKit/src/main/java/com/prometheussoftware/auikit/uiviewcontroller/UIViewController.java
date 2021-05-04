@@ -195,8 +195,10 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         if (animated) {
             animationHandler.postDelayed(() -> {
                 viewWillDisappear(true);
-                viewDidDisappear(true);
-            }, animationDuration);
+                animationHandler.postDelayed(() -> {
+                    viewDidDisappear(true);
+                }, 2*animationDuration);
+            }, 2*animationDuration);
         }
         else {
             viewWillDisappear(false);

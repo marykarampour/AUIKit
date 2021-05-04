@@ -8,6 +8,8 @@ public class Text extends BaseModel {
         DEFAULT,
         INT,
         INT_POSITIVE,
+        FLOAT,
+        FLOAT_POSITIVE,
         ALPHABET,
         ALPHANUMERIC,
         EMAIL,
