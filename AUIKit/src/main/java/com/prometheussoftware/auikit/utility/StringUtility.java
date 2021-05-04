@@ -137,8 +137,8 @@ public class StringUtility {
             case INT_POSITIVE: return String.format("^([0-9]{0,%s})$", length);
             case FLOAT: return String.format("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$", length);
             case FLOAT_POSITIVE: return String.format("^([0-9]+([.][0-9]*)?|[.][0-9]+)$", length);
-            case ALPHABET: return "^([a-zA-Z])$";
-            case ALPHANUMERIC: return "^([a-zA-Z0-9])$";
+            case ALPHABET: return "^([a-zA-Z]+)$";
+            case ALPHANUMERIC: return "^([a-zA-Z0-9]+)$";
             case PASSWORD: return App.constants().Regex_Password();
             case EMAIL: return App.constants().Regex_Email();
             case PHONE: return App.constants().Regex_Phone();
