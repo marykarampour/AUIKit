@@ -11,7 +11,7 @@ public abstract class MainAppInfo implements AppInfoProtocol {
 
     @Override
     public Constants initializeConstants() {
-        return new Constants();
+        return null;
     }
 
     @Override
