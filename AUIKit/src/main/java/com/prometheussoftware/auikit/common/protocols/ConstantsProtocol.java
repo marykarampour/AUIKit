@@ -12,6 +12,8 @@ public interface ConstantsProtocol {
 
     //app
     default String CopyRight_STR() { return ""; }
+    String Version_Name_STR();
+    long Version_Code_STR();
 
 
     //spinner

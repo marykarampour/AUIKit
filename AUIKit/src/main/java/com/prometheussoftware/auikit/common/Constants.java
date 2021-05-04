@@ -8,7 +8,7 @@ import com.prometheussoftware.auikit.R;
 import com.prometheussoftware.auikit.BuildConfig;
 import com.prometheussoftware.auikit.common.protocols.ConstantsProtocol;
 
-public class Constants implements ConstantsProtocol {
+public abstract class Constants implements ConstantsProtocol {
 
     public static final int NOT_FOUND_ID = -1;
 
@@ -16,11 +16,27 @@ public class Constants implements ConstantsProtocol {
         return Build.DEVICE + ", " + Build.MODEL + ", " + Android_STR() + Build.VERSION.SDK_INT;
     }
 
-    public static String App_Version () {
-        return BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")";
+    /** Apps must add these values to their build.gradle
+     * @<code>
+     *      *  productFlavors {
+     *      *      flower {
+     *      *          minSdkVersion 26
+     *      *          targetSdkVersion 29
+     *      *          versionCode 5
+     *      *          versionName '1.0.0'
+     *      *          dimension 'default'
+     *      *          buildConfigField("long", "VERSION_CODE", "${flower.versionCode}")
+     *      *          buildConfigField("String","VERSION_NAME","\"${flower.versionName}\"")
+     *      *      }
+     *      *  }
+     * </code>
+
+     * */
+    public String App_Version () {
+        return Version_Name_STR() + " (" + Version_Code_STR() + ")";
     }
 
-    public static String App_Version_Name () {
+    public String App_Version_Name () {
         return App_Name() + App_Version();
     }
 
