@@ -143,12 +143,9 @@ public class BaseModel implements Serializable, Cloneable {
 
     @Override
     public boolean equals(Object object) {
-        if (object == this) {
-            return true;
-        }
-        if (object == null || (object.getClass() != getClass())) {
-            return false;
-        }
+        if (object == this) return true;
+        if (object == null || (object.getClass() != getClass())) return false;
+        if (super.equals(object)) return true;
 
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
 
