@@ -203,6 +203,17 @@ public class StringUtility {
 
     public static Float floatValue (String string) {
         String text = StringUtility.nonNull(string);
+        if (StringUtility.isEmpty(text) || ".".equals(text)) return null;
+        try {
+            return Float.parseFloat(text);
+        }
+        catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public static Float notNullFloatValue (String string) {
+        String text = StringUtility.nonNull(string);
         if (StringUtility.isEmpty(text) || ".".equals(text)) return 0.0f;
         try {
             return Float.parseFloat(text);
