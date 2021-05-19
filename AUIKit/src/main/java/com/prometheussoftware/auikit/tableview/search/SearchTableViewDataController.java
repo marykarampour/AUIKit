@@ -1,5 +1,7 @@
 package com.prometheussoftware.auikit.tableview.search;
 
+import android.text.SpannableStringBuilder;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -36,7 +38,8 @@ public class SearchTableViewDataController <T extends BaseModel & BaseCellDataSo
 
             if (item instanceof Pair) {
                 Pair<TableObject.CellInfo, T> obj = (Pair<TableObject.CellInfo, T>)item;
-                view.getTitleLabel().setText(obj.getSecond().title());
+                SpannableStringBuilder title = obj.getSecond().attributedTitle();
+                view.getTitleLabel().setText(title != null ? title : obj.getSecond().plainTitle());
                 view.setAccessoryType(obj.getFirst().selected ? UITableViewCell.ACCESSORY_TYPE.CHECKMARK : UITableViewCell.ACCESSORY_TYPE.NONE);
             }
         }

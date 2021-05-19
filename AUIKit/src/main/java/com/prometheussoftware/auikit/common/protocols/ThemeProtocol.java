@@ -30,7 +30,7 @@ public interface ThemeProtocol {
 
     //fonts
     default UIFont Small_Regular_Font() { return UIFont.systemFont(14, UIFont.STYLE.REGULAR); }
-    default UIFont XS_mall_Regular_Font() { return UIFont.systemFont(12, UIFont.STYLE.REGULAR); }
+    default UIFont X_Small_Regular_Font() { return UIFont.systemFont(12, UIFont.STYLE.REGULAR); }
     default UIFont XX_Small_Regular_Font() { return UIFont.systemFont(10, UIFont.STYLE.REGULAR); }
     default UIFont XXX_Small_Regular_Font() { return UIFont.systemFont(8, UIFont.STYLE.REGULAR); }
 
@@ -42,7 +42,7 @@ public interface ThemeProtocol {
     default UIFont Medium_Regular_Font() { return UIFont.systemFont(16, UIFont.STYLE.REGULAR); }
 
     default UIFont Small_Bold_Font() { return UIFont.systemFont(14, UIFont.STYLE.BOLD); }
-    default UIFont XS_mall_Bold_Font() { return UIFont.systemFont(12, UIFont.STYLE.BOLD); }
+    default UIFont X_Small_Bold_Font() { return UIFont.systemFont(12, UIFont.STYLE.BOLD); }
     default UIFont XX_Small_Bold_Font() { return UIFont.systemFont(10, UIFont.STYLE.BOLD); }
     default UIFont XXX_Small_Bold_Font() { return UIFont.systemFont(8, UIFont.STYLE.BOLD); }
 
