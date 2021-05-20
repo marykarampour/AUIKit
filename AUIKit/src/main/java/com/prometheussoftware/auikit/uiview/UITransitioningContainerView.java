@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Looper;
 import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.transition.TransitionManager;
@@ -74,7 +75,7 @@ public class UITransitioningContainerView extends UIView {
 
     private void updateTransitioningImage(CompletionCallback callback) {
         if (this.currentContentView != null) {
-            ImageUtility.imageFromView(this.currentContentView, new Handler(), new ImageUtility.BitmapCopy() {
+            ImageUtility.imageFromView(this.currentContentView, new Handler(Looper.getMainLooper()), new ImageUtility.BitmapCopy() {
                 @Override
                 public void finishedWithResult(Bitmap bitmap) {
                     transitioningView.getView().getView().setImageBitmap(bitmap);

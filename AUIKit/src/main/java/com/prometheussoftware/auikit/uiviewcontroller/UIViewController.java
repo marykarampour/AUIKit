@@ -433,6 +433,10 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         if (presentingParent != null && presentingParent != this) {
             return presentingParent.getPresentingViewController();
         }
+        UINavigationController nav = getNavigationController();
+        if (nav != null) {
+            return nav.getPresentingViewController();
+        }
         return null;
     }
 
