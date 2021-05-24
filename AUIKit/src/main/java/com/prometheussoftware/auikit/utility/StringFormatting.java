@@ -54,6 +54,20 @@ public class StringFormatting {
         return builder;
     }
 
+    public static SpannableStringBuilder attributedTitleSubtitle (String title, UIColor titleColor, UIFont titleFont, String subtitle, UIColor subtitleColor, UIFont subtitleFont, String delimiter) {
+
+        ArrayList<StringFormatting.Attributes> attrs = new ArrayList<>();
+        attrs.add(new StringFormatting.Attributes(
+                title,
+                titleColor,
+                titleFont));
+        attrs.add(new StringFormatting.Attributes(
+                subtitle,
+                subtitleColor,
+                subtitleFont));
+
+        return StringFormatting.attributedText(attrs, delimiter);
+    }
 
 
     //region subclasses

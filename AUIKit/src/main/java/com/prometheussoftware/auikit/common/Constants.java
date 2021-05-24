@@ -5,7 +5,6 @@ import android.util.DisplayMetrics;
 import android.util.Size;
 
 import com.prometheussoftware.auikit.R;
-import com.prometheussoftware.auikit.BuildConfig;
 import com.prometheussoftware.auikit.common.protocols.ConstantsProtocol;
 
 public abstract class Constants implements ConstantsProtocol {

@@ -3,6 +3,7 @@ package com.prometheussoftware.auikit.uiviewcontroller;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Looper;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
 import com.prometheussoftware.auikit.common.App;
@@ -496,8 +497,13 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     }
 
     public void runOnUiThread(Runnable run) {
-        if (window() != null)
-            window().runOnUiThread(run);
+        runOnUiThread(run, 0);
+    }
+
+    public void runOnUiThread(Runnable run, int delay) {
+        if (window() != null) {
+            new Handler(Looper.getMainLooper()).postDelayed(run, delay);
+        }
     }
 
     public void endEditing() {
