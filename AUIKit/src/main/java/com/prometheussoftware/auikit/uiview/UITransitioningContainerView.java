@@ -78,8 +78,10 @@ public class UITransitioningContainerView extends UIView {
             ImageUtility.imageFromView(this.currentContentView, new Handler(Looper.getMainLooper()), new ImageUtility.BitmapCopy() {
                 @Override
                 public void finishedWithResult(Bitmap bitmap) {
-                    transitioningView.getView().getView().setImageBitmap(bitmap);
-                    callback.done();
+                    runOnUiThread( () -> {
+                        transitioningView.getView().getView().setImageBitmap(bitmap);
+                        callback.done();
+                    });
                 }
 
                 @Override

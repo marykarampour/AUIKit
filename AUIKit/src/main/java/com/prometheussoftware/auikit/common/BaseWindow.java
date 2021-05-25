@@ -142,7 +142,8 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
         view.setCurrentContentView(viewController.view(), () -> {
             setVisibleViewController(viewController);
             rotate(viewController.preferredInterfaceOrientationForPresentation());
-            view.applyTransitionAnimation(isDismiss, animation, completion);
+            Navigation.TRANSITION_ANIMATION anim = MainApplication.getState() == MainApplication.STATE.FOREGROUND ? animation : Navigation.TRANSITION_ANIMATION.NONE;
+            view.applyTransitionAnimation(isDismiss, anim, completion);
         });
     }
 
