@@ -4,7 +4,6 @@ import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;
-import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewController;
 import com.prometheussoftware.auikit.uiview.protocols.UISearchDelegate;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
