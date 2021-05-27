@@ -75,7 +75,7 @@ public abstract class CollapsingSectionsMenuViewController extends CollapsingTab
                     view.getTitleLabel().setTextColor(obj.textColor);
                     view.getTitleLabel().setText(obj.title);
                     view.getTitleLabel().setFont(obj.font);
-                    view.setHeight(obj.hidden ? 0 : heightForRowAtIndexPath(item, indexPath));
+                    view.setHeight(obj.hidden ? 0 : delegate.heightForRowAtIndexPath(item, indexPath));
                     view.setAccessoryType(UITableViewCell.ACCESSORY_TYPE.DISCLOSURE_INDICATOR);
                 }
             }

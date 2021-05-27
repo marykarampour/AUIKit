@@ -9,16 +9,16 @@ import com.prometheussoftware.auikit.tableview.UITableViewContentController;
 import com.prometheussoftware.auikit.uiview.UISearchBar;
 import com.prometheussoftware.auikit.uiview.UIView;
 
-public class SearchTableViewContentController <T extends BaseModel & BaseCellDataSource> extends UITableViewContentController <SearchTableViewDataController<T>> {
+public class SearchTableViewContentController <T extends BaseModel & BaseCellDataSource, D extends SearchTableViewDataController<T>> extends UITableViewContentController <D> {
 
     private UISearchBar searchView;
 
-    public SearchTableViewContentController(UIView view, SearchTableViewDataController dataController) {
+    public SearchTableViewContentController(UIView view, D dataController) {
         super(view, dataController);
     }
 
     /** Call load in your subclass version of this constructor */
-    public SearchTableViewContentController(SearchTableViewDataController dataController) {
+    public SearchTableViewContentController(D dataController) {
         super(dataController);
     }
 

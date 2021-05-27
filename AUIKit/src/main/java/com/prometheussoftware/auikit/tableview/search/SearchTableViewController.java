@@ -13,7 +13,7 @@ import com.prometheussoftware.auikit.utility.StringUtility;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class SearchTableViewController <T extends BaseModel & BaseCellDataSource> extends UITableViewController <SearchTableViewDataController<T>, SearchTableViewContentController<T>> implements UISearchDelegate {
+public abstract class SearchTableViewController <T extends BaseModel & BaseCellDataSource, D extends SearchTableViewDataController<T>> extends UITableViewController <D, SearchTableViewContentController<T, D>> implements UISearchDelegate {
 
     private ArrayList<T> items;
     private ArrayList<T> searchItems;
@@ -98,16 +98,13 @@ public class SearchTableViewController <T extends BaseModel & BaseCellDataSource
 
     private TableObject.RowData rowData (T selectedItem) {
 
-        TableObject.RowData data = new TableObject.RowData(getSearchItems(), UITableViewCell.Concrete.class);
+        TableObject.RowData data = new TableObject.RowData(getSearchItems(), cellClass());
         ArrayList<T> selected = ArrayUtility.arrayOf(selectedItem);
         data.setSelected(selected);
         return data;
     }
 
-    @Override
-    protected SearchTableViewDataController createDataController() {
-        return new SearchTableViewDataController();
-    }
+    protected abstract Class cellClass();
 
     @Override
     protected SearchTableViewContentController createContentController(SearchTableViewDataController dataController) {
