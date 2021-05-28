@@ -1,5 +1,6 @@
 package com.prometheussoftware.auikit.uiview;
 
+import android.os.SystemClock;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +32,9 @@ public class UIControl extends UIView implements View.OnTouchListener {
     private boolean multiTargetEnabled = true;
 
     private MotionEvent lastTouch;
+    private long lastTouchUpTimeStamp;
+    private static final long DOUBLE_TAP_INTERVAL = 500;
+
     private boolean isLongTouch;
     private GestureDetector gestureDetector;
 
@@ -148,6 +152,11 @@ public class UIControl extends UIView implements View.OnTouchListener {
                     if (target instanceof TargetDelegate) {
                         if (event.getAction() == MotionEvent.ACTION_UP) {
                             setHighlighted(false);
+
+                            long currentTouchUpTimeStamp = SystemClock.elapsedRealtime();
+                            if (currentTouchUpTimeStamp - lastTouchUpTimeStamp < DOUBLE_TAP_INTERVAL) return false;
+
+                            lastTouchUpTimeStamp = currentTouchUpTimeStamp;
                             if (target instanceof TouchUp) {
                                 TouchUp touchUp = (TouchUp)target;
                                 touchUp.controlReleased(this);
