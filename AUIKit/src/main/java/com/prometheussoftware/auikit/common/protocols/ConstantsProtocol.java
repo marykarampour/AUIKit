@@ -29,6 +29,10 @@ public interface ConstantsProtocol {
     default int Nav_Bar_Height() { return Dimensions.Int_64(); }
     default int Status_Bar_Height() { return Dimensions.Int_22(); }
 
+    //nav bar
+    default int Tab_Bar_Icon_Height() { return Dimensions.Int_32(); }
+    default int Tab_Bar_Height() { return Dimensions.Int_64(); }
+
     //controls
     default int TextField_Height() { return Dimensions.Int_44(); }
 

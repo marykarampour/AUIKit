@@ -34,11 +34,6 @@ public class Assets implements AssetsProtocol {
     // navigation
 
     @Override
-    public UIImage Shadow_Gradient_Image() {
-        return imageFromID(AssetIDs.Shadow_Gradient_ID());
-    }
-
-    @Override
     public UIImage Left_Chevron_Image() {
         return imageFromID(AssetIDs.Left_Chevron_ID());
     }
@@ -83,4 +78,19 @@ public class Assets implements AssetsProtocol {
         return imageFromID(AssetIDs.X_Mark_Round_ID());
     }
 
+    //region static images
+
+    public static UIImage Pixel_Image() {
+        return imageFromID(AssetIDs.Pixel_ID());
+    }
+
+    public static UIImage Shadow_Gradient_Up_Image() {
+        return imageFromID(AssetIDs.Shadow_Gradient_Up_ID());
+    }
+
+    public static UIImage Shadow_Gradient_Down_Image() {
+        return imageFromID(AssetIDs.Shadow_Gradient_Down_ID());
+    }
+
+    //endregion
 }

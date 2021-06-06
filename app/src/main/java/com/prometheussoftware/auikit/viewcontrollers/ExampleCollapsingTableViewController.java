@@ -1,7 +1,5 @@
 package com.prometheussoftware.auikit.viewcontrollers;
 
-import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -15,7 +13,6 @@ import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
-import com.prometheussoftware.auikit.tableview.UITableViewDataController;
 import com.prometheussoftware.auikit.tableview.UITableViewHolder;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
 import com.prometheussoftware.auikit.tableview.collapsing.CollapsingTableViewController;
@@ -44,7 +41,7 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
     }
 
     @Override
-    protected UITableViewDataController createDataController() {
+    protected CollapsingTableViewDataController createDataController() {
         return new DataController();
     }
 
@@ -66,7 +63,8 @@ public class ExampleCollapsingTableViewController extends CollapsingTableViewCon
             sections.add(section);
 
             contentController.disableRecycling(section.info.getIdentifier());
-            contentController.disableRecycling(data.getItemsInfo().array.get(0).getFirst().getIdentifier());
+            ArrayList<Pair<TableObject.CellInfo, Object>> array = data.itemsArray();
+            contentController.disableRecycling(array.get(0).getFirst().getIdentifier());
         }
 
         contentController.setData(sections);

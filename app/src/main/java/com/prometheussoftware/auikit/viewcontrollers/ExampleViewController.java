@@ -8,6 +8,7 @@ public class ExampleViewController extends UIViewController {
     @Override
     public void viewDidLoad() {
         super.viewDidLoad();
+        setTitle("ExampleVC");
         view().setBackgroundColor(UIColor.blue(1.0f));
     }
 }

@@ -186,7 +186,7 @@ public abstract class CollapsingSectionsMenuViewController extends CollapsingTab
                             MenuObject.Item obj = itemAtIndex(i);
                             UIViewController nextVC = viewControllerForObject(obj);
                             if (nextVC != null) {
-                                Navigation.Node<UIViewController> nextVCNode = UINavigationController.navigationNode(nextVC, false);
+                                Navigation.Node<UIViewController> nextVCNode = Navigation.Tree.node(nextVC, false);
                                 VCs.getNodes().add(i, nextVCNode);
                             }
                             else {

@@ -14,6 +14,11 @@ public interface ThemeProtocol {
     default UIColor Nav_Bar_Background_Color() { return UIColor.white(1.0f); }
     default UIFont Nav_Bar_Font() { return UIFont.systemFont(14, UIFont.STYLE.BOLD); }
 
+    //tab bar
+    default UIColor Tab_Bar_Tint_Color() { return UIColor.black(1.0f); }
+    default UIColor Tab_Bar_Background_Color() { return UIColor.white(1.0f); }
+    default UIFont Tab_Bar_Font() { return UIFont.systemFont(12, UIFont.STYLE.REGULAR); }
+
     //controls
     default int Picker_View_Style() { return 0; }
     default UIColor TextField_Background_Color() { return UIColor.white(1.0f); }

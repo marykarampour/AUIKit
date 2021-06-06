@@ -17,7 +17,7 @@ import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
 
-public class UIViewController <V extends UIView> extends BaseModel implements LifeCycleDelegate.ViewController, LifeCycleDelegate.View, NavigationControllerProtocol {
+public class UIViewController <V extends UIView> extends BaseModel implements LifeCycleDelegate.ViewController, LifeCycleDelegate.View, NavigationControllerProtocol, UITabBarProtocol.Item {
 
     static {
         BaseModel.Register(UIViewController.class);
@@ -48,6 +48,8 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     public int animationDuration = UITransitioningContainerView.LAYOUT_LOAD_WAIT_DURATION;
 
     private String title;
+
+    private UITabBarItem tabBarItem;
 
     public UIViewController() {
         createDefaultNavigationBar();
@@ -452,7 +454,7 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public void setTitle(String title) {
         this.title = title;
-        navigationBar.setTitle(title);
+        if (navigationBar != null) navigationBar.setTitle(title);
     }
 
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
@@ -486,6 +488,31 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
     public UINavigationBar getNavigationBar() {
         return navigationBar;
+    }
+
+    @Override
+    public UITabBarItem tabBarItem() {
+        if (tabBarItem == null) {
+            tabBarItem = UITabBarItem.build(title, null, null);
+        }
+        return tabBarItem;
+    }
+
+    public void setTabBarItem(UITabBarItem tabBarItem) {
+        this.tabBarItem = tabBarItem;
+    }
+
+    @Override
+    public UITabBarController tabBarController() {
+
+        UIViewController parent = getPresentingViewController();
+        while (parent != null) {
+            if (parent instanceof UITabBarController) {
+                return (UITabBarController) parent;
+            }
+            parent = getPresentingViewController();
+        }
+        return null;
     }
 
     //endregion

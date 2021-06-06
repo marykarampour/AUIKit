@@ -750,6 +750,12 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintSet.applyTo(this);
     }
 
+    public void removeConstraints (UIView view) {
+        if (view == null || view.getParent() != this) return;
+        constraintSet.clear(view.getId());
+        constraintSet.applyTo(this);
+    }
+
     public ConstraintSet getConstraintSet() {
         return constraintSet;
     }

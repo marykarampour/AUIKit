@@ -11,6 +11,7 @@ import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.AppTheme;
+import com.prometheussoftware.auikit.common.Assets;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
@@ -169,7 +170,7 @@ public class UINavigationBar extends UIView {
         }
         else {
             shadow.setTintColor(shadowTintColor);
-            shadow.setImage(App.assets().Shadow_Gradient_Image());
+            shadow.setImage(Assets.Shadow_Gradient_Up_Image());
         }
     }
 

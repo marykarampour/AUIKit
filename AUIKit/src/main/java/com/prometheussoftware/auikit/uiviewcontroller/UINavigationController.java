@@ -186,25 +186,15 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
     private void addNavigationNode(UIViewController viewController, boolean isRoot) {
         if (viewController == null) return;
 
-        Navigation.Node<UIViewController> node = navigationNode(viewController, isRoot);
+        Navigation.Node<UIViewController> node = Navigation.Tree.node(viewController, isRoot);
         navigationStack.getNodes().add(node);
     }
 
     private void replaceNavigationNode(UIViewController viewController, int index, boolean isRoot) {
         if (viewController == null) return;
 
-        Navigation.Node<UIViewController> node = navigationNode(viewController, isRoot);
+        Navigation.Node<UIViewController> node = Navigation.Tree.node(viewController, isRoot);
         ArrayUtility.safeReplace(navigationStack.getNodes(), index, node);
-    }
-
-    public static Navigation.Node<UIViewController> navigationNode(UIViewController viewController, boolean isRoot) {
-
-        if (viewController == null) return null;
-
-        Navigation.Node node = new Navigation.Node();
-        node.setNodeObject(viewController);
-        node.setRoot(isRoot);
-        return node;
     }
 
     //endregion
@@ -288,7 +278,7 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
     //region UIViewController
 
     @Override protected void addChildViewController(UIViewController childController, boolean animated) {
-        clearChildViewControllersExcept(childViewController,animated);
+        clearChildViewControllersExcept(childViewController, animated);
         super.addChildViewController(childController, animated);
     }
 
