@@ -175,5 +175,9 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
         return 200;
     }
 
+    public UITabBar getTabBar() {
+        return tabBar;
+    }
+
     //endregion
 }

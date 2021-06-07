@@ -16,6 +16,7 @@ public interface ThemeProtocol {
 
     //tab bar
     default UIColor Tab_Bar_Tint_Color() { return UIColor.black(1.0f); }
+    default UIColor Tab_Bar_Selected_Item_Tint_Color() { return UIColor.blue(1.0f); }
     default UIColor Tab_Bar_Background_Color() { return UIColor.white(1.0f); }
     default UIFont Tab_Bar_Font() { return UIFont.systemFont(12, UIFont.STYLE.REGULAR); }
 

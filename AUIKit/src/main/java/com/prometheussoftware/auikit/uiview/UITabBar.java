@@ -30,7 +30,7 @@ public class UITabBar extends UIView {
     /** will show feedback based on mode. default is nil */
     private UITabBarItem selectedItem;
 
-    private UIColor barTintColor = App.theme().Tab_Bar_Tint_Color();
+    private UIColor barTintColor = App.theme().Tab_Bar_Selected_Item_Tint_Color();
 
     private UIColor unselectedItemTintColor = App.theme().Tab_Bar_Tint_Color();
 
@@ -59,7 +59,12 @@ public class UITabBar extends UIView {
         shadowImageView.setTintColor(UIColor.gray(0.4f));
 
         backgroundImageView = new UIImageView();
+
         selectionIndicatorImageView = new UIImageView();
+        selectionIndicatorImageView.setImage(Assets.Pixel_Image());
+        selectionIndicatorImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        selectionIndicatorImageView.setTintColor(UIColor.gray(0.1f));
+        selectionIndicatorImageView.setBackgroundColor(UIColor.gray(0.1f));
 
         setBackgroundImage(Assets.Pixel_Image());
         setSelectionIndicatorImage(Assets.Pixel_Image());
@@ -72,7 +77,6 @@ public class UITabBar extends UIView {
         addSubView(shadowImageView);
         addSubView(backgroundImageView);
         addSubView(contentView);
-        contentView.addSubView(selectionIndicatorImageView);
     }
 
     @Override
@@ -119,6 +123,7 @@ public class UITabBar extends UIView {
         this.items = items;
         this.buttons = arr;
 
+        contentView.addSubView(selectionIndicatorImageView);
         contentView.constraintHorizontally(arr, Dimensions.Int_2(), true);
         contentView.applyConstraints();
     }
@@ -134,7 +139,9 @@ public class UITabBar extends UIView {
             if (obj.equals(item)) {
                 button.setTintColor(barTintColor);
                 button.setImage(obj.getSelectedImage());
-                constraintSameForViews(selectionIndicatorImageView, button);
+                contentView.bringChildToFront(selectionIndicatorImageView);
+                contentView.constraintSameForViews(selectionIndicatorImageView, button);
+                contentView.applyConstraints();
             }
             else {
                 button.setImage(obj.getImage());
