@@ -66,7 +66,7 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
     //region view
 
     private void setSelectedViewController(Navigation.Node<UIViewController> node, boolean animated) {
-        if (node == null || node.getNodeObject() == null || node.equals(selectedViewController)) return;
+        if (node == null || node.getNodeObject() == null || node == selectedViewController) return;
 
         final Navigation.TRANSITION_ANIMATION animation =
                 !animated ? Navigation.TRANSITION_ANIMATION.NONE : Navigation.TRANSITION_ANIMATION.FADE;
@@ -153,7 +153,7 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
         if (item == null) return null;
 
         for (Navigation.Node<UIViewController> node : navigationStack.getNodes()) {
-            if (item.equals(node.getNodeObject().tabBarItem()))
+            if (item == node.getNodeObject().tabBarItem())
                 return node;
         }
         return null;
