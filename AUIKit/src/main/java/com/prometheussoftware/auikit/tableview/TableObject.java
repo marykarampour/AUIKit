@@ -16,7 +16,7 @@ public class TableObject {
     public static final int AutomaticDimension = -1;
 
     public interface RowDataProtocol <T> {
-        PairArray<CellInfo, T, Pair<CellInfo, T>> items();
+        PairArray<CellInfo, T> items();
         ArrayList<Pair<TableObject.CellInfo, T>> itemsArray();
     }
 
@@ -26,7 +26,7 @@ public class TableObject {
             BaseModel.Register(RowData.class);
         }
 
-        private PairArray<CellInfo, T, Pair<CellInfo, T>> items = new PairArray();
+        private PairArray<CellInfo, T> items = new PairArray();
 
         public RowData() { }
 
@@ -100,11 +100,11 @@ public class TableObject {
         }
 
         @Override
-        public PairArray<CellInfo, T, Pair<CellInfo, T>> items() {
+        public PairArray<CellInfo, T> items() {
             return items;
         }
 
-        public PairArray<CellInfo, T, Pair<CellInfo, T>> getItems() {
+        public PairArray<CellInfo, T> getItems() {
             return items;
         }
 

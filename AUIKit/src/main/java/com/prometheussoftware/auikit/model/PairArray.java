@@ -4,17 +4,17 @@ import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
 
-public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
+public class PairArray <S, T> extends BaseModel {
 
-    private ArrayList<P> array = new ArrayList<>();
+    private ArrayList<Pair<S, T>> array = new ArrayList<>();
 
-    public ArrayList<P> getArray() {
+    public ArrayList<Pair<S, T>> getArray() {
         return array;
     }
 
     public PairArray() { }
 
-    public PairArray(ArrayList<P> array) {
+    public PairArray(ArrayList<Pair<S, T>> array) {
         this.array = array;
     }
 
@@ -24,16 +24,16 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
         BaseModel.Register(PairArray.class);
     }
 
-    public P newPair(S first, T second) {
-        return (P) new Pair(first, second);
+    public Pair<S, T> newPair(S first, T second) {
+        return new Pair(first, second);
     }
 
     public void addPair (S first, T second) {
-        P pair = newPair(first, second);
+        Pair<S, T> pair = newPair(first, second);
         array.add(pair);
     }
 
-    public P pairAtIndex (int index) {
+    public Pair<S, T> pairAtIndex (int index) {
         return array.get(index);
     }
 
@@ -47,11 +47,11 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
 
     public void clear () { array.clear(); }
 
-    public void addAll (ArrayList<P> arr) { array.addAll(arr); }
+    public void addAll (ArrayList<Pair<S, T>> arr) { array.addAll(arr); }
 
     public ArrayList<S> allKeys () {
         ArrayList<S> list = new ArrayList<>();
-        for (P pair : array) {
+        for (Pair<S, T> pair : array) {
             list.add(pair.getFirst());
         }
         return list;
@@ -59,18 +59,18 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
 
     public ArrayList<T> allValues () {
         ArrayList<T> list = new ArrayList<>();
-        for (P pair : array) {
+        for (Pair<S, T> pair : array) {
             list.add(pair.getSecond());
         }
         return list;
     }
 
-    public P firstObject () {
+    public Pair<S, T> firstObject () {
         if (array.size() == 0) return null;
         return array.get(0);
     }
 
-    public P lastObject () {
+    public Pair<S, T> lastObject () {
         if (array.size() == 0) return null;
         return array.get(array.size() - 1);
     }
@@ -86,8 +86,8 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
     }
 
     public static <S, T, P extends Pair<S, T>> ArrayList<S> keysForObject(T object, ArrayList<P> array) {
-        if (array == null) return new ArrayList();
-        ArrayList arr = new ArrayList();
+        if (array == null) return new ArrayList<>();
+        ArrayList<S> arr = new ArrayList();
         for (P obj : array) {
             if (obj.getSecond().equals(object)) {
                 arr.add(obj.getFirst());
@@ -97,9 +97,9 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
     }
 
     public ArrayList<S> keysForObject(T object) {
-        if (this.array == null) return new ArrayList();
-        ArrayList arr = new ArrayList();
-        for (P obj : this.array) {
+        if (this.array == null) return new ArrayList<>();
+        ArrayList<S> arr = new ArrayList<>();
+        for (Pair<S, T> obj : this.array) {
             if (obj.getSecond().equals(object)) {
                 arr.add(obj.getFirst());
             }
@@ -112,16 +112,16 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
         return ArrayUtility.firstObject(keysForObject(object));
     }
 
-    public static <S, T, P extends Pair<S, T>> ArrayList<S> keysForObject(T object, PairArray<S, T, P> pairs) {
+    public static <S, T> ArrayList<S> keysForObject(T object, PairArray<S, T> pairs) {
         return keysForObject(object, pairs.array);
     }
 
-    public static <S, T, P extends Pair<S, T>> T objectForKey(S key, PairArray<S, T, P> pairs) {
+    public static <S, T> T objectForKey(S key, PairArray<S, T> pairs) {
         return objectForKey(key, pairs.array);
     }
 
-    public <S, T> T objectForKey(S key) {
-        for (P obj : array) {
+    public T objectForKey(S key) {
+        for (Pair<S, T> obj : array) {
             if (obj.getFirst().equals(key)) {
                 return (T) obj.getSecond();
             }
@@ -129,8 +129,8 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
         return null;
     }
 
-    public <S, T> int indexOfKey (S key) {
-        for (P pair : array) {
+    public int indexOfKey (S key) {
+        for (Pair<S, T> pair : array) {
             if (pair.getFirst().equals(key)) {
                 return array.indexOf(pair);
             }
@@ -138,8 +138,8 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
         return -1;
     }
 
-    public <S, T> int indexOfValue (T value) {
-        for (P pair : array) {
+    public int indexOfValue (T value) {
+        for (Pair<S, T> pair : array) {
             if (pair.getSecond().equals(value)) {
                 return array.indexOf(pair);
             }
@@ -157,7 +157,7 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
     }
 
     public static <S, T, P extends Pair<S, T>> ArrayList<T> allValuesInArray (ArrayList<P> pairs) {
-        if (pairs == null) return new ArrayList();
+        if (pairs == null) return new ArrayList<>();
         ArrayList<T> values = new ArrayList<>();
         for (P pair : pairs) {
             values.add((T) pair.getSecond());
@@ -165,8 +165,8 @@ public class PairArray <S, T, P extends Pair<S, T>> extends BaseModel {
         return values;
     }
 
-    public P pairForKey(String key) {
-        for (P obj : array) {
+    public Pair<S, T> pairForKey(String key) {
+        for (Pair<S, T> obj : array) {
             if (obj.getFirst().equals(key)) {
                 return obj;
             }

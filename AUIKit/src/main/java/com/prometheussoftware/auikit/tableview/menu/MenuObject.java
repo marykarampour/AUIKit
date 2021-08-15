@@ -49,14 +49,14 @@ public class MenuObject {
 
     public static class RowData extends TableObject.RowData <Item> {
 
-        private PairArray<TableObject.CellInfo, MenuObject.Item, Pair<TableObject.CellInfo, MenuObject.Item>> menuItems = new PairArray();
+        private PairArray<TableObject.CellInfo, MenuObject.Item> menuItems = new PairArray();
 
         /** Will create an array of pairs of CellInfo and item */
         public RowData(ArrayList<Item> items, Class cellClass) {
             super();
             if (items == null) return;
 
-            PairArray<TableObject.CellInfo, Item, Pair<TableObject.CellInfo, Item>> pairs = new PairArray<>();
+            PairArray<TableObject.CellInfo, Item> pairs = new PairArray<>();
             for (Item obj : items) {
                 pairs.addPair(new TableObject.CellInfo(cellClass), obj);
             }
@@ -68,24 +68,24 @@ public class MenuObject {
             super();
             if (items == null) return;
 
-            PairArray<TableObject.CellInfo, Item, Pair<TableObject.CellInfo, Item>> pairs = new PairArray<>();
+            PairArray<TableObject.CellInfo, Item> pairs = new PairArray<>();
             for (Item obj : items) {
                 pairs.addPair(new TableObject.CellInfo(cellClass, instanceId), obj);
             }
             setMenuItems(pairs);
         }
 
-        public PairArray<TableObject.CellInfo, MenuObject.Item, Pair<TableObject.CellInfo, MenuObject.Item>> getMenuItems() {
+        public PairArray<TableObject.CellInfo, MenuObject.Item> getMenuItems() {
             return menuItems;
         }
 
-        public void setMenuItems(PairArray<TableObject.CellInfo, Item, Pair<TableObject.CellInfo, Item>> menuItems) {
+        public void setMenuItems(PairArray<TableObject.CellInfo, Item> menuItems) {
             this.menuItems = menuItems;
             setItems(menuItems);
         }
 
         @Override
-        public PairArray<TableObject.CellInfo, Item, Pair<TableObject.CellInfo, Item>> items() {
+        public PairArray<TableObject.CellInfo, Item> items() {
             return menuItems;
         }
     }
