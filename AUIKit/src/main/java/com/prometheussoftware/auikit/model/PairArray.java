@@ -33,6 +33,10 @@ public class PairArray <S, T> extends BaseModel {
         array.add(pair);
     }
 
+    public void addPair (Pair<S, T> pair) {
+        array.add(pair);
+    }
+
     public Pair<S, T> pairAtIndex (int index) {
         return array.get(index);
     }

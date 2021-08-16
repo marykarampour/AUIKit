@@ -6,8 +6,9 @@ import android.util.Size;
 
 import com.prometheussoftware.auikit.R;
 import com.prometheussoftware.auikit.common.protocols.ConstantsProtocol;
+import com.prometheussoftware.auikit.datamanagement.SQLConstantsProtocol;
 
-public abstract class Constants implements ConstantsProtocol {
+public abstract class Constants implements ConstantsProtocol, SQLConstantsProtocol {
 
     public static final int NOT_FOUND_ID = -1;
 

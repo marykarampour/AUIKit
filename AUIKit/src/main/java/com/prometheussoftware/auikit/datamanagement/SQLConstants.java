@@ -1,6 +1,6 @@
 package com.prometheussoftware.auikit.datamanagement;
 
-public class SQLConstants implements SQLConstantsProtocol {
+public class SQLConstants {
 
     public static String exec_create_table () {
         return "CREATE TABLE IF NOT EXISTS %s %s ;";

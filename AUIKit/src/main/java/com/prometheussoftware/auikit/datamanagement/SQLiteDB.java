@@ -56,7 +56,6 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
         return null;
     }
 
-
     //DB creation
 
     public void createTable (String table, String schema) {
