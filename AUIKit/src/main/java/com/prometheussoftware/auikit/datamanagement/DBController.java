@@ -19,9 +19,15 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
 
     protected T sqLiteDB;
 
+    public DBController () {
+        this.setSqLiteDB();
+    }
+
     public DBController (Context context) {
         this.setSqLiteDB(context);
     }
+
+    public void setSqLiteDB() { }
 
     public void setSqLiteDB(Context context) { }
 

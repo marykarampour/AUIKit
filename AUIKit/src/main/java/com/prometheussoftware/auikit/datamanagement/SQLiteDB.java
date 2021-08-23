@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteStatement;
 
 import androidx.annotation.Nullable;
 
+import com.prometheussoftware.auikit.common.MainApplication;
 import com.prometheussoftware.auikit.model.PairArray;
 import com.prometheussoftware.auikit.utility.DEBUGLOG;
 
@@ -18,6 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
+
+    public SQLiteDB(@Nullable String name, int version) {
+        super(MainApplication.getContext(), name, null, version);
+        init();
+    }
 
     public SQLiteDB(@Nullable Context context, @Nullable String name, int version) {
         super(context, name, null, version);
