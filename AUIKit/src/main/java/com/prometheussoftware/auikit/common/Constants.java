@@ -147,6 +147,10 @@ public abstract class Constants implements ConstantsProtocol, SQLConstantsProtoc
         return StringResource(R.string.save);
     }
 
+    public static String Error_STR() {
+        return StringResource(R.string.error);
+    }
+
     @Override
     public String Generic_Success_Message() {
         return null;

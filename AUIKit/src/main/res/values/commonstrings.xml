@@ -20,5 +20,6 @@
     <string name="android">Android</string>
     <string name="sign_in">Sign in</string>
     <string name="logout">Logout</string>
+    <string name="error">Error!</string>
 
 </resources>
