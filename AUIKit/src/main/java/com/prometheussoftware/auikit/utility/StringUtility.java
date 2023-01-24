@@ -256,6 +256,7 @@ public class StringUtility {
     }
 
     public static String numbersOnly (String s) {
+        if (isEmpty(s)) return null;
         return s.replaceAll("[^0-9]", "");
     }
 
