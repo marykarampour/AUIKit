@@ -260,6 +260,11 @@ public class StringUtility {
         return s.replaceAll("[^0-9]", "");
     }
 
+    public static String alphanumericOnly (String s) {
+        if (isEmpty(s)) return null;
+        return s.replaceAll("[^0-9A-Z]", "");
+    }
+
     public static boolean isNumbersOnly (String s) {
         if (isEmpty(s)) return false;
         return s.equals(numbersOnly(s));
