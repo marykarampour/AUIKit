@@ -256,7 +256,13 @@ public class StringUtility {
     }
 
     public static String numbersOnly (String s) {
+        if (isEmpty(s)) return null;
         return s.replaceAll("[^0-9]", "");
+    }
+
+    public static String alphanumericOnly (String s) {
+        if (isEmpty(s)) return null;
+        return s.replaceAll("[^0-9A-Z]", "");
     }
 
     public static boolean isNumbersOnly (String s) {
