@@ -3,7 +3,6 @@ package com.prometheussoftware.auikit.tableview.menu;
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIFont;
 import com.prometheussoftware.auikit.model.BaseModel;
-import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.model.PairArray;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;

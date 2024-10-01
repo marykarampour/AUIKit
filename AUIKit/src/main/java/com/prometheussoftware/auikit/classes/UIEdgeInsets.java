@@ -16,6 +16,13 @@ public class UIEdgeInsets extends BaseModel {
         this.right = right;
     }
 
+    public UIEdgeInsets(int inset) {
+        this.top = inset;
+        this.left = inset;
+        this.bottom = inset;
+        this.right = inset;
+    }
+
     public UIEdgeInsets() {
         this.top = 0;
         this.left = 0;
