@@ -2,7 +2,6 @@ package com.prometheussoftware.auikit.tableview.collapsing;
 
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.tableview.UITableViewDataController;
-import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
 import com.prometheussoftware.auikit.uiview.UIControl;
 import com.prometheussoftware.auikit.uiview.UISwitch;
 
@@ -12,9 +11,6 @@ public class CollapsingTableViewDataController extends UITableViewDataController
      @apiNote You are responsible for updating/tapping etc. of the header, this does not
      result in header button press programmatically, only reloads the rows in sections */
     public boolean multiExpandedSectionEnabled = true;
-
-    /** Responsible for performing updates when a section header is tapped */
-    private UITableViewProtocol.Content contentDelegate;
 
     public CollapsingTableViewDataController() {
         super();
@@ -63,25 +59,6 @@ public class CollapsingTableViewDataController extends UITableViewDataController
         return !sectionIsCollapsable(section) || sectionObject.isExpanded;
     }
 
-    @Override public void didSelectSectionAtIndex(TableObject.Section item, int section) {
-
-        if (!item.isEnabled || !item.isCollapsible()) return;
-        if (contentDelegate != null) {
-            contentDelegate.performUpdateForDidSelectSectionAtIndex(item, section);
-        }
-    }
-
-    @Override public void didSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {
-
-        if (!item.isEnabled || !item.isCollapsible()) return;
-        if (contentDelegate != null) {
-            contentDelegate.performUpdateForDidSelectSectionAtIndex(item, section, selected);
-        }
-    }
-
     @Override public void buttonViewSetSelected(UIControl view, boolean selected) { }
 
-    public void setContentDelegate(UITableViewProtocol.Content contentDelegate) {
-        this.contentDelegate = contentDelegate;
-    }
 }

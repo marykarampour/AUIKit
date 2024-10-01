@@ -1,6 +1,5 @@
 package com.prometheussoftware.auikit.uiview;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.util.Size;
 import android.view.View;
@@ -611,6 +610,14 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintHorizontally(views, interItemMargin, horizontalMargin, verticalMargin, equalWidths, ConstraintSet.START | ConstraintSet.END);
     }
 
+    public void constraintVerticallyAllSides (ArrayList<? extends UIView> views, int interItemMargin, boolean equalHeights) {
+        constraintVertically(views, interItemMargin, 0, 0, equalHeights, ConstraintSet.TOP | ConstraintSet.BOTTOM);
+    }
+
+    public void constraintHorizontallyAllSides (ArrayList<? extends UIView> views, int interItemMargin, boolean equalWidths) {
+        constraintHorizontally(views, interItemMargin, 0, 0, equalWidths, ConstraintSet.START | ConstraintSet.END);
+    }
+
     /** @param parentConstraints Specifies constraints on parent's edges, pass 0 for none, ConstraintSet.TOP or ConstraintSet.BOTTOM or both, other values are ignored
      @param horizontalMargin Use CONSTRAINT_NO_PADDING to not constraint horizontally to the parent, it will center horizontally.
      @param verticalMargin The margin between the first item and the top of parent, and the last item and the bottom of parent. */
@@ -740,6 +747,12 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
             View vi = getChildAt(i);
             constraintSet.clear(vi.getId());
         }
+        constraintSet.applyTo(this);
+    }
+
+    public void removeConstraints (UIView view) {
+        if (view == null || view.getParent() != this) return;
+        constraintSet.clear(view.getId());
         constraintSet.applyTo(this);
     }
 

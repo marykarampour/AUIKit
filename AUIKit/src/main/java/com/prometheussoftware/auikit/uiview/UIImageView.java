@@ -1,7 +1,6 @@
 package com.prometheussoftware.auikit.uiview;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
@@ -51,6 +50,9 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
                 view().setImageBitmap(bitmap);
             }
             else {
+                if (getTintColor() != null && image != null) {
+                    image.setTintColor(getTintColor().get());
+                }
                 Drawable drawable = image.drawable();
                 view().setImageDrawable(drawable);
             }

@@ -4,13 +4,13 @@ import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.container.ChildViewController;
 import com.prometheussoftware.auikit.container.UIHeaderFooterContainerViewController;
 import com.prometheussoftware.auikit.model.BaseModel;
-import com.prometheussoftware.auikit.uiview.UIButton;
+import com.prometheussoftware.auikit.uiview.UIBarButton;
 import com.prometheussoftware.auikit.uiview.UINavigationBar;
 import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 
-public class UINavigationController extends UIHeaderFooterContainerViewController <UINavigationBar, UIView, UITransitioningContainerView, ChildViewController> {
+public class UINavigationController extends UIHeaderFooterContainerViewController <UIView, UIView, UITransitioningContainerView, ChildViewController> {
 
     static {
         BaseModel.Register(UINavigationController.class);
@@ -20,12 +20,21 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
 
     private Navigation.Node<UIViewController> visibleViewController;
 
+    /** This is the navigationBar of visibleViewController.
+     * When a view controller is pushed, its navigationBar becomes
+     * currentNavigationBar */
+    private UINavigationBar currentNavigationBar;
+
     private UIViewController rootViewController;
 
     public UINavigationController(UIViewController rootViewController) {
         super();
         init();
         this.rootViewController = rootViewController;
+    }
+
+    public UIViewController getRootViewController() {
+        return rootViewController;
     }
 
     private void setRootViewController(UIViewController rootViewController) {
@@ -177,25 +186,15 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
     private void addNavigationNode(UIViewController viewController, boolean isRoot) {
         if (viewController == null) return;
 
-        Navigation.Node<UIViewController> node = navigationNode(viewController, isRoot);
+        Navigation.Node<UIViewController> node = Navigation.Tree.node(viewController, isRoot);
         navigationStack.getNodes().add(node);
     }
 
     private void replaceNavigationNode(UIViewController viewController, int index, boolean isRoot) {
         if (viewController == null) return;
 
-        Navigation.Node<UIViewController> node = navigationNode(viewController, isRoot);
+        Navigation.Node<UIViewController> node = Navigation.Tree.node(viewController, isRoot);
         ArrayUtility.safeReplace(navigationStack.getNodes(), index, node);
-    }
-
-    public static Navigation.Node<UIViewController> navigationNode(UIViewController viewController, boolean isRoot) {
-
-        if (viewController == null) return null;
-
-        Navigation.Node node = new Navigation.Node();
-        node.setNodeObject(viewController);
-        node.setRoot(isRoot);
-        return node;
     }
 
     //endregion
@@ -208,9 +207,9 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
                 !animated ? Navigation.TRANSITION_ANIMATION.NONE :
                         (isDismiss ? Navigation.TRANSITION_ANIMATION.LEFTRIGHT : Navigation.TRANSITION_ANIMATION.RIGHTLEFT);
 
-        headerView.setBackBarButtonItemHidden(backBarButtonItemIsHidden());
-
         Navigation.Node<UIViewController> bottom = navigationStack.bottomNode();
+        setCurrentNavigationBar(bottom.getNodeObject().getNavigationBar());
+
         if (bottom != null) {
             bottom.getNodeObject().setAnimated(animated);
             contentView.setCurrentContentView(bottom.getNodeObject().view(), () -> {
@@ -218,7 +217,7 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
                 visibleViewController = bottom;
                 visibleViewController.getNodeObject().setNavigationController(this);
                 contentView.applyTransitionAnimation(isDismiss, animation, () -> { });
-                headerView.setTitle(visibleViewController.getNodeObject().getTitle());
+                currentNavigationBar.setTitle(visibleViewController.getNodeObject().getTitle());
             });
         }
     }
@@ -232,25 +231,35 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
         setHeaderExpanded(!hidden, true, null);
     }
 
-    @Override public void createHeaderView() {
-        headerView = new UINavigationBar();
-        headerView.setShadowTintColor(App.theme().Nav_Bar_Background_Color());
-        headerView.leftBarButtonItem().addTarget(this, v -> {
-            if (navigationStack.getNodes().size() < 2) {
-                dismiss();
-            }
-            else {
-                popViewControllerAnimated(true);
-            }
-        });
-    }
-
     protected void dismiss() {
         dismissViewController(Navigation.TRANSITION_ANIMATION.LEFTRIGHT, null);
     }
 
     @Override public int headerHeight() {
         return App.constants().Nav_Bar_Height() + App.constants().Status_Bar_Height();
+    }
+
+    public void setCurrentNavigationBar(UINavigationBar currentNavigationBar) {
+        this.currentNavigationBar = currentNavigationBar;
+
+        headerView.removeAllViews();
+        headerView.addSubView(currentNavigationBar);
+        headerView.constraintSidesForView(currentNavigationBar);
+        headerView.applyConstraints();
+
+        if (1 < navigationStack.getNodes().size()) {
+
+            UIBarButton leftButton = UINavigationBar.barButtonItem(App.assets().Left_Chevron_Image());
+            currentNavigationBar.setLeftBarButtonItem(leftButton);
+            currentNavigationBar.leftBarButtonItem().addTouchUpTarget(this, v -> {
+                if (navigationStack.getNodes().size() < 2) {
+                    dismiss();
+                }
+                else {
+                    popViewControllerAnimated(true);
+                }
+            });
+        }
     }
 
     @Override public void createChildVC() {
@@ -269,7 +278,7 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
     //region UIViewController
 
     @Override protected void addChildViewController(UIViewController childController, boolean animated) {
-        clearChildViewControllersExcept(childViewController,animated);
+        clearChildViewControllersExcept(childViewController, animated);
         super.addChildViewController(childController, animated);
     }
 
@@ -278,11 +287,6 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
         if (rootViewController.getParentViewController() == null) {
             setRootViewController(rootViewController);
         }
-    }
-
-    @Override
-    public void viewDidAppear(boolean animated) {
-        super.viewDidAppear(animated);
     }
 
     //endregion

@@ -22,7 +22,7 @@ public class ExampleTableViewController extends UITableViewController {
     @Override
     public void viewDidLoad() {
         super.viewDidLoad();
-
+        setTitle("ExampleTable");
         createTitles();
         loadData();
     }
@@ -40,7 +40,9 @@ public class ExampleTableViewController extends UITableViewController {
         section.rows = data;
         sections.add(section);
         contentController.setData(sections);
-        contentController.disableRecycling(data.getItemsInfo().array.get(0).getFirst().getIdentifier());
+
+        ArrayList<Pair<TableObject.CellInfo, Object>> array = data.itemsArray();
+        contentController.disableRecycling(array.get(0).getFirst().getIdentifier());
     }
 
     private void createTitles() {

@@ -3,17 +3,21 @@ package com.prometheussoftware.auikit.uiviewcontroller;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Looper;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
+import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.BaseWindow;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.uiview.UIButton;
+import com.prometheussoftware.auikit.uiview.UINavigationBar;
+import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
 
-public class UIViewController <V extends UIView> extends BaseModel implements LifeCycleDelegate.ViewController, LifeCycleDelegate.View, NavigationControllerProtocol {
+public class UIViewController <V extends UIView> extends BaseModel implements LifeCycleDelegate.ViewController, LifeCycleDelegate.View, NavigationControllerProtocol, UITabBarProtocol.Item {
 
     static {
         BaseModel.Register(UIViewController.class);
@@ -34,15 +38,22 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     /** If this view controller has been pushed onto a navigation controller, return it. */
     private UINavigationController navigationController;
 
+    /** Created on-demand so that a view controller may customize its navigation appearance. */
+    private UINavigationBar navigationBar;
+
     private Handler animationHandler = new Handler();
 
     private boolean animated;
 
-    public int animationDuration = 200;
+    public int animationDuration = UITransitioningContainerView.LAYOUT_LOAD_WAIT_DURATION;
 
     private String title;
 
-    public UIViewController() { }
+    private UITabBarItem tabBarItem;
+
+    public UIViewController() {
+        createDefaultNavigationBar();
+    }
 
     /** Add this to your custom constructors or call it after default constructor
      *
@@ -164,7 +175,9 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         if (animated) {
             animationHandler.postDelayed(() -> {
                 viewWillAppear(true);
-                viewDidAppear(true);
+                animationHandler.postDelayed(() -> {
+                    viewDidAppear(true);
+                }, animationDuration);
             }, 2*animationDuration);
         }
         else {
@@ -185,8 +198,10 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         if (animated) {
             animationHandler.postDelayed(() -> {
                 viewWillDisappear(true);
-                viewDidDisappear(true);
-            }, animationDuration);
+                animationHandler.postDelayed(() -> {
+                    viewDidDisappear(true);
+                }, 2*animationDuration);
+            }, 2*animationDuration);
         }
         else {
             viewWillDisappear(false);
@@ -343,6 +358,12 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         }
     }
 
+    /** Returns the navigation controller which this view is pushed into.
+     * If that's null, and presenting parent is navigation controller,
+     * returns presenting parent.
+     * If that's null returns presenting parent's navigation controller.
+     * Otherwise returns this if it is a navigation controller.
+     * If everything fails, it returns null. */
     public UINavigationController getNavigationController() {
 
         if (navigationController != null) {
@@ -350,8 +371,17 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         }
 
         UIViewController presentingParent = presentingParent();
-        if (presentingParent != null && presentingParent != this) {
-            return presentingParent.getNavigationController();
+        if (presentingParent != null) {
+
+            if (presentingParent instanceof UINavigationController)
+                return (UINavigationController) presentingParent;
+            else {
+                UINavigationController nav = presentingParent.getNavigationController();
+                if (nav != null) return nav;
+            }
+        }
+        else if (this instanceof UINavigationController) {
+            return (UINavigationController) this;
         }
         return null;
     }
@@ -406,6 +436,10 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         if (presentingParent != null && presentingParent != this) {
             return presentingParent.getPresentingViewController();
         }
+        UINavigationController nav = getNavigationController();
+        if (nav != null) {
+            return nav.getPresentingViewController();
+        }
         return null;
     }
 
@@ -420,56 +454,87 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public void setTitle(String title) {
         this.title = title;
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            nav.getHeaderView().setTitle(title);
-        }
+        if (navigationBar != null) navigationBar.setTitle(title);
     }
 
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public void setRightNavItemHidden(boolean hidden) {
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            nav.getHeaderView().rightBarButtonItem().setHidden(hidden);
-        }
+        navigationBar.rightBarButtonItem().setHidden(hidden);
     }
 
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public void setLeftNavItemHidden(boolean hidden) {
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            nav.getHeaderView().leftBarButtonItem().setHidden(hidden);
-        }
+        navigationBar.leftBarButtonItem().setHidden(hidden);
     }
 
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public UIButton getRightNavItem() {
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            return nav.getHeaderView().rightBarButtonItem();
-        }
-        return null;
+        return navigationBar.rightBarButtonItem();
     }
 
     /** Call in or after viewWillAppear, getNavigationController will return null if called too soon */
     public UIButton getLeftNavItem() {
-        UINavigationController nav = getNavigationController();
-        if (nav != null) {
-            return nav.getHeaderView().leftBarButtonItem();
-        }
-        return null;
+        return navigationBar.leftBarButtonItem();
     }
 
     public String getTitle() {
         return title;
     }
 
+    private void createDefaultNavigationBar() {
+        navigationBar = new UINavigationBar();
+        navigationBar.setShadowTintColor(App.theme().Nav_Bar_Background_Color());
+    }
+
+    public UINavigationBar getNavigationBar() {
+        return navigationBar;
+    }
+
+    @Override
+    public UITabBarItem tabBarItem() {
+        if (tabBarItem == null) {
+            tabBarItem = UITabBarItem.build(title, null, null);
+        }
+        return tabBarItem;
+    }
+
+    public void setTabBarItem(UITabBarItem tabBarItem) {
+        this.tabBarItem = tabBarItem;
+    }
+
+    @Override
+    public UITabBarController tabBarController() {
+
+        UIViewController parent = getPresentingViewController();
+        while (parent != null) {
+            if (parent instanceof UITabBarController) {
+                return (UITabBarController) parent;
+            }
+            parent = getPresentingViewController();
+        }
+        return null;
+    }
+
     //endregion
 
-    //region helpers
+    //region window helpers
 
     public BaseWindow window() {
         return UIView.getWindow();
+    }
+
+    public void runOnUiThread(Runnable run) {
+        runOnUiThread(run, 0);
+    }
+
+    public void runOnUiThread(Runnable run, int delay) {
+        if (window() != null) {
+            new Handler(Looper.getMainLooper()).postDelayed(run, delay);
+        }
+    }
+
+    public void endEditing() {
+        window().dismissKeyboard();
     }
 
     public void startActivityForResult(Intent intent, int requestCode) {

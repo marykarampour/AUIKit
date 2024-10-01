@@ -13,9 +13,10 @@ public interface UITableViewProtocol {
         void reloadData();
     }
 
-    interface Content {
+    interface UpdateDelegate {
         void performUpdateForDidSelectSectionAtIndex (TableObject.Section item, int section);
         void performUpdateForDidSelectSectionAtIndex (TableObject.Section item, int section, boolean selected);
+        void performUpdateForDidSelectRowAtIndexPath (Object item, IndexPath indexPath);
     }
 
     interface Data {
@@ -25,7 +26,7 @@ public interface UITableViewProtocol {
         }
 
         default UITableViewCell cellForRowAtIndexPath(UITableView tableView, IndexPath indexPath) {
-            return new UITableViewCell();
+            return new UITableViewCell.Concrete();
         }
 
         default int numberOfSectionsInTableView(UITableView tableView) {
@@ -70,7 +71,7 @@ public interface UITableViewProtocol {
         }
 
         default UITableViewCell cellForRowAtIndexPath(IndexPath indexPath) {
-            return new UITableViewCell();
+            return new UITableViewCell.Concrete();
         }
 
         default int numberOfSectionsInTableView() {

@@ -21,7 +21,9 @@ import com.prometheussoftware.auikit.uiview.UIImageView;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 
-public class UITableViewCell <A extends UIAccessoryView, S extends UIView> extends UIMultiViewLabel <UIImageView, A, UIView> {
+public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIView> extends UIMultiViewLabel <UIImageView, A, UIView> {
+
+    private ACCESSORY_TYPE accessoryType;
 
     /** Use only in case of static cells */
     public IndexPath indexPath;
@@ -40,6 +42,7 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
     public UITableViewCell() {
         super();
         setEnabled(true);
+        accessoryType = ACCESSORY_TYPE.NONE;
     }
 
     private void baseSetup() {
@@ -83,15 +86,19 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
 
     private void createInteractionLayer() {
         interactionLayer = new UIControl();
+        interactionLayer.setMultiTargetEnabled(false);
     }
 
     private void addInteractionLayer() {
-        setTopView(interactionLayer, false, false);
+        setTopView(interactionLayer, true, false);
     }
 
     @Override
     public void createRightView() {
         rightView = (A) UIAccessoryView.build(UIAccessoryView.TYPE.IMAGE);
+        rightView.setSelectedColor(App.theme().Bright_Blue_Color());
+        rightView.setDeselectedColor(App.theme().Bright_Blue_Color());
+        rightView.setEnabled(true);
     }
 
     @Override
@@ -118,10 +125,6 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
 
         constraintHeightForView(mainView, height);
         contentView.applyConstraints();
-    }
-
-    public void setHeight(int height) {
-        setMinHeight(height);
     }
 
     public void setAccessorySize(Size size) {
@@ -156,7 +159,7 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
 
     public void setSizeForView(Size size, UIView view, UIEdgeInsets insets, int verticalAlignment) {
 
-        if (!ViewUtility.isChildView(this, view)) return;
+        if (!ViewUtility.isChildView(contentView, view)) return;
 
         boolean hasHeight = this.getHeight() == 0 || (this.getHeight() > 0 && (size.getHeight() + insets.top + insets.bottom) < this.getHeight());
         if (hasHeight) {
@@ -188,7 +191,14 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
 
     @Override
     public Size rightViewSize() {
-        return App.constants().TableView_Accessory_Size();
+        switch (accessoryType) {
+            case DETAIL_DISCLOSURE_BUTTON: {
+                Size size = App.constants().TableView_Accessory_Size();
+                return new Size(size.getWidth()*2, size.getHeight());
+            }
+            default:
+                return App.constants().TableView_Accessory_Size();
+        }
     }
 
     @Override
@@ -216,12 +226,71 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
         return contentView;
     }
 
+    public void setAccessoryType(ACCESSORY_TYPE accessoryType) {
+        this.accessoryType = accessoryType;
+        switch (accessoryType) {
+            case CHECKMARK: {
+                rightView.setGone(false);
+                rightView.setOnImage(App.assets().Checkmark_Image());
+                rightView.setOffImage(App.assets().Checkmark_Image());
+            }
+            break;
+            case DETAIL_BUTTON: {
+                rightView.setGone(false);
+                rightView.setOnImage(App.assets().Details_Image());
+                rightView.setOffImage(App.assets().Details_Image());
+            }
+            break;
+            case DISCLOSURE_INDICATOR: {
+                rightView.setGone(false);
+                rightView.setOnImage(App.assets().Disclosure_Image());
+                rightView.setOffImage(App.assets().Disclosure_Image());
+            }
+            break;
+            case DROPDOWN_INDICATOR_EXPANDED: {
+                rightView.setGone(false);
+                rightView.setOnImage(App.assets().Down_Chevron_Image());
+                rightView.setOffImage(App.assets().Down_Chevron_Image());
+            }
+            break;
+            case DROPDOWN_INDICATOR_COLLAPSED: {
+                rightView.setGone(false);
+                rightView.setOnImage(App.assets().Right_Chevron_Image());
+                rightView.setOffImage(App.assets().Right_Chevron_Image());
+            }
+            break;
+            case DETAIL_DISCLOSURE_BUTTON: {
+                rightView.setGone(false);
+                rightView.setOnImage(App.assets().Details_Disclosure_Image());
+                rightView.setOffImage(App.assets().Details_Disclosure_Image());
+            }
+            break;
+            default: {
+                rightView.setGone(true);
+            }
+            break;
+        }
+
+        rightView.setOn(true);
+        setSizeForView(rightViewSize(), rightView);
+    }
+
+    public enum ACCESSORY_TYPE {
+        NONE,
+        DISCLOSURE_INDICATOR,
+        DROPDOWN_INDICATOR_COLLAPSED,
+        DROPDOWN_INDICATOR_EXPANDED,
+        DETAIL_DISCLOSURE_BUTTON,
+        CHECKMARK,
+        DETAIL_BUTTON
+    }
+
     //endregion
 
     //region actions
 
-    public void setSelectionAction(Object obj, UIControl.TargetDelegate target) {
-        interactionLayer.addTarget(obj, target);
+    public void setSelectionAction(Object obj, UIControl.TouchUp target) {
+        interactionLayer.addTouchUpTarget(obj, target);
     }
 
     //endregion
@@ -237,5 +306,42 @@ public class UITableViewCell <A extends UIAccessoryView, S extends UIView> exten
     @Override public void unLoadView() {
         loaded = false;
     }
+
+
+    //region subclass
+
+    /** A basic concrete subclass of UITableViewCell */
+    public static class Concrete extends UITableViewCell {
+
+        public Concrete() {
+            super();
+            init();
+        }
+
+        @Override
+        public void initView() {
+            super.initView();
+
+            getTitleLabel().setTextColor(UIColor.black(1.0f));
+            contentView.setBackgroundColor(UIColor.white(1.0f));
+        }
+
+        @Override
+        protected int leftPadding() {
+            return Dimensions.Int_8();
+        }
+
+        @Override
+        protected int rightPadding() {
+            return Dimensions.Int_8();
+        }
+
+        @Override
+        protected UIEdgeInsets insets() {
+            return new UIEdgeInsets(Dimensions.Int_8(), Dimensions.Int_8(), Dimensions.Int_8(), Dimensions.Int_8());
+        }
+    }
+
+    //endregion
 
 }

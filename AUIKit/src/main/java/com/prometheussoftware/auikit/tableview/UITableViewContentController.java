@@ -7,21 +7,23 @@ import java.util.ArrayList;
 
 public class UITableViewContentController <D extends UITableViewDataController> implements UITableViewProtocol.TableView {
 
-    protected UITableView tableView;
+    private UITableView tableView;
     private UIRefreshView refreshView;
     private UITableViewAdapter adapter;
-    protected D dataController;
-    protected UIView view;
+    private D dataController;
+    private UIView view;
 
-    /** Call load in your no param constructor */
-    public UITableViewContentController() {
+    /** Call load in your subclass version of this constructor */
+    public UITableViewContentController(D dataController) {
         view = new UIView();
         init();
+        setDataController(dataController);
     }
 
-    public UITableViewContentController(UIView view) {
+    public UITableViewContentController(UIView view, D dataController) {
         this.view = view;
         init();
+        setDataController(dataController);
         load();
     }
 
@@ -29,7 +31,6 @@ public class UITableViewContentController <D extends UITableViewDataController> 
      * for preload initialization */
     protected void init() {
         createViews();
-        createDataController();
     }
 
     public void load() {
@@ -52,10 +53,6 @@ public class UITableViewContentController <D extends UITableViewDataController> 
         setRefreshView(refreshView);
     }
 
-    protected void createDataController() {
-        setDataController((D) new UITableViewDataController());
-    }
-
     private void createAdapter() {
         setAdapter(new UITableViewAdapter(dataController));
     }
@@ -70,7 +67,7 @@ public class UITableViewContentController <D extends UITableViewDataController> 
         return adapter;
     }
 
-    public void setData(ArrayList<TableObject.Section> data) {
+    public <S extends TableObject.Section> void setData(ArrayList<S> data) {
         adapter.getDataController().setSections(data);
     }
 
@@ -96,6 +93,10 @@ public class UITableViewContentController <D extends UITableViewDataController> 
         view.addSubView(refreshView);
     }
 
+    public UIRefreshView getRefreshView() {
+        return refreshView;
+    }
+
     @Override public void reloadData() {
         if (view != null) view.post(() -> adapter.notifyDataSetChanged());
     }
@@ -112,7 +113,7 @@ public class UITableViewContentController <D extends UITableViewDataController> 
         tableView.disableRecycling(viewType);
     }
 
-    public <D extends UITableViewDataController> D getDataController() {
+    public D getDataController() {
         return (D) dataController;
     }
 

@@ -1,27 +1,17 @@
 package com.prometheussoftware.auikit.common;
 
-import android.Manifest;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
-import com.prometheussoftware.auikit.uiview.UIButton;
 import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiviewcontroller.Navigation;
@@ -46,21 +36,27 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        view = new UITransitioningContainerView();
-        ViewUtility.setViewID(view);
-
-        setRootViewController(createRootViewController());
-        setContentView(view);
-
-        addOverlay(AppSpinner.spinner().view());
-
+        setView();
         dispatchDataDelegateWithIntent(getIntent());
         setWindowProperties();
+    }
+
+    /** Called in onCreate, it is setting view of window,
+     * it also adds the spinner.
+     * Subclass must call before custom implementation */
+    protected void setView() {
+
+        view = new UITransitioningContainerView();
+        ViewUtility.setViewID(view);
+        setRootViewController(createRootViewController());
+        setContentView(view);
+        addOverlay(AppSpinner.spinner().view());
     }
 
     @Override
     protected void setWindow() {
         AUIKitApplication.setWindow(this);
+        App.initializeInstances(AUIKitApplication.getContext());
     }
 
     protected void setWindowProperties() {
@@ -146,7 +142,8 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
         view.setCurrentContentView(viewController.view(), () -> {
             setVisibleViewController(viewController);
             rotate(viewController.preferredInterfaceOrientationForPresentation());
-            view.applyTransitionAnimation(isDismiss, animation, completion);
+            Navigation.TRANSITION_ANIMATION anim = MainApplication.getState() == MainApplication.STATE.FOREGROUND ? animation : Navigation.TRANSITION_ANIMATION.NONE;
+            view.applyTransitionAnimation(isDismiss, anim, completion);
         });
     }
 

@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
+import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +38,15 @@ public final class NetworkManager {
         return T.cast(retrofits.get(type).create(T));
     }
 
+    public String preparedURL (String URL) {
+
+        if (StringUtility.isEmpty(URL)) return "";
+        if (!URL.endsWith("/")) {
+            URL = URL + "/";
+        }
+        return URL;
+    }
+
     public void setBaseURL (String URL) {
         addBaseURL(URL, 0);
     }
@@ -51,8 +61,10 @@ public final class NetworkManager {
 
     public void addBaseURL (String URL, Integer type) {
 
+        if (StringUtility.isEmpty(URL)) return;
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
+                .baseUrl(preparedURL(URL))
                 .client(httpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -62,8 +74,10 @@ public final class NetworkManager {
 
     public <C extends ConverterFactory> void addBaseURL (String URL, Integer type, C converter) {
 
+        if (StringUtility.isEmpty(URL)) return;
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
+                .baseUrl(preparedURL(URL))
                 .client(httpClient())
                 .addConverterFactory(converter)
                 .build();
@@ -73,12 +87,14 @@ public final class NetworkManager {
 
     public void addBaseURL (String URL, Integer type, @Nullable JsonDeserializer<Date> deserializer, @Nullable JsonSerializer<Date> serializer) {
 
+        if (StringUtility.isEmpty(URL)) return;
+
         GsonBuilder gson = new GsonBuilder();
         if (deserializer != null) gson.registerTypeAdapter(Date.class, deserializer);
         if (serializer != null) gson.registerTypeAdapter(Date.class, serializer);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
+                .baseUrl(preparedURL(URL))
                 .client(httpClient())
                 .addConverterFactory(GsonConverterFactory.create(gson.create()))
                 .build();

@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -29,9 +30,9 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setRequestedOrientation(defaultOrientation);
-        setWindow();
         super.onCreate(savedInstanceState);
         setActionBarProperties();
+        setWindow();
     }
 
     protected void setActionBarProperties() { }
@@ -55,7 +56,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void addPhoneCallAction(UIButton button, String phoneNumber) {
-        button.addTarget(this, v -> {
+        button.addTouchUpTarget(this, v -> {
             addPhoneCallAction(phoneNumber);
         });
     }
@@ -86,6 +87,11 @@ public class BaseActivity extends AppCompatActivity {
         if (!hasCameraPermissions()) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSIONS_REQUEST_CODE);
         }
+    }
+
+    public boolean isAsleep() {
+        PowerManager manager = (PowerManager) getSystemService(POWER_SERVICE);
+        return manager.isInteractive();
     }
 
     //endregion

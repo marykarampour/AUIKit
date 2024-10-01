@@ -8,7 +8,12 @@ import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.uiview.UIView;
 
-public class UICheckbox <L extends UIAccessoryView, R extends UIAccessoryView> extends UIMultiViewLabel <L, R, UIView> {
+public abstract class UICheckbox <L extends UIView, R extends UIView> extends UIMultiViewLabel <L, R, UIView> implements UICheckboxProtocol {
+
+    public enum TYPE {
+        LEFT,
+        RIGHT
+    }
 
     public UICheckbox() {
         super();
@@ -19,6 +24,13 @@ public class UICheckbox <L extends UIAccessoryView, R extends UIAccessoryView> e
         Identifier.Register(UICheckbox.class);
     }
 
+    public UICheckbox withType (TYPE type) {
+        switch (type) {
+            case LEFT: return new Left();
+            default:   return new Right();
+        }
+    }
+
     @Override
     public void init() {
         setSize();
@@ -27,14 +39,10 @@ public class UICheckbox <L extends UIAccessoryView, R extends UIAccessoryView> e
 
     @Override public void initView() {
         super.initView();
-        rightView.setTarget(v -> switchCheckbox(rightView, rightView.getLastTouch()));
-        setRightViewSize(rightView.size());
+        checkView().setTarget(v -> switchCheckbox(checkView(), checkView().getLastTouch()));
+        setRightViewSize(checkView().size());
     }
 
-    @Override public void createRightView() {
-        rightView = (R) UIAccessoryView.build(UIAccessoryView.TYPE.IMAGE);
-        rightView.setEnabled(true);
-    }
 
     @Override public R getRightView() {
         return super.getRightView();
@@ -44,17 +52,43 @@ public class UICheckbox <L extends UIAccessoryView, R extends UIAccessoryView> e
         return super.getLeftView();
     }
 
-    protected void switchCheckbox(UIAccessoryView view, MotionEvent event) {
-        rightView.setOn(!rightView.isOn());
-        handleSwitchCheckbox(rightView.isOn());
+    @Override public void switchCheckbox(UIAccessoryView view, MotionEvent event) {
+        checkView().setOn(!checkView().isOn());
+        handleSwitchCheckbox(checkView().isOn());
     }
 
-    protected void handleSwitchCheckbox(boolean on) {
-        rightView.setSelected(on);
+    @Override public void handleSwitchCheckbox(boolean on) {
+        checkView().setSelected(on);
     }
 
-    public Size estimatedSize() {
+    @Override public Size estimatedSize() {
         return new Size(Constants.Screen_Size().getWidth(), App.constants().Default_Row_Height());
+    }
+
+    public static class Left extends UICheckbox <UIAccessoryView, UIView> {
+
+        @Override
+        public UIAccessoryView checkView() {
+            return leftView;
+        }
+
+        @Override public void createLeftView() {
+            leftView = UIAccessoryView.build(UIAccessoryView.TYPE.IMAGE);
+            leftView.setEnabled(true);
+        }
+    }
+
+    public static class Right extends UICheckbox <UIView, UIAccessoryView> {
+
+        @Override
+        public UIAccessoryView checkView() {
+            return rightView;
+        }
+
+        @Override public void createRightView() {
+            rightView = UIAccessoryView.build(UIAccessoryView.TYPE.IMAGE);
+            rightView.setEnabled(true);
+        }
     }
 
 }

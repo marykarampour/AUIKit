@@ -2,7 +2,6 @@ package com.prometheussoftware.auikit.classes;
 
 import android.graphics.Color;
 
-import com.prometheussoftware.auikit.R;
 import com.prometheussoftware.auikit.common.MainApplication;
 import com.prometheussoftware.auikit.model.BaseModel;
 
@@ -54,6 +53,18 @@ public class UIColor extends BaseModel {
             color = MainApplication.getContext().getResources().getColor(colorID, null);
         } catch (Exception e) {}
         return (color & 0x00FFFFFF) | ((int)(alpha*255) << 24);
+    }
+
+    /** Creates a color from a hex string */
+    public static UIColor build(String hex) {
+        int color = Color.parseColor(hex);
+        return new UIColor(color, 1.0f);
+    }
+
+    /** Creates a color with transparency from a hex string */
+    public static UIColor build(String hex, float alpha) {
+        int color = Color.parseColor(hex);
+        return new UIColor(color, alpha);
     }
 
     public int get() {

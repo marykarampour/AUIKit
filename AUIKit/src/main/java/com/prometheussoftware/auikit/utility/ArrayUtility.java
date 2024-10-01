@@ -14,6 +14,17 @@ public class ArrayUtility {
         return array;
     }
 
+    public static <T extends Object> ArrayList<T> arrayOf (T ...objects) {
+
+        ArrayList<T> array = new ArrayList<>();
+        if (objects == null) return array;
+
+        for (T obj : objects) {
+            array.add(obj);
+        }
+        return array;
+    }
+
     public static String componentsJoinedByString (ArrayList<String> array, String delimiter) {
         String string = "";
         for (int i = 0; i < array.size(); i++) {

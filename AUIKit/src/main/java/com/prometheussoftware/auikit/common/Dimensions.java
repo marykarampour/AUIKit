@@ -52,6 +52,13 @@ public class Dimensions {
 
     public static int Int_1024() { return PixelDimension(R.dimen.dimen_1024); }
 
+    public static int Int_3() {
+        return PixelDimension(R.dimen.dimen_3);
+    }
+
+    public static int Int_5() {
+        return PixelDimension(R.dimen.dimen_5);
+    }
 
     public static int Int_6() {
         return PixelDimension(R.dimen.dimen_6);

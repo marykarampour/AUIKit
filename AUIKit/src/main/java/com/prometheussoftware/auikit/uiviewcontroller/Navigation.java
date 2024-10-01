@@ -131,5 +131,20 @@ public class Navigation {
         public boolean hasNoNode() {
             return nodes.size() == 0;
         }
+
+        public static <O extends BaseModel> Navigation.Node<O> node(O obj, boolean isRoot) {
+
+            if (obj == null) return null;
+
+            Navigation.Node<O> node = new Navigation.Node<O>();
+            node.setNodeObject(obj);
+            node.setRoot(isRoot);
+            return node;
+        }
+
+        public Navigation.Node<O> findNode(O obj) {
+            if (obj == null) return null;
+            return nodes.stream().filter(node -> obj.equals(node.getNodeObject())).findAny().get();
+        }
     }
 }

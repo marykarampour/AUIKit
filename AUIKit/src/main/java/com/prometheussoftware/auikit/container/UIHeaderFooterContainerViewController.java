@@ -10,12 +10,11 @@ import android.view.animation.AccelerateInterpolator;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
-import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 
-public abstract class UIHeaderFooterContainerViewController  <H extends UIView, F extends UIView, C extends UIView, VC extends UIViewController & HeaderFooterVCProtocol.Child> extends UIViewController implements HeaderFooterVCProtocol.Container {
+public abstract class UIHeaderFooterContainerViewController <H extends UIView, F extends UIView, C extends UIView, VC extends UIViewController & HeaderFooterVCProtocol.Child> extends UIViewController implements HeaderFooterVCProtocol.Container {
 
     private UIView backView;
     protected C contentView;

@@ -14,6 +14,7 @@ public abstract class MainApplication extends Application implements Application
 
     private static Context context;
     private static BaseActivity window;
+    private static STATE state;
 
     @Override
     public void onCreate() {
@@ -48,6 +49,7 @@ public abstract class MainApplication extends Application implements Application
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
+        state = STATE.FOREGROUND;
         setActivity(activity);
     }
 
@@ -61,6 +63,7 @@ public abstract class MainApplication extends Application implements Application
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
+        state = STATE.BACKGROUND;
     }
 
     @Override
@@ -69,6 +72,16 @@ public abstract class MainApplication extends Application implements Application
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
+    }
+
+    public static STATE getState() {
+        return state;
+    }
+
+    public enum STATE {
+        UNKNOWN,
+        FOREGROUND,
+        BACKGROUND
     }
 
     //endregion

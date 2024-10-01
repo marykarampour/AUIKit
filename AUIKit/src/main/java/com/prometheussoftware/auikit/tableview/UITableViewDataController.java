@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.utility.DEBUGLOG;
 
 import java.util.ArrayList;
 
@@ -13,6 +14,9 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
     public boolean multiSelectEnabled = true;
     public boolean exclusiveExpandForSelected;
     protected ArrayList<TableObject.Section> sections = new ArrayList();
+
+    /** Responsible for performing updates when a section header is tapped */
+    protected UITableViewProtocol.UpdateDelegate updateDelegate;
     private UITableViewProtocol.TableView viewDelegate;
     private ArrayList<TableObject.CellInfo> cellInfos = new ArrayList();
     private ArrayList<TableObject.CellInfo> sectionInfos = new ArrayList();
@@ -25,8 +29,12 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
                 try {
                     return (V) info.getCellClass().newInstance();
                 }
-                catch (IllegalAccessException e) { }
-                catch (InstantiationException e) { }
+                catch (IllegalAccessException e) {
+                    DEBUGLOG.s("TableView cell creation failed --> ", e);
+                }
+                catch (InstantiationException e) {
+                    DEBUGLOG.s("TableView cell creation failed --> ", e);
+                }
             }
         }
         return null;
@@ -173,7 +181,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         return sections;
     }
 
-    public void setSections (ArrayList<TableObject.Section> sections) {
+    public <S extends TableObject.Section> void setSections (ArrayList<S> sections) {
 
         this.sections.clear();
         if (sections == null) return;
@@ -185,7 +193,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
                 sectionInfos.add(sect.info);
             }
             if (sect.rows != null) {
-                for (Pair<TableObject.CellInfo, Object> info : sect.rows.getItemsInfo().array) {
+                ArrayList<Pair<TableObject.CellInfo, Object>> array = sect.rows.itemsArray();
+                for (Pair<TableObject.CellInfo, Object> info : array) {
                     if (info.getFirst() != null && !cellInfos.contains(info.getFirst())) {
                         cellInfos.add(info.getFirst());
                     }
@@ -215,7 +224,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
         if (indexPath.row == null) return sections.get(indexPath.section);
 
-        ArrayList values = sections.get(indexPath.section).rows.getItems().array;
+        ArrayList values = sections.get(indexPath.section).rows.itemsArray();
         if (values.size() <= indexPath.row) return null;
 
         return values.get(indexPath.row);
@@ -224,9 +233,11 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
     protected TableObject.CellInfo infoForRowAtIndexPath (IndexPath indexPath) {
         if (indexPath.section != null && sections.size() <= indexPath.section || indexPath.row == null) return null;
 
-        ArrayList<Pair<TableObject.CellInfo, Object>> values = sections.get(indexPath.section).rows.getItems().array;
-        if (values.size() <= indexPath.row) return null;
+        TableObject.Section sect = sections.get(indexPath.section);
+        ArrayList<Pair<TableObject.CellInfo, Object>> values = sect.rows.itemsArray();
 
+        if (values.size() <= indexPath.row)
+            return null;
         return values.get(indexPath.row).getFirst();
     }
 
@@ -241,7 +252,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         int count = 0;
 
         if (sect != null) {
-            for (Pair<TableObject.CellInfo, Object> info : sect.rows.getItems().array) {
+            ArrayList<Pair<TableObject.CellInfo, Object>> array = sect.rows.itemsArray();
+            for (Pair<TableObject.CellInfo, Object> info : array) {
                 if (info.getFirst().selected) {
                     count ++;
                 }
@@ -255,7 +267,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         int count = 0;
 
         if (sect != null) {
-            for (Pair<TableObject.CellInfo, Object> info : sect.rows.getItems().array) {
+            ArrayList<Pair<TableObject.CellInfo, Object>> array = sect.rows.itemsArray();
+            for (Pair<TableObject.CellInfo, Object> info : array) {
                 if (info.getFirst().selected) {
                     count ++;
                 }
@@ -274,6 +287,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
     @Override public int numberOfRowsInSection(int section) {
         if (sections.size() <= section) return 0;
+        if (sections.get(section).rows == null) return 0;
         return sections.get(section).rows.getItems().size();
     }
 
@@ -304,13 +318,16 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
         if (!multiSelectEnabled) {
             for (TableObject.Section sect : sections) {
-                for (Pair<TableObject.CellInfo, Object> info : sect.rows.getItemsInfo().array) {
+                ArrayList<Pair<TableObject.CellInfo, Object>> array = sect.rows.itemsArray();
+                for (Pair<TableObject.CellInfo, Object> info : array) {
                     if (info.getFirst() != cell) {
                         info.getFirst().selected = false;
                     }
                 }
             }
         }
+
+        if (updateDelegate != null) updateDelegate.performUpdateForDidSelectRowAtIndexPath(item, indexPath);
     }
 
     //endregion
@@ -325,9 +342,44 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         return viewDelegate;
     }
 
-    private void reloadData() {
+    protected void reloadData() {
         if (viewDelegate != null) viewDelegate.reloadData();
     }
+
+    //endregion
+
+
+    //region update protocol
+
+    @Override public void didSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {
+
+        if (!item.isEnabled || !item.isCollapsible()) return;
+        if (updateDelegate != null) {
+            updateDelegate.performUpdateForDidSelectSectionAtIndex(item, section, selected);
+        }
+    }
+
+    @Override public void didSelectSectionAtIndex(TableObject.Section item, int section) {
+
+        if (!item.isEnabled || !item.isCollapsible()) return;
+        if (updateDelegate != null) {
+            updateDelegate.performUpdateForDidSelectSectionAtIndex(item, section);
+        }
+    }
+
+    public void setUpdateDelegate(UITableViewProtocol.UpdateDelegate updateDelegate) {
+        this.updateDelegate = updateDelegate;
+    }
+
+    //endregion
+
+
+    //helpers and fields
+
+    public void setMultiSelectEnabled(boolean multiSelectEnabled) {
+        this.multiSelectEnabled = multiSelectEnabled;
+    }
+
 
     //endregion
 }

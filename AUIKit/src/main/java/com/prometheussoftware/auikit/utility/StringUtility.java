@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import com.google.common.base.CaseFormat;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Constants;
+import com.prometheussoftware.auikit.model.Range;
 import com.prometheussoftware.auikit.model.Text;
 
 import java.util.ArrayList;
@@ -112,7 +113,16 @@ public class StringUtility {
         if (maxChars != Constants.NOT_FOUND_ID && maxChars < string.length()) return false;
 
         String regex = regexForFormat(format, maxChars);
-        if (!isNotEmpty(regex)) return true;
+        if (isEmpty(regex)) return true;
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(string);
+        return matcher.matches();
+    }
+
+    public static boolean hasValidCharacers (String string, String regex) {
+        if (StringUtility.isEmpty(string)) return true;
+        if (isEmpty(regex)) return true;
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(string);
@@ -120,11 +130,15 @@ public class StringUtility {
     }
 
     public static String regexForFormat (Text.REGEX_FORMAT format, int length) {
+
+        length = (length < 0 ? App.constants().Max_Regex_Chars() : length);
         switch (format) {
-            case INT: return String.format("^([-]?[0-9]{0,%s})$", Math.max(length, App.constants().Max_Regex_Chars()));
-            case INT_POSITIVE: return String.format("^([0-9]{0,%s})$", Math.max(length, App.constants().Max_Regex_Chars()));
-            case ALPHABET: return "^([a-zA-Z])$";
-            case ALPHANUMERIC: return "^([a-zA-Z0-9])$";
+            case INT: return String.format("^([-]?[0-9]{0,%s})$", length);
+            case INT_POSITIVE: return String.format("^([0-9]{0,%s})$", length);
+            case FLOAT: return String.format("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$", length);
+            case FLOAT_POSITIVE: return String.format("^([0-9]+([.][0-9]*)?|[.][0-9]+)$", length);
+            case ALPHABET: return "^([a-zA-Z]+)$";
+            case ALPHANUMERIC: return "^([a-zA-Z0-9]+)$";
             case PASSWORD: return App.constants().Regex_Password();
             case EMAIL: return App.constants().Regex_Email();
             case PHONE: return App.constants().Regex_Phone();
@@ -187,6 +201,28 @@ public class StringUtility {
         return 0;
     }
 
+    public static Float floatValue (String string) {
+        String text = StringUtility.nonNull(string);
+        if (StringUtility.isEmpty(text) || ".".equals(text)) return null;
+        try {
+            return Float.parseFloat(text);
+        }
+        catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public static Float notNullFloatValue (String string) {
+        String text = StringUtility.nonNull(string);
+        if (StringUtility.isEmpty(text) || ".".equals(text)) return 0.0f;
+        try {
+            return Float.parseFloat(text);
+        }
+        catch (NumberFormatException e) {
+            return 0.0f;
+        }
+    }
+
     public static long positiveLongValue(String string) {
         String text = StringUtility.nonNull(string);
         return StringUtility.isNotEmpty(text) ? Long.parseLong(text.replaceAll("[\\D]","")) : 0;
@@ -219,8 +255,45 @@ public class StringUtility {
         return removeCharactersInSet(s, set);
     }
 
+    public static String numbersOnly (String s) {
+        if (isEmpty(s)) return null;
+        return s.replaceAll("[^0-9]", "");
+    }
+
+    public static String alphanumericOnly (String s) {
+        if (isEmpty(s)) return null;
+        return s.replaceAll("[^0-9A-Z]", "");
+    }
+
+    public static boolean isNumbersOnly (String s) {
+        if (isEmpty(s)) return false;
+        return s.equals(numbersOnly(s));
+    }
+
+        /** Use range.length = 0 for ranges intended to the end of string */
+    public static String substringWithRange (String text, int startIndex, int length) {
+
+        Range range = Range.build(startIndex, length);
+        if (Range.isEmpty(range)) return text;
+
+        if (range.length == 0)
+            return text.substring(range.location);
+        else
+            return text.substring(range.location, range.length+range.location);
+    }
+
+    /** Use range.length = 0 for ranges intended to the end of string */
+    public static String substringWithRange (String text, Range range) {
+        if (range == null) return "";
+        if (range.length == 0)
+            return text.substring(range.location);
+        else
+            return text.substring(range.location, range.length+range.location);
+    }
+
     public static int height(String string, int fontSize, int width) {
 
+        if (StringUtility.isEmpty(string)) return 0;
         if (width <= 0) return 0;
 
         Paint paint = new Paint();
@@ -231,5 +304,18 @@ public class StringUtility {
         paint.getTextBounds(string, 0, string.length(), rect);
         int lines = (rect.width() / width) + 1;
         return rect.height() * lines;
+    }
+
+    public static int width(String string, int fontSize) {
+
+        if (StringUtility.isEmpty(string)) return 0;
+
+        Paint paint = new Paint();
+        paint.setTextSize(fontSize);
+        paint.setStyle(Paint.Style.FILL);
+
+        Rect rect = new Rect();
+        paint.getTextBounds(string, 0, string.length(), rect);
+        return rect.width();
     }
 }

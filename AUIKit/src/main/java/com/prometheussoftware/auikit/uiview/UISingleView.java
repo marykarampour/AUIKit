@@ -2,6 +2,7 @@ package com.prometheussoftware.auikit.uiview;
 
 import android.view.View;
 
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.utility.ConstraintUtility;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 
@@ -27,11 +28,15 @@ public class UISingleView <V extends View> extends UIView {
 
     @Override public void constraintLayout() {
         super.constraintLayout();
-        ConstraintUtility.constraintSidesForView(constraintSet, view);
+        ConstraintUtility.constraintSidesForView(constraintSet, view, insets());
         constraintSet.applyTo(this);
     }
 
     public V getView() {
         return view;
+    }
+
+    protected UIEdgeInsets insets() {
+        return new UIEdgeInsets();
     }
 }

@@ -118,6 +118,8 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         return view;
     }
 
+    /** If nextTextView == null keyboard will be EditorInfo.IME_ACTION_DONE
+     * else EditorInfo.IME_ACTION_NEXT */
     public void setNextTextView(UITextView nextTextView) {
         this.nextTextView = nextTextView;
         setKeyboardOption(nextTextView == null ? EditorInfo.IME_ACTION_DONE : EditorInfo.IME_ACTION_NEXT);
@@ -184,9 +186,17 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         view().setHint(StringUtility.isEmpty(s) ? hint : "");
     }
 
+    public void setTextColor(UIColor color) {
+        view().setTextColor(color.get());
+    }
+
     public void setHint(CharSequence s) {
         this.hint = s;
         view().setHint(StringUtility.isEmpty(getText()) ? hint : "");
+    }
+
+    public void setHintTextColor(UIColor color) {
+        view().setHintTextColor(color.get());
     }
 
     /** Call this method to set text ignoring regex validation */
@@ -210,6 +220,11 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
             case INT:
             case INT_POSITIVE: {
                 view().setInputType(InputType.TYPE_CLASS_NUMBER);
+            }
+            break;
+            case FLOAT:
+            case FLOAT_POSITIVE:{
+                view().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             }
             break;
             case PASSWORD: {
@@ -349,7 +364,7 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
             }
         }
     }
-
+    //TODO: fix return not dismissing keyboard in textfield and validation not working
     @Override
     public void afterTextChanged(Editable s) {
         if (!isFocused) return;

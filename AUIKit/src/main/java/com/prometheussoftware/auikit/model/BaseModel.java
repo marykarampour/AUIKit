@@ -1,8 +1,7 @@
 package com.prometheussoftware.auikit.model;
 
 import com.google.gson.Gson;
-
-import org.checkerframework.common.returnsreceiver.qual.This;
+import com.prometheussoftware.auikit.utility.DEBUGLOG;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -144,12 +143,9 @@ public class BaseModel implements Serializable, Cloneable {
 
     @Override
     public boolean equals(Object object) {
-        if (object == this) {
-            return true;
-        }
-        if (object == null || (object.getClass() != getClass())) {
-            return false;
-        }
+        if (object == this) return true;
+        if (object == null || (object.getClass() != getClass())) return false;
+        if (super.equals(object)) return true;
 
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
 
@@ -187,6 +183,21 @@ public class BaseModel implements Serializable, Cloneable {
     }
 
     public BaseModel (BaseModel obj) {
+        super();
+        resetWithObject(obj);
+    }
+
+    public static BaseModel newInstance(BaseModel obj) {
+        return new BaseModel(obj);
+    }
+
+    public void resetWithObject (BaseModel obj) {
+
+        if (obj == null) {
+            nullify();
+            return;
+        }
+
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
 
         if (properties == null) return;
@@ -194,16 +205,23 @@ public class BaseModel implements Serializable, Cloneable {
         for (String name : properties) {
 
             try {
-                Field field = getClass().getField(name);
-                if (field != null) {
-                    Object value = field.get(this);
+                Field field = fieldOrDeclared(name);
+                Field objField = obj.fieldOrDeclared(name);
+
+                if (field != null && objField != null) {
+
+                    field.setAccessible(true);
+                    objField.setAccessible(true);
+
+                    Object value = objField.get(obj);
                     if (value != null) {
-                        field.set(obj, value);
+                        field.set(this, value);
                     }
                 }
 
-            } catch (NoSuchFieldException e) {
-            } catch (IllegalAccessException e) { }
+            } catch (IllegalAccessException e) {
+                DEBUGLOG.s(e);
+            }
         }
     }
 
@@ -309,9 +327,44 @@ public class BaseModel implements Serializable, Cloneable {
     }
 
     public void nullify() {
+
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
+
+        if (properties == null) return;
+
         for (String name : properties) {
             setValueForKeyForAllAccessLevels(null, name);
+        }
+    }
+
+    public void setDefaults() {
+
+        Set<String> properties = BaseModel.propertyNamesForClass(getClass());
+
+        if (properties == null) return;
+
+        for (String name : properties) {
+
+            try {
+                Field field = fieldOrDeclared(name);
+                if (field != null) {
+
+                    if (field.getType().isAssignableFrom(Number.class)) {
+                        field.set(this, 0);
+                    }
+                    else if (field.getType().isAssignableFrom(String.class)) {
+                        field.set(this, "");
+                    }
+                    else {
+                        Method setter = setter(field);
+                        if (setter != null) {
+                            setter.invoke(this, (Object) null);
+                        }
+                        else field.set(this, null);
+                    }
+                    return;
+                }
+            } catch (InvocationTargetException | IllegalAccessException e) { }
         }
     }
 
@@ -438,7 +491,9 @@ public class BaseModel implements Serializable, Cloneable {
     public void setWithObject(BaseModel object) {
 
         if (!object.getClass().isInstance(this)) return;
+
         Set<String> properties = BaseModel.propertyNamesForClass(object.getClass());
+
         if (properties == null) return;
 
         for (String name : properties) {

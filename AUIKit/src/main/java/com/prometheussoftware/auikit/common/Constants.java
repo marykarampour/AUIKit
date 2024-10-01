@@ -5,24 +5,38 @@ import android.util.DisplayMetrics;
 import android.util.Size;
 
 import com.prometheussoftware.auikit.R;
-import com.prometheussoftware.auikit.BuildConfig;
 import com.prometheussoftware.auikit.common.protocols.ConstantsProtocol;
+import com.prometheussoftware.auikit.datamanagement.SQLConstantsProtocol;
 
-import java.util.HashMap;
-
-public class Constants implements ConstantsProtocol {
+public abstract class Constants implements ConstantsProtocol, SQLConstantsProtocol {
 
     public static final int NOT_FOUND_ID = -1;
 
     public static String OS_Version_Device () {
-        return Build.DEVICE + ", " + Build.MODEL + ", Android " + Build.VERSION.SDK_INT;
+        return Build.DEVICE + ", " + Build.MODEL + ", " + Android_STR() + Build.VERSION.SDK_INT;
     }
 
-    public static String App_Version () {
-        return BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")";
+    /** Apps must add these values to their build.gradle
+     * @<code>
+     *      *  productFlavors {
+     *      *      flower {
+     *      *          minSdkVersion 26
+     *      *          targetSdkVersion 29
+     *      *          versionCode 5
+     *      *          versionName '1.0.0'
+     *      *          dimension 'default'
+     *      *          buildConfigField("long", "VERSION_CODE", "${flower.versionCode}")
+     *      *          buildConfigField("String","VERSION_NAME","\"${flower.versionName}\"")
+     *      *      }
+     *      *  }
+     * </code>
+
+     * */
+    public String App_Version () {
+        return Version_Name_STR() + " (" + Version_Code_STR() + ")";
     }
 
-    public static String App_Version_Name () {
+    public String App_Version_Name () {
         return App_Name() + App_Version();
     }
 
@@ -73,6 +87,18 @@ public class Constants implements ConstantsProtocol {
         return StringResource(R.string.no);
     }
 
+    public static String Next_STR() {
+        return StringResource(R.string.next);
+    }
+
+    public static String Back_STR() {
+        return StringResource(R.string.back);
+    }
+
+    public static String OR_STR() {
+        return StringResource(R.string.or);
+    }
+
     public static String Day_s_STR() {
         return StringResource(R.string.day_s);
     }
@@ -85,10 +111,60 @@ public class Constants implements ConstantsProtocol {
         return StringResource(R.string.minute_s);
     }
 
+    public static String Username_STR() {
+        return StringResource(R.string.username);
+    }
+
+    public static String Password_STR() {
+        return StringResource(R.string.password);
+    }
+
+    public static String Fullname_STR() {
+        return StringResource(R.string.fullname);
+    }
+
+    public static String Version_STR() {
+        return StringResource(R.string.version);
+    }
+
+    public static String Android_STR() {
+        return StringResource(R.string.android);
+    }
+
+    public static String Sign_In_STR() {
+        return StringResource(R.string.sign_in);
+    }
+
+    public static String Logout_STR() {
+        return StringResource(R.string.logout);
+    }
+
+    public static String Accept_STR() {
+        return StringResource(R.string.accept);
+    }
+
+    public static String Save_STR() {
+        return StringResource(R.string.save);
+    }
+
+    public static String Error_STR() {
+        return StringResource(R.string.error);
+    }
+
+    @Override
+    public String Generic_Success_Message() {
+        return null;
+    }
+
+    @Override
+    public String Generic_Failure_Message() {
+        return null;
+    }
+
     //regex
 
     public int Max_Regex_Chars() {
-        return Integer.MAX_VALUE;
+        return 10000;
     }
 
     public String Regex_Password() {

@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Looper;
 import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.transition.TransitionManager;
@@ -15,7 +16,6 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
 import com.prometheussoftware.auikit.classes.UIColor;
-import com.prometheussoftware.auikit.common.AppTheme;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.uiviewcontroller.Navigation;
 import com.prometheussoftware.auikit.utility.ImageUtility;
@@ -25,7 +25,7 @@ public class UITransitioningContainerView extends UIView {
     /** For views where the layout needs time to load, e.g. recyclerview
      * this value is used to cause a delay that allows enough time for
      * the view to load. */
-    private static final int LAYOUT_LOAD_WAIT_DURATION = 200;
+    public static final int LAYOUT_LOAD_WAIT_DURATION = 200;
 
     /** The content view which is visible */
     private UIView currentContentView;
@@ -75,11 +75,13 @@ public class UITransitioningContainerView extends UIView {
 
     private void updateTransitioningImage(CompletionCallback callback) {
         if (this.currentContentView != null) {
-            ImageUtility.imageFromView(this.currentContentView, new Handler(), new ImageUtility.BitmapCopy() {
+            ImageUtility.imageFromView(this.currentContentView, new Handler(Looper.getMainLooper()), new ImageUtility.BitmapCopy() {
                 @Override
                 public void finishedWithResult(Bitmap bitmap) {
-                    transitioningView.getView().getView().setImageBitmap(bitmap);
-                    callback.done();
+                    runOnUiThread( () -> {
+                        transitioningView.getView().getView().setImageBitmap(bitmap);
+                        callback.done();
+                    });
                 }
 
                 @Override

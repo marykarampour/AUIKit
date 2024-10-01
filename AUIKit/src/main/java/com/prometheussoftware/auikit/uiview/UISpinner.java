@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.common.App;
-import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.utility.ConstraintUtility;
 import com.prometheussoftware.auikit.utility.ViewUtility;
@@ -47,7 +46,7 @@ public class UISpinner extends UIView {
 
     public void show () {
         if (hud == null) return;
-        getActivity().runOnUiThread(() -> {
+        runOnUiThread(() -> {
             setGone(false);
             bringToFront();
             hud.animate();
@@ -56,7 +55,7 @@ public class UISpinner extends UIView {
 
     public void hide () {
         if (hud == null) return;
-        getActivity().runOnUiThread(() -> {
+        runOnUiThread(() -> {
             setGone(true);
             hud.clearAnimation();
         });
