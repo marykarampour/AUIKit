@@ -20,6 +20,7 @@ import java.util.ArrayList;
 public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     public static final int CONSTRAINT_NO_PADDING = Integer.MAX_VALUE;
+    private static final int DEFAULT_ANIMATION_DURATION = 1000;
 
     /** A reference to the main window of the application */
     private static BaseWindow window;
@@ -29,6 +30,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     private static BaseActivity activity;
 
     private int opacity = VISIBLE;
+    private int animationDuration = DEFAULT_ANIMATION_DURATION;
     private boolean userInteractionEnabled;
     private boolean selfSetOpacity;
     protected boolean loaded;
@@ -78,19 +80,19 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
             if (hidden) {
                 animate()
                         .alpha(0.0f)
-                        .setDuration(1000)
+                        .setDuration(animationDuration)
                         .withEndAction(() -> {
                             setAlpha(1.0f);
-                            setHidden(true);
+                            setHidden(hidden);
                         })
                         .start();
             }
             else {
-                setAlpha(0f);
-                setHidden(false);
+                setAlpha(0.0f);
+                setHidden(hidden);
                 animate()
                         .alpha(1.0f)
-                        .setDuration(1000)
+                        .setDuration(animationDuration)
                         .start();
             }
         }
@@ -120,6 +122,10 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
      * INVISIBLE VISIBLE GONE */
     private void setOpacity(int opacity) {
         this.opacity = opacity;
+    }
+
+    public void setAnimationDuration(int animationDuration) {
+        this.animationDuration = animationDuration;
     }
 
     public boolean isUserInteractionEnabled() {
