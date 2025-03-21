@@ -16,6 +16,8 @@ public abstract class Constants implements ConstantsProtocol, SQLConstantsProtoc
         return Build.DEVICE + ", " + Build.MODEL + ", " + Android_STR() + Build.VERSION.SDK_INT;
     }
 
+    public static final boolean TARGET_ANDROID_EMULATOR = Build.FINGERPRINT.contains("sdk");
+
     /** Apps must add these values to their build.gradle
      * @<code>
      *      *  productFlavors {

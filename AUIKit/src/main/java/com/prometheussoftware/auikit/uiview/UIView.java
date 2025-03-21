@@ -73,6 +73,32 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         setVisibility(hidden ? INVISIBLE : VISIBLE);
     }
 
+    public void setHidden(boolean hidden, boolean animated) {
+        if (animated) {
+            if (hidden) {
+                animate()
+                        .alpha(0.0f)
+                        .setDuration(1000)
+                        .withEndAction(() -> {
+                            setAlpha(1.0f);
+                            setHidden(true);
+                        })
+                        .start();
+            }
+            else {
+                setAlpha(0f);
+                setHidden(false);
+                animate()
+                        .alpha(1.0f)
+                        .setDuration(1000)
+                        .start();
+            }
+        }
+        else {
+            setHidden(hidden);
+        }
+    }
+
     public boolean isHidden() {
         return opacity != VISIBLE;
     }
