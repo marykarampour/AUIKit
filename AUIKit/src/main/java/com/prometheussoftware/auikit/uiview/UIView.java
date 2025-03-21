@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     public static final int CONSTRAINT_NO_PADDING = Integer.MAX_VALUE;
-    private static final int DEFAULT_ANIMATION_DURATION = 1000;
+    public static final int DEFAULT_ANIMATION_DURATION = 1000;
 
     /** A reference to the main window of the application */
     private static BaseWindow window;
