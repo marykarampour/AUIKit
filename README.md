@@ -18,7 +18,7 @@ This is very simple and convenient, since any view controller is just a Java cla
 ## How to create a project using AUIKit
 
 1. Create an empty project
-2. In project's directory: `git submodule add https://git.prometheussoftware.ca/androidlibraries/androiduikit.git`
+2. In project's directory: `git submodule add <repo-url>`
 3. In Android Studio: File -> Project structure -> Modules -> + -> Import Gradle Project -> select directory of lib (exclude example, i.e. app folder, only select the AUIKit folder) 
 4. In project’s app build.gradle: `implementation project(path: ':AUIKit')`, `implementation 'androidx.core:core-ktx:1.3.2'`, `implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"` and `apply plugin: 'kotlin-android'`
 5. Add `classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"` to project's build.gradle dependencies, and add `ext.kotlin_version = '1.4.21'` in buildscript
