@@ -11,6 +11,7 @@ import com.prometheussoftware.auikit.datamanagement.SQLConstantsProtocol;
 public abstract class Constants implements ConstantsProtocol, SQLConstantsProtocol {
 
     public static final int NOT_FOUND_ID = -1;
+    public static final boolean TARGET_ANDROID_EMULATOR = Build.FINGERPRINT.contains("sdk");
 
     public static String OS_Version_Device () {
         return Build.DEVICE + ", " + Build.MODEL + ", " + Android_STR() + Build.VERSION.SDK_INT;

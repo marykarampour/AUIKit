@@ -20,6 +20,7 @@ import java.util.ArrayList;
 public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     public static final int CONSTRAINT_NO_PADDING = Integer.MAX_VALUE;
+    public static final int DEFAULT_ANIMATION_DURATION = 1000;
 
     /** A reference to the main window of the application */
     private static BaseWindow window;
@@ -29,6 +30,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     private static BaseActivity activity;
 
     private int opacity = VISIBLE;
+    private int animationDuration = DEFAULT_ANIMATION_DURATION;
     private boolean userInteractionEnabled;
     private boolean selfSetOpacity;
     protected boolean loaded;
@@ -73,6 +75,32 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         setVisibility(hidden ? INVISIBLE : VISIBLE);
     }
 
+    public void setHidden(boolean hidden, boolean animated) {
+        if (animated) {
+            if (hidden) {
+                animate()
+                        .alpha(0.0f)
+                        .setDuration(animationDuration)
+                        .withEndAction(() -> {
+                            setAlpha(1.0f);
+                            setHidden(hidden);
+                        })
+                        .start();
+            }
+            else {
+                setAlpha(0.0f);
+                setHidden(hidden);
+                animate()
+                        .alpha(1.0f)
+                        .setDuration(animationDuration)
+                        .start();
+            }
+        }
+        else {
+            setHidden(hidden);
+        }
+    }
+
     public boolean isHidden() {
         return opacity != VISIBLE;
     }
@@ -94,6 +122,10 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
      * INVISIBLE VISIBLE GONE */
     private void setOpacity(int opacity) {
         this.opacity = opacity;
+    }
+
+    public void setAnimationDuration(int animationDuration) {
+        this.animationDuration = animationDuration;
     }
 
     public boolean isUserInteractionEnabled() {
