@@ -5,7 +5,7 @@ import com.prometheussoftware.auikit.uiview.protocols.SingleIndexViewCreationHan
 import java.util.ArrayList;
 import java.util.Map;
 
-public class UIVerticalViews extends UIStackedViews {
+public class UIVerticalViews <T extends UIView> extends UIStackedViews<T> {
 
     public UIVerticalViews(int count, SingleIndexViewCreationHandler handler) {
         super(count, handler);
@@ -48,9 +48,5 @@ public class UIVerticalViews extends UIStackedViews {
     @Override
     public void constraintViewsWithPadding(int padding, int interItemMargin) {
         constraintViewsWithInterItemSpacing(interItemMargin, padding, padding);
-    }
-
-    public UIView viewAtIndex(int index) {
-        return super.viewAtIndex(index);
     }
 }

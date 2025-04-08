@@ -6,9 +6,9 @@ import com.prometheussoftware.auikit.uiview.protocols.UIStackedViewProtocol;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class UIStackedViews extends UIView implements UIStackedViewProtocol {
+public class UIStackedViews <T extends UIView> extends UIView implements UIStackedViewProtocol {
 
-    private ArrayList<UIView> views;
+    private ArrayList<T> views;
 
     public UIStackedViews(int count, SingleIndexViewCreationHandler handler) {
         this(count, 0, handler);
@@ -40,7 +40,7 @@ public class UIStackedViews extends UIView implements UIStackedViewProtocol {
         if (handler == null) return;
 
         for (int i = 0; i < count; i++) {
-            UIView view = handler.createView(i);
+            T view = (T) handler.createView(i);
             if (view == null) continue;
 
             addSubView(view);
@@ -54,7 +54,7 @@ public class UIStackedViews extends UIView implements UIStackedViewProtocol {
         this.views = new ArrayList<>();
 
         for (int i = 0; i < handlers.size(); i++) {
-            UIView view = handlers.get(i).createView(0);
+            T view = (T) handlers.get(i).createView(0);
             if (view == null) continue;
 
             addSubView(view);
@@ -68,12 +68,12 @@ public class UIStackedViews extends UIView implements UIStackedViewProtocol {
         return 4.0f;
     }
 
-    public UIView viewAtIndex(int index) {
+    public T viewAtIndex(int index) {
         if (index >= views.size()) return null;
         return views.get(index);
     }
 
-    public ArrayList<UIView> contentViews() {
+    public ArrayList<T> contentViews() {
         return views;
     }
 
