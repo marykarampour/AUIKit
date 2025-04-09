@@ -666,6 +666,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         int total = totalViews.size();
         if (total == 0) return;
 
+        //TODO: Include margins in calculation
         float percentHeight = (100f/totalViews.size()) / 100;
         UIView last = totalViews.get(0);
 

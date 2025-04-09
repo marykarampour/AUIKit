@@ -2,6 +2,6 @@ package com.prometheussoftware.auikit.uiview.protocols;
 
 import com.prometheussoftware.auikit.uiview.UIView;
 
-public interface SingleIndexViewCreationHandler {
-    UIView createView(int index);
+public interface SingleIndexViewCreationHandler <T extends UIView> {
+    T createView(int index);
 }

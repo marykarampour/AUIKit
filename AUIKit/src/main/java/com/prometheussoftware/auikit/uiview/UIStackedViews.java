@@ -10,37 +10,37 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
 
     private ArrayList<T> views;
 
-    public UIStackedViews(int count, SingleIndexViewCreationHandler handler) {
+    public UIStackedViews(int count, SingleIndexViewCreationHandler<T> handler) {
         this(count, 0, handler);
     }
 
-    public UIStackedViews(int count, int padding, SingleIndexViewCreationHandler handler) {
+    public UIStackedViews(int count, int padding, SingleIndexViewCreationHandler<T> handler) {
         this(count, padding, padding, handler);
     }
 
-    public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, SingleIndexViewCreationHandler handler) {
+    public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, SingleIndexViewCreationHandler<T> handler) {
         this(count, interItemSpacing, horizontalMargin, verticalMargin, null, handler);
     }
 
-    public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, Map<Integer, Integer> sizes, SingleIndexViewCreationHandler handler) {
+    public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, Map<Integer, Integer> sizes, SingleIndexViewCreationHandler<T> handler) {
         super();
         initViewsWithCount(count, handler);
-        constraintViewsWithSizes(sizes, interItemSpacing, horizontalMargin, verticalMargin);
+        constraintViews(sizes, interItemSpacing, horizontalMargin, verticalMargin);
     }
 
-    public UIStackedViews(int count, int padding, int interItemMargin, SingleIndexViewCreationHandler handler) {
+    public UIStackedViews(int count, int padding, int interItemMargin, SingleIndexViewCreationHandler<T> handler) {
         super();
         initViewsWithCount(count, handler);
-        constraintViewsWithPadding(padding, interItemMargin);
+        constraintViews(padding, interItemMargin);
     }
 
-    private void initViewsWithCount(int count, SingleIndexViewCreationHandler handler) {
+    private void initViewsWithCount(int count, SingleIndexViewCreationHandler<T> handler) {
         views = new ArrayList<>();
 
         if (handler == null) return;
 
         for (int i = 0; i < count; i++) {
-            T view = (T) handler.createView(i);
+            T view = handler.createView(i);
             if (view == null) continue;
 
             addSubView(view);
@@ -48,13 +48,13 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
         }
     }
 
-    public UIStackedViews(ArrayList<SingleIndexViewCreationHandler> handlers) {
+    public UIStackedViews(ArrayList<SingleIndexViewCreationHandler<T>> handlers) {
         super();
 
         this.views = new ArrayList<>();
 
         for (int i = 0; i < handlers.size(); i++) {
-            T view = (T) handlers.get(i).createView(0);
+            T view = handlers.get(i).createView(0);
             if (view == null) continue;
 
             addSubView(view);
@@ -82,25 +82,25 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
     }
 
     @Override
-    public void constraintViewsWithSizes(Map<Integer, Integer> sizes, int interItemSpacing, int horizontalMargin, int verticalMargin) {
+    public void constraintViews(Map<Integer, Integer> sizes, int interItemSpacing, int horizontalMargin, int verticalMargin) {
     }
 
     @Override
-    public void constraintViewsWithInterItemSpacing(int interItemSpacing, int horizontalMargin, int verticalMargin) {
-        constraintViewsWithSizes(null, interItemSpacing, horizontalMargin, verticalMargin);
+    public void constraintViews(int interItemSpacing, int horizontalMargin, int verticalMargin) {
+        constraintViews(null, interItemSpacing, horizontalMargin, verticalMargin);
     }
 
     @Override
-    public void constraintViewsWithPadding(int padding, int interItemMargin) {
+    public void constraintViews(int padding, int interItemMargin) {
     }
 
     @Override
-    public void constraintViewsWithPadding(int padding) {
-        constraintViewsWithPadding(padding, padding);
+    public void constraintViews(int padding) {
+        constraintViews(padding, padding);
     }
 
     @Override
     public void constraintViews() {
-        constraintViewsWithPadding(0, 0);
+        constraintViews(0, 0);
     }
 }
