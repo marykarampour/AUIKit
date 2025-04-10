@@ -26,12 +26,14 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
         super();
         initViewsWithCount(count, handler);
         constraintViews(sizes, interItemSpacing, horizontalMargin, verticalMargin);
+        applyConstraints();
     }
 
     public UIStackedViews(int count, int padding, int interItemMargin, SingleIndexViewCreationHandler<T> handler) {
         super();
         initViewsWithCount(count, handler);
         constraintViews(padding, interItemMargin);
+        applyConstraints();
     }
 
     private void initViewsWithCount(int count, SingleIndexViewCreationHandler<T> handler) {
@@ -88,7 +90,6 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
     @Override
     public void constraintViews(int interItemSpacing, int horizontalMargin, int verticalMargin) {
         constraintViews(null, interItemSpacing, horizontalMargin, verticalMargin);
-        applyConstraints();
     }
 
     @Override
