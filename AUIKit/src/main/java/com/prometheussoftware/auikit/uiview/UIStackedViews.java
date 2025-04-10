@@ -36,20 +36,6 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
         applyConstraints();
     }
 
-    private void initViewsWithCount(int count, SingleIndexViewCreationHandler<T> handler) {
-        views = new ArrayList<>();
-
-        if (handler == null) return;
-
-        for (int i = 0; i < count; i++) {
-            T view = handler.createView(i);
-            if (view == null) continue;
-
-            addSubView(view);
-            this.views.add(view);
-        }
-    }
-
     public UIStackedViews(ArrayList<SingleIndexViewCreationHandler<T>> handlers) {
         super();
 
@@ -64,6 +50,21 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
         }
 
         constraintViews();
+        applyConstraints();
+    }
+
+    private void initViewsWithCount(int count, SingleIndexViewCreationHandler<T> handler) {
+        views = new ArrayList<>();
+
+        if (handler == null) return;
+
+        for (int i = 0; i < count; i++) {
+            T view = handler.createView(i);
+            if (view == null) continue;
+
+            addSubView(view);
+            this.views.add(view);
+        }
     }
 
     public static float defaultPadding() {
