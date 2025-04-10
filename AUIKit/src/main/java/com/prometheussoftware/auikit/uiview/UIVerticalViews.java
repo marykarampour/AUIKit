@@ -46,8 +46,6 @@ public class UIVerticalViews <T extends UIView> extends UIStackedViews<T> {
                 }
             }
         }
-
-        applyConstraints();
     }
 
     @Override

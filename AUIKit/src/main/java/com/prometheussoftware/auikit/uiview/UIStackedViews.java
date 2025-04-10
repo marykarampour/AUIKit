@@ -88,6 +88,7 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
     @Override
     public void constraintViews(int interItemSpacing, int horizontalMargin, int verticalMargin) {
         constraintViews(null, interItemSpacing, horizontalMargin, verticalMargin);
+        applyConstraints();
     }
 
     @Override
