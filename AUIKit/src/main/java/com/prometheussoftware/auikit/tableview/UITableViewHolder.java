@@ -35,7 +35,7 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
                     }
                 });
             }
-            view.setSelectionAction(this, (UIControl sender) -> {
+            view.setSelectionAction(this, s -> {
                 if (delegate != null) {
                     delegate.didSelectRowAtIndexPath(item, indexPath);
                 }

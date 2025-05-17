@@ -2,34 +2,23 @@ package com.prometheussoftware.auikit.uiview;
 
 import android.os.SystemClock;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.prometheussoftware.auikit.classes.UITargetDelegate;
+import com.prometheussoftware.auikit.classes.UITargetManager;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.model.IndexPath;
-import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class UIControl extends UIView implements View.OnTouchListener {
+public class UIControl extends UIView implements View.OnTouchListener, UITargetManager.Delegate, UITargetDelegate.Sender {
 
-    private HashMap<Object, ArrayList<TargetDelegate>> targets = new HashMap<>();
+    private UITargetManager targetManager = new UITargetManager(this);
     public IndexPath IndexPath;
-
-    /** Default is true. IF true it allows a single key in targets map
-     * have multiple targets, that is addTarget will add to this array,
-     * and all of the corresponding actions will be triggered on a touch
-     * event.
-     * This allows:
-     * true  -> t1a1 t2a1 - t1a1 t1a1 - t1a1 t1a2 - t1a1 t2a2
-     * false -> t1a1 t2a1 -           -           - t1a1 t2a2
-     *
-     * @apiNote Set this to false in case of table views since they tend
-     * to relaod and recycle views multiple times, resulting in targets
-     * being re-added inadvertently. */
-    private boolean multiTargetEnabled = true;
 
     private MotionEvent lastTouch;
     private long lastTouchUpTimeStamp;
@@ -130,6 +119,18 @@ public class UIControl extends UIView implements View.OnTouchListener {
         setOnTouchListener(this);
     }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        targetManager.handleOnKeyUp(keyCode, event);
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        targetManager.handleOnKeyDown(keyCode, event);
+        return super.onKeyDown(keyCode, event);
+    }
+
     /** This is overwritten to handle multiple targets.
      * It only allows setOnTouchListener on this, any other
      * object is added as a target if it implements TargetDelegate */
@@ -147,31 +148,7 @@ public class UIControl extends UIView implements View.OnTouchListener {
         if (!isControlAction(event)) return true;
 
         if (gestureDetector.onTouchEvent(event) || isLongTouch) {
-            for (Object ID : targets.keySet()) {
-                for (TargetDelegate target : targets.get(ID)) {
-                    if (target instanceof TargetDelegate) {
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-                            setHighlighted(false);
-
-                            long currentTouchUpTimeStamp = SystemClock.elapsedRealtime();
-                            if (currentTouchUpTimeStamp - lastTouchUpTimeStamp < DOUBLE_TAP_INTERVAL) return false;
-
-                            lastTouchUpTimeStamp = currentTouchUpTimeStamp;
-                            if (target instanceof TouchUp) {
-                                TouchUp touchUp = (TouchUp)target;
-                                touchUp.controlReleased(this);
-                            }
-                        }
-                        else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            setHighlighted(true);
-                            if (target instanceof TouchDown) {
-                                TouchDown touchDown = (TouchDown)target;
-                                touchDown.controlPressed(this);
-                            }
-                        }
-                    }
-                }
-            }
+            targetManager.handleOnTouch(v, event);
             return false;
         }
         return true;
@@ -186,11 +163,12 @@ public class UIControl extends UIView implements View.OnTouchListener {
 
     //region targets
 
-    public void setTarget(TouchUp target) {
+    public void setTarget(UITargetDelegate.TouchUp target) {
+        targetManager.setTarget(target);
+    }
 
-        ArrayList<TargetDelegate> delegates = new ArrayList<>();
-        delegates.add(target);
-        targets.put(this, delegates);
+    public void setKeyTarget(UITargetDelegate.KeyUp target) {
+        targetManager.setKeyTarget(target);
     }
 
     /** @apiNote It does not distinguish between different instances
@@ -199,89 +177,66 @@ public class UIControl extends UIView implements View.OnTouchListener {
      * lambda being executed multiple times. Set
      *  multiTargetEnabled = false to guarantee unique action on each
      *  touch event */
-    public void addTarget(Object ID, TargetDelegate target) {
-
-        ArrayList<TargetDelegate> delegates = targets.get(ID);
-        if (delegates == null) {
-            delegates = new ArrayList<>();
-        }
-
-        if (0 == delegates.size() || multiTargetEnabled) {
-            addTargetToDelegates(ID, target, delegates);
-        }
-        else {
-            boolean hasTarget = false;
-
-            for (TargetDelegate tar: delegates) {
-                if (identifierForTarget(target).equals(identifierForTarget(tar))) {
-                    hasTarget = true;
-                    break;
-                }
-            }
-            if (!hasTarget) {
-                addTargetToDelegates(ID, target, delegates);
-            }
-        }
+    public void addTarget(Object ID, UITargetDelegate target) {
+        targetManager.addTarget(ID, target);
     }
 
-    /** Sample identifier of:
-     * com.prometheussoftware.auikit.tableview.-$$Lambda$UITableViewHolder$Cell$v2easIbfya2-GSyqkKBKhC2F3Oo
-     * would be:
-     * com.prometheussoftware.auikit.tableview.-$$Lambda$UITableViewHolder$Cell */
-    private String identifierForTarget (TargetDelegate target) {
-
-        ArrayList components = ArrayUtility.arrayList(target.getClass().toString().split("\\$"));
-        if (1 < components.size()) {
-            components.remove(components.size()-1);
-            return components.toString();
-        }
-        return "";
-    }
-
-    private void addTargetToDelegates(Object ID, TargetDelegate target, ArrayList<TargetDelegate> delegates) {
-        delegates.add(target);
-        targets.put(ID, delegates);
-    }
-
-    public void addTouchDownTarget(Object ID, TouchDown target) {
+    public void addTouchDownTarget(Object ID, UITargetDelegate.TouchDown target) {
         addTarget(ID, target);
     }
 
-    public void addTouchUpTarget(Object ID, TouchUp target) {
+    public void addTouchUpTarget(Object ID, UITargetDelegate.TouchUp target) {
         addTarget(ID, target);
     }
 
-    public void removeTarget(TargetDelegate target) {
-        targets.remove(target);
+    public void addKeyDownTarget(Object ID, UITargetDelegate.KeyDown target) {
+        addTarget(ID, target);
     }
 
-    public HashMap<Object, ArrayList<TargetDelegate>> getTargets() {
-        return targets;
+    public void addKeyUpTarget(Object ID, UITargetDelegate.KeyUp target) {
+        addTarget(ID, target);
+    }
+
+    public void removeTarget(UITargetDelegate target) {
+        targetManager.removeTarget(target);
+    }
+
+    public HashMap<Object, ArrayList<UITargetDelegate>> getTargets() {
+        return targetManager.getTargets();
     }
 
     public boolean isMultiTargetEnabled() {
-        return multiTargetEnabled;
+        return targetManager.isMultiTargetEnabled();
     }
 
     public void setMultiTargetEnabled(boolean multiTargetEnabled) {
-        this.multiTargetEnabled = multiTargetEnabled;
-    }
-
-    public interface TargetDelegate { }
-
-    @FunctionalInterface
-    public interface TouchDown extends TargetDelegate {
-        void controlPressed(UIControl sender);
-    }
-
-    @FunctionalInterface
-    public interface TouchUp extends TargetDelegate {
-        void controlReleased(UIControl sender);
+        targetManager.setMultiTargetEnabled(multiTargetEnabled);
     }
 
     //endregion
+
+
     public void setHighlighted(boolean highlighted) {
         this.highlighted = highlighted;
+    }
+
+    @Override
+    public boolean targetWillSetTouch(UITargetDelegate target, boolean down) {
+        setHighlighted(down);
+
+        if (!down) {
+            long currentTouchUpTimeStamp = SystemClock.elapsedRealtime();
+            if (currentTouchUpTimeStamp - lastTouchUpTimeStamp < DOUBLE_TAP_INTERVAL)
+                return false;
+            lastTouchUpTimeStamp = currentTouchUpTimeStamp;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean targetWillSetKey(UITargetDelegate target, boolean down) {
+        setHighlighted(down);
+        return true;
     }
 
 //     TODO: need to remove targets, but when to add them? same in UIResponder
