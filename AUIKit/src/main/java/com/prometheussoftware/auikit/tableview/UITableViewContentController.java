@@ -114,7 +114,7 @@ public class UITableViewContentController <D extends UITableViewDataController> 
     }
 
     public D getDataController() {
-        return (D) dataController;
+        return dataController;
     }
 
     public <T extends D> void setDataController(T dataController) {

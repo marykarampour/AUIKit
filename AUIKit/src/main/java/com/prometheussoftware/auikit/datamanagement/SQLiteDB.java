@@ -80,20 +80,24 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
     }
 
     public void createTables (HashMap<String, String> tables) {
-
         for (Map.Entry<String, String> entry : tables.entrySet()) {
             createTable(entry.getKey(), entry.getValue());
         }
     }
 
-    //Execute query
-
-    public void execute_query (String query) {
-        execute_query(query, null);
+    public void  clearTable (String table) {
+        String query = String.format(SQLConstants.clear_table(), table);
+        executeQuery(query);
     }
 
-    public void execute_query (String query, PairArray<String, String> parameters) {
-        runQuery(query, parameters, true);
+    //Execute query
+
+    public boolean executeQuery (String query) {
+        return executeQuery(query, null);
+    }
+
+    public boolean executeQuery (String query, PairArray<String, String> parameters) {
+        return runQuery(query, parameters, true) != null;
     }
 
     //Select

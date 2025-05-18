@@ -5,6 +5,7 @@ import com.prometheussoftware.auikit.common.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class ArrayUtility {
 
@@ -19,9 +20,7 @@ public class ArrayUtility {
         ArrayList<T> array = new ArrayList<>();
         if (objects == null) return array;
 
-        for (T obj : objects) {
-            array.add(obj);
-        }
+        Collections.addAll(array, objects);
         return array;
     }
 

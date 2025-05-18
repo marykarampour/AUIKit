@@ -15,7 +15,9 @@ import java.util.HashMap;
 
 public class DBModel extends BaseModel {
 
-    public String operationType;
+    public Integer id;
+    public char operationType;
+    public Integer dtModified;
 
     static {
         BaseModel.Register(DBModel.class);
@@ -32,7 +34,7 @@ public class DBModel extends BaseModel {
         return str;
     }
 
-    public Pair SQLKeysWithValues () {
+    public Pair<String, String> SQLKeysWithValues () {
         PairArray<String, String> pairs = SQLKeyValuePairs();
         String keyStr = "";
         String valueStr = "";

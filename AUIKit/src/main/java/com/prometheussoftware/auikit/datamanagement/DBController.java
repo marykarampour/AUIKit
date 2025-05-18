@@ -4,10 +4,14 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.common.MainApplication;
 import com.prometheussoftware.auikit.model.BaseModel;
+import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
+import com.prometheussoftware.auikit.utility.DEBUGLOG;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -61,14 +65,23 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     }
 
     protected void initializeDB () {
-        if (!dbVersionIsUpToDate()) {
+        if (dbVersionIsUpToDate())
+            createDB();
+        else
             updateDB();
-        }
+    }
+
+    protected void createDB() {
+        MainApplication.getContext().openOrCreateDatabase(db_name(), Context.MODE_PRIVATE, null);
     }
 
     protected void updateDB () {
         //Do the update e.g. updateVersion_1_0_0
         resetDBVersionSyncTime();
+    }
+
+    protected void dropDB() {
+        MainApplication.getContext().deleteDatabase(db_name());
     }
 
     private static void resetDBVersionSyncTime () {
@@ -82,8 +95,139 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     
     //end region
 
-    //Querying
+    //region Querying
     //TODO: formatting is handled by @SerializedName, could use a custom mapper
+
+    public boolean executeWithMaps (ArrayList<HashMap<String, String>> data, String table) {
+        Class classO;
+        try {
+            classO = Class.forName(table);
+            if (!classO.isAssignableFrom(DBModel.class) || data.isEmpty()) return false;
+        }
+        catch (ClassNotFoundException e) {
+            return false;
+        }
+
+        SQLConstants.QUERY_TYPE insert = SQLConstants.QUERY_TYPE.INSERT;
+        SQLConstants.QUERY_TYPE update = SQLConstants.QUERY_TYPE.UPDATE;
+        SQLConstants.QUERY_TYPE delete = SQLConstants.QUERY_TYPE.DELETE;
+        String table_name = StringUtility.format(table, DBModel.dbColumnNameFormat());
+
+        for (HashMap<String, String> dict : data) {
+
+            String json = new JSONObject(dict).toString();
+            DBModel object = (DBModel) new Gson().fromJson(json, classO);
+
+            String queryType = dict.get("operation_type");
+            if (queryType == null || queryType.isEmpty()) continue;
+
+            SQLConstants.QUERY_TYPE type = SQLConstants.QUERY_TYPE.valueOf(queryType.charAt(0));
+            String query = type.getQuery();
+            if (query == null || query.isEmpty()) continue;
+
+            object.operationType = SQLConstants.QUERY_TYPE.NONE.getType();
+            object.dtModified = NumberUtils.createInteger(dict.get("dt_modified"));
+
+            String stmt = "";
+            String whereString = whereStringForCRUD(object, table);
+            Pair<String, String> keyWValues = object.SQLKeysWithValues();
+            String keyEValues = object.SQLKeysEqualValues();
+
+            switch (type) {
+                case INSERT: {
+                    if (!keyWValues.getFirst().isEmpty()) {
+                        stmt = String.format(query, table_name, keyWValues.getFirst(), keyWValues.getSecond());
+                        if (!sqLiteDB.executeQuery(stmt)) {
+                            stmt = String.format(update.getQuery(), table_name, keyEValues, whereString);
+                            return sqLiteDB.executeQuery(stmt);
+                        }
+                    }
+                }
+                break;
+
+                case UPDATE: {
+                    stmt = String.format(query, table_name, keyEValues, whereString);
+                    if (!sqLiteDB.executeQuery(stmt) && !keyWValues.getFirst().isEmpty()) {
+                        stmt = String.format(insert.getQuery(), table_name, keyWValues.getFirst(), keyWValues.getSecond());
+                        return sqLiteDB.executeQuery(stmt);
+                    }
+                }
+                break;
+
+                case DELETE: {
+                    stmt = String.format(delete.getQuery(), table_name, whereString);
+                    return sqLiteDB.executeQuery(stmt);
+                }
+
+                default:
+                    break;
+            }
+
+            DEBUGLOG.s("%s", stmt);
+        }
+        return false;
+    }
+
+    protected String whereStringForCRUD (DBModel object, String table) {
+
+        ArrayList<String> columnNames = idColumnsForTable(table);
+        StringBuilder whereString = new StringBuilder();
+
+        if (columnNames.contains("id")) {
+            whereString.append(String.format("id=\"%s\"", object.id));
+        }
+        else {
+            String last = ArrayUtility.lastObject(columnNames);
+
+            for (String name : columnNames) {
+                String column = StringUtility.format(name, DBModel.dbColumnNameFormat());
+
+                whereString.append(String.format("%s=\"%s\"", name, object.valueForKey(column)));
+
+                if (name.equalsIgnoreCase(last))
+                    whereString.append(" AND ");
+            }
+        }
+        return whereString.toString();
+    }
+
+    protected ArrayList<String> idColumnsForTable (String table) {
+
+        String query = String.format(SQLConstants.execute_PRAGMA_table(), table);
+        ArrayList<HashMap<String, String>> columns = sqLiteDB.loadData(query);
+        ArrayList<String> columnNames = new ArrayList<>();
+
+        for (HashMap<String, String> column : columns) {
+            String name = column.get("name");
+            if (name.contains("id"))
+                columnNames.add(name);
+        }
+        return columnNames;
+    }
+
+    public <M extends DBModel> boolean insertDataWithObjects (ArrayList<M> data, Class cls) {
+        if (!cls.isAssignableFrom(DBModel.class) || data.isEmpty()) return false;
+
+        for (M object : data) {
+            Pair<String, String> keyValues = object.SQLKeysWithValues();
+
+            if (!keyValues.getFirst().isEmpty()) {
+                String name = StringUtility.format(cls.getName(), DBModel.dbColumnNameFormat());
+                String stmt = String.format(SQLConstants.execute_insert(), name, keyValues.getFirst(), keyValues.getSecond());
+                DEBUGLOG.s("%s", stmt);
+                sqLiteDB.executeQuery(stmt);
+            }
+        }
+        return true;
+    }
+    public <M extends DBModel> boolean insertDataWithObject (M data, Class cls) {
+        if (data == null) return false;
+
+        ArrayList<M> arr = new ArrayList<>();
+        arr.add(data);
+        return insertDataWithObjects(arr, cls);
+    }
+
     public <M extends DBModel> ArrayList<M> loadDataWithQueryToClass (String query, Class<M> objectClass) {
 
         ArrayList<HashMap<String, String>> result = sqLiteDB.loadData(query, null);
@@ -227,7 +371,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
                 }
             }
             else if (values == null) {
-                String base = column.isNull ? " %s IS NULL " : " %s IS NULL ";
+                String base = column.isNull ? " %s IS NULL " : " %s NOT NULL ";
                 String whereStr = String.format(base, StringUtility.format(column.name, DBModel.dbColumnNameFormat()));
                 columnValues.add(whereStr);
             }
@@ -268,7 +412,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         return loadDataWithQueryToClass(String.format(SQLConstants.load_all(), DBModel.dbTableName(tableClass)), tableClass);
     }
 
-
+    //endregion
 
     //region utility
 
