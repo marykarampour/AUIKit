@@ -1,5 +1,7 @@
 package com.prometheussoftware.auikit.utility;
 
+import java.util.UUID;
+
 public class ObjectUtility {
 
     public static String logTag (Object obj) {
@@ -13,5 +15,9 @@ public class ObjectUtility {
         catch (Exception e) {
             return null;
         }
+    }
+
+    public static String GUID () {
+        return UUID.randomUUID().toString();
     }
 }
