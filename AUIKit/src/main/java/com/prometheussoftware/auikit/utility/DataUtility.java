@@ -185,4 +185,21 @@ public class DataUtility {
     public static Bitmap imageFromPath (String path) {
         return BitmapFactory.decodeFile(path);
     }
+
+    public static String extension (byte[] data) {
+        if (data.length == 0) return "";
+
+        switch (data[0]) {
+            case (byte) 0xFF: return "jpg";
+            case (byte) 0x89: return "png";
+            case (byte) 0x49: return "tiff";
+            case (byte) 0x4D: return "tiff";
+            case (byte) 0x47: return "gif";
+            case (byte) 0x25: return "pdf";
+            case (byte) 0x7B: return "rtf";
+            case (byte) 0x46: return "txt";
+            case (byte) 0x50: return "docx";
+            default:   return "";
+        }
+    }
 }
