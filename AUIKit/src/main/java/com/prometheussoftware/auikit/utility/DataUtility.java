@@ -187,7 +187,7 @@ public class DataUtility {
     }
 
     public static String extension (byte[] data) {
-        if (data.length == 0) return "";
+        if (data.length <= 16) return "";
 
         switch (data[0]) {
             case (byte) 0xFF: return "jpg";
@@ -199,12 +199,16 @@ public class DataUtility {
             case (byte) 0x7B: return "rtf";
             case (byte) 0x46: return "txt";
             case (byte) 0x50: return "docx";
-            default:   return "";
+            default:
+                break;
         }
+
+        if (data[4] == 0x66) return "mp4";
+        return "";
     }
 
     public static boolean isMedia (byte[] data) {
-        if (data.length == 0) return false;
+        if (data.length <= 16) return false;
 
         switch (data[0]) {
             case (byte) 0xFF:
@@ -213,15 +217,12 @@ public class DataUtility {
             case (byte) 0x4D:
             case (byte) 0x47:
             case (byte) 0x52:
-            case (byte) 0x66:
                 return true;
             default:
-                return false;
+                break;
         }
-    }
 
-    public static boolean isOctetStream (byte[] data) {
-        if (data.length < 4) return false;
-        return data[3] == 0x20;
+        if (data[4] == 0x66) return true;
+        return false;
     }
 }
