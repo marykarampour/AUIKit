@@ -202,4 +202,26 @@ public class DataUtility {
             default:   return "";
         }
     }
+
+    public static boolean isMedia (byte[] data) {
+        if (data.length == 0) return false;
+
+        switch (data[0]) {
+            case (byte) 0xFF:
+            case (byte) 0x89:
+            case (byte) 0x49:
+            case (byte) 0x4D:
+            case (byte) 0x47:
+            case (byte) 0x52:
+            case (byte) 0x66:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static boolean isOctetStream (byte[] data) {
+        if (data.length < 4) return false;
+        return data[3] == 0x20;
+    }
 }
