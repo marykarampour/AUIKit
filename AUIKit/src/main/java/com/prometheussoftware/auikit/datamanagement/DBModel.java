@@ -16,11 +16,20 @@ import java.util.HashMap;
 public class DBModel extends BaseModel {
 
     public Integer id;
+
+    @SerializedName("operation_type")
     public char operationType;
+
+    @SerializedName("dt_modified")
     public Integer dtModified;
 
     static {
         BaseModel.Register(DBModel.class);
+    }
+
+    public DBModel() {
+        super();
+        operationType = SQLConstants.QUERY_TYPE.NONE.getType();
     }
 
     public String SQLKeysEqualValues () {

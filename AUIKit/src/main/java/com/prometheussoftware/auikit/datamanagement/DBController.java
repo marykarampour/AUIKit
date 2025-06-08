@@ -112,6 +112,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         SQLConstants.QUERY_TYPE update = SQLConstants.QUERY_TYPE.UPDATE;
         SQLConstants.QUERY_TYPE delete = SQLConstants.QUERY_TYPE.DELETE;
         String table_name = StringUtility.format(table, DBModel.dbColumnNameFormat());
+        boolean result = true;
 
         for (HashMap<String, String> dict : data) {
 
@@ -128,49 +129,75 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
             object.operationType = SQLConstants.QUERY_TYPE.NONE.getType();
             object.dtModified = NumberUtils.createInteger(dict.get("dt_modified"));
 
-            String stmt = "";
-            String whereString = whereStringForCRUD(object, table);
-            Pair<String, String> keyWValues = object.SQLKeysWithValues();
-            String keyEValues = object.SQLKeysEqualValues();
+            if (!executeWithObject(object, type, table_name)) result = false;
+        }
+        return result;
+    }
 
-            switch (type) {
-                case INSERT: {
-                    if (!keyWValues.getFirst().isEmpty()) {
-                        stmt = String.format(query, table_name, keyWValues.getFirst(), keyWValues.getSecond());
-                        if (!sqLiteDB.executeQuery(stmt)) {
-                            stmt = String.format(update.getQuery(), table_name, keyEValues, whereString);
-                            return sqLiteDB.executeQuery(stmt);
-                        }
-                    }
-                }
-                break;
+    public <T extends DBModel> boolean executeWithObjects (ArrayList<T> data, String table) {
 
-                case UPDATE: {
-                    stmt = String.format(query, table_name, keyEValues, whereString);
-                    if (!sqLiteDB.executeQuery(stmt) && !keyWValues.getFirst().isEmpty()) {
-                        stmt = String.format(insert.getQuery(), table_name, keyWValues.getFirst(), keyWValues.getSecond());
+        String table_name = StringUtility.format(table, DBModel.dbColumnNameFormat());
+        boolean result = true;
+
+        for (T object : data) {
+            SQLConstants.QUERY_TYPE type = SQLConstants.QUERY_TYPE.valueOf(object.operationType);
+            if (type == SQLConstants.QUERY_TYPE.NONE) continue;
+            if (!executeWithObject(object, type, table_name)) result = false;
+        }
+        return result;
+    }
+
+    public <T extends DBModel> boolean executeWithObject (T object, SQLConstants.QUERY_TYPE type, String table_name) {
+
+        String query = type.getQuery();
+        if (query == null || query.isEmpty()) return false;
+
+        SQLConstants.QUERY_TYPE insert = SQLConstants.QUERY_TYPE.INSERT;
+        SQLConstants.QUERY_TYPE update = SQLConstants.QUERY_TYPE.UPDATE;
+        SQLConstants.QUERY_TYPE delete = SQLConstants.QUERY_TYPE.DELETE;
+
+        String stmt = "";
+        String whereString = whereStringForCRUD(object, table_name);
+        Pair<String, String> keyWValues = object.SQLKeysWithValues();
+        String keyEValues = object.SQLKeysEqualValues();
+
+        switch (type) {
+            case INSERT: {
+                if (!keyWValues.getFirst().isEmpty()) {
+                    stmt = String.format(query, table_name, keyWValues.getFirst(), keyWValues.getSecond());
+                    if (!sqLiteDB.executeQuery(stmt)) {
+                        stmt = String.format(update.getQuery(), table_name, keyEValues, whereString);
                         return sqLiteDB.executeQuery(stmt);
                     }
                 }
-                break;
+            }
+            break;
 
-                case DELETE: {
-                    stmt = String.format(delete.getQuery(), table_name, whereString);
+            case UPDATE: {
+                stmt = String.format(query, table_name, keyEValues, whereString);
+                if (!sqLiteDB.executeQuery(stmt) && !keyWValues.getFirst().isEmpty()) {
+                    stmt = String.format(insert.getQuery(), table_name, keyWValues.getFirst(), keyWValues.getSecond());
                     return sqLiteDB.executeQuery(stmt);
                 }
+            }
+            break;
 
-                default:
-                    break;
+            case DELETE: {
+                stmt = String.format(delete.getQuery(), table_name, whereString);
+                return sqLiteDB.executeQuery(stmt);
             }
 
-            DEBUGLOG.s("%s", stmt);
+            default:
+                break;
         }
-        return false;
+
+        DEBUGLOG.s("%s", stmt);
+        return true;
     }
 
-    protected String whereStringForCRUD (DBModel object, String table) {
+        protected String whereStringForCRUD (DBModel object, String table_name) {
 
-        ArrayList<String> columnNames = idColumnsForTable(table);
+        ArrayList<String> columnNames = idColumnsForTable(table_name);
         StringBuilder whereString = new StringBuilder();
 
         if (columnNames.contains("id")) {
@@ -191,9 +218,9 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         return whereString.toString();
     }
 
-    protected ArrayList<String> idColumnsForTable (String table) {
+    protected ArrayList<String> idColumnsForTable (String table_name) {
 
-        String query = String.format(SQLConstants.execute_PRAGMA_table(), table);
+        String query = String.format(SQLConstants.execute_PRAGMA_table(), table_name);
         ArrayList<HashMap<String, String>> columns = sqLiteDB.loadData(query);
         ArrayList<String> columnNames = new ArrayList<>();
 
