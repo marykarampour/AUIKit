@@ -7,6 +7,7 @@ import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.model.PairArray;
 import com.prometheussoftware.auikit.model.Text;
 import com.prometheussoftware.auikit.utility.DEBUGLOG;
+import com.prometheussoftware.auikit.utility.ObjectUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.lang.reflect.Field;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class DBModel extends BaseModel {
+public class DBModel extends BaseModel implements DBModelProtocol {
 
     public Integer id;
 
@@ -123,20 +124,24 @@ public class DBModel extends BaseModel {
     }
     /** @brief table name from class, e.g. ABCTable ---> table, subclass can override for custom format, default underscore */
     public static String dbTableName (Class tableClass) {
-        return StringUtility.format(tableClass.getSimpleName(), Text.TEXT_FORMAT.UnderScoreIgnoreDigits);
+        Object obj = ObjectUtility.objectWithParams(tableClass);
+        String name = "";
+        if (obj instanceof DBModel)
+            name = ((DBModel)obj).dbTableName();
+        return StringUtility.format(name, Text.TEXT_FORMAT.UnderScoreIgnoreDigits);
     }
     /** @brief property name from class, e.g. ABCTableType ---> tableType, subclass can override for custom format, default camel case */
     public static String dbPropertyName (Class tableClass) {
         return StringUtility.format(tableClass.getSimpleName(), Text.TEXT_FORMAT.CamelCase);
     }
 
-    public static class DBStaticModel extends DBModel {
-
+    @Override
+    public String dbTableName() {
+        return this.getClass().getSimpleName();
     }
 
-    public interface DBPrimaryModelProtocol {
+    public static class DBStaticModel extends DBModel {
 
-        String IDString();
     }
 
     public static class DBStaticPrimaryModel extends DBModel implements DBPrimaryModelProtocol {
