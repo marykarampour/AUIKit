@@ -31,12 +31,16 @@ public class SQLConstants {
 
         static {
             for (QUERY_TYPE qt : values()) {
-                map.put(qt.type, qt.query);
+                map.put(qt.type, qt);
             }
         }
 
         public static QUERY_TYPE valueOf(char type) {
             return (QUERY_TYPE)map.get(type);
+        }
+
+        public static String queryOf(char type) {
+            return valueOf(type).query;
         }
     }
 

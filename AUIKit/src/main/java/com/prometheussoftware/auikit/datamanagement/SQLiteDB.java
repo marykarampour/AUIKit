@@ -152,14 +152,18 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
                 SQLiteStatement compliedStatement = writeDB.compileStatement(query);
 
                 if (compliedStatement != null) {
-
                     if (parameters != null) {
                         for (int i = 0; i <= parameters.getArray().size(); i++) {
                             compliedStatement.bindString(i, parameters.getArray().get(i).getSecond());
                         }
                     }
+                    try {
+                        compliedStatement.execute();
+                    }
+                    catch (SQLiteException e) {
+                        DEBUGLOG.s(e);
+                    }
                 }
-                compliedStatement.execute();
             }
         }
 

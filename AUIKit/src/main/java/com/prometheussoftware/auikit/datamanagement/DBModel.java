@@ -6,6 +6,7 @@ import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.model.PairArray;
 import com.prometheussoftware.auikit.model.Text;
+import com.prometheussoftware.auikit.utility.DEBUGLOG;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.lang.reflect.Field;
@@ -83,24 +84,23 @@ public class DBModel extends BaseModel {
                     if (objectType == Date.class) {
                         Date date = (Date)object;
                         value = String.valueOf(date.getTime()*1000);
-
-                        if (value.length() > 0) {
-                            value = StringUtility.quotations(value);
-                        }
-                        else {
-                            value = "NULL";
-                        }
-
-                        //TODO: from property format
-                        keyStr = StringUtility.format(name, dbColumnNameFormat());
-                        valueStr = value;
-                        Pair pair = new Pair(keyStr, valueStr);
-                        pairs.addPair(pair);
                     }
                 }
 
-            } catch (NoSuchFieldException e) {
-            } catch (IllegalAccessException e) { }
+                valueStr = (0 < value.length()) ? StringUtility.quotations(value) : "NULL";
+
+                keyStr = StringUtility.format(name, dbColumnNameFormat());
+                keyStr = StringUtility.quotations(keyStr);
+
+                Pair pair = new Pair(keyStr, valueStr);
+                pairs.addPair(pair);
+            }
+            catch (NoSuchFieldException e) {
+                DEBUGLOG.s(e);
+            }
+            catch (IllegalAccessException e) {
+                DEBUGLOG.s(e);
+            }
         }
         return pairs;
     }
