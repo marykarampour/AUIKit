@@ -380,6 +380,9 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         this.multiSelectEnabled = multiSelectEnabled;
     }
 
+    public void requestfocusForRowAtIndexPath(IndexPath indexPath) {
+        cellForRowAtIndexPath(indexPath).getAccessoryView().requestFocus();
+    }
 
     //endregion
 }
