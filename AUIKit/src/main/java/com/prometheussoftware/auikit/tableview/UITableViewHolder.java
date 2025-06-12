@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.genericviews.UICheckbox;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiview.UIControl;
@@ -34,8 +35,18 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
                         delegate.didSelectRowAtIndexPath(item, indexPath);
                     }
                 });
+                view.getAccessoryView().setKeyTarget((sender, keyCode) -> {
+                    if (delegate != null) {
+                        delegate.didSelectRowAtIndexPath(item, indexPath);
+                    }
+                });
             }
             view.setSelectionAction(this, s -> {
+                if (delegate != null) {
+                    delegate.didSelectRowAtIndexPath(item, indexPath);
+                }
+            });
+            view.setSelectionKeyAction(this, (sender, keyCode) -> {
                 if (delegate != null) {
                     delegate.didSelectRowAtIndexPath(item, indexPath);
                 }
