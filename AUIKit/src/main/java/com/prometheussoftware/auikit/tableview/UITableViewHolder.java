@@ -6,16 +6,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.genericviews.UICheckbox;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiview.UIControl;
 import com.prometheussoftware.auikit.uiview.UISwitch;
 import com.prometheussoftware.auikit.uiview.UIView;
 
-public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolder {
+public class UITableViewHolder <V extends UIView> extends RecyclerView.ViewHolder {
 
-    protected C view;
+    protected V view;
 
     public static class Cell <C extends UITableViewCell> extends UITableViewHolder <C> {
 
@@ -110,7 +109,7 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
 
     public void bindDataForSection(TableObject.Section item, Integer section, @Nullable UITableViewProtocol.Data delegate) {}
 
-    protected C getView() {
+    protected V getView() {
         return view;
     }
 }
