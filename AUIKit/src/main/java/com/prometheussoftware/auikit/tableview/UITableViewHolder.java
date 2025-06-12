@@ -1,5 +1,6 @@
 package com.prometheussoftware.auikit.tableview;
 
+import android.view.KeyEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -36,7 +37,7 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
                     }
                 });
                 view.getAccessoryView().setKeyTarget((sender, keyCode) -> {
-                    if (delegate != null) {
+                    if (delegate != null && keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
                         delegate.didSelectRowAtIndexPath(item, indexPath);
                     }
                 });
@@ -47,7 +48,7 @@ public class UITableViewHolder <C extends UIView> extends RecyclerView.ViewHolde
                 }
             });
             view.setSelectionKeyAction(this, (sender, keyCode) -> {
-                if (delegate != null) {
+                if (delegate != null && keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
                     delegate.didSelectRowAtIndexPath(item, indexPath);
                 }
             });
