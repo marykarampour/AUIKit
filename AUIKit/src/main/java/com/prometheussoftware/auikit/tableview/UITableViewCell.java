@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
+import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
@@ -289,7 +290,7 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
 
     //region actions
 
-    public void setSelectionAction(Object obj, UIControl.TouchUp target) {
+    public void setSelectionAction(Object obj, UITargetDelegate.TouchUp target) {
         interactionLayer.addTouchUpTarget(obj, target);
     }
 
