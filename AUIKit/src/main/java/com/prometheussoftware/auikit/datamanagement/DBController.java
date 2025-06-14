@@ -108,11 +108,9 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
             return false;
         }
 
-        SQLConstants.QUERY_TYPE insert = SQLConstants.QUERY_TYPE.INSERT;
-        SQLConstants.QUERY_TYPE update = SQLConstants.QUERY_TYPE.UPDATE;
-        SQLConstants.QUERY_TYPE delete = SQLConstants.QUERY_TYPE.DELETE;
         String table_name = StringUtility.format(table, DBModel.dbColumnNameFormat());
         boolean result = true;
+        HashMap<SQLConstants.QUERY_TYPE, ArrayList<DBModel>> objects = new HashMap<>();
 
         for (HashMap<String, String> dict : data) {
 
@@ -129,8 +127,16 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
             object.operationType = SQLConstants.QUERY_TYPE.NONE.getType();
             object.dtModified = NumberUtils.createInteger(dict.get("dt_modified"));
 
-            if (!executeWithObject(object, type, table_name)) result = false;
+            ArrayList<DBModel> map = objects.get(type);
+            if (map == null) map = new ArrayList<>();
+            map.add(object);
         }
+
+        for (SQLConstants.QUERY_TYPE type : objects.keySet()) {
+            ArrayList<DBModel> map = objects.get(type);
+            if (map == null || !executeWithObjects(map, table_name)) result = false;
+        }
+
         return result;
     }
 
@@ -273,12 +279,12 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     }
 
     /** @note Models consumed by this API should have public columns */
-    public <M extends DBModel, P extends DBModel.DBPrimaryModelProtocol> ArrayList<M> dataFromParentTable (Class<M> tableClass, ArrayList<P> objects) {
+    public <M extends DBModel, P extends DBModel.Primary> ArrayList<M> dataFromParentTable (Class<M> tableClass, ArrayList<P> objects) {
 
         ArrayList<String> objectsValues = new ArrayList<>();
         String propertyName = DBModel.classIDName(tableClass);
 
-        for (DBModel.DBPrimaryModelProtocol object : objects) {
+        for (DBModel.Primary object : objects) {
 
             Class columnClass = object.getClass();
 
@@ -313,7 +319,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     /** @brief SELECT * FROM table WHERE table_id=1 AND parent_column_id=1
      * @note Models consumed by this API should have public columns
      */
-    public <M extends DBModel, P extends DBModel.DBPrimaryModelProtocol> ArrayList<M> dataFromChildTable (Class tableClass, ArrayList<P> objects) {
+    public <M extends DBModel, P extends DBModel.Primary> ArrayList<M> dataFromChildTable (Class tableClass, ArrayList<P> objects) {
 
         ArrayList<String> columnNames = new ArrayList<>();
 
@@ -365,7 +371,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
                     Class columnClass = first.getClass();
                     String propertyName = "";
 
-                    if (DBModel.DBPrimaryModelProtocol.class.isInstance(first)) {
+                    if (DBModel.Primary.class.isInstance(first)) {
                         propertyName = column.name != null ? DBModel.dbPropertyName(columnClass) : DBModel.classIDName(columnClass);
                     }
                     else if (column.name.length() > 0) {
@@ -380,8 +386,8 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
                     String columnName = StringUtility.format(propertyName, DBModel.dbColumnNameFormat());
 
                     for (Object object : values) {
-                        if (DBModel.DBPrimaryModelProtocol.class.isInstance(object)) {
-                            String objectID = ((DBModel.DBPrimaryModelProtocol)object).IDString();
+                        if (DBModel.Primary.class.isInstance(object)) {
+                            String objectID = ((DBModel.Primary)object).IDString();
                             if (objectID != null) {
                                 objectsValues.add(objectID);
                             }
@@ -413,7 +419,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     }
 
     /** @brief SELECT * FROM table WHERE id IN (SELECT table_id FROM user_table WHERE user_id IN (1, 2)) AND address_table_id IN (3, 4) */
-    public <M extends DBModel, P extends DBModel.DBPrimaryModelProtocol> ArrayList<M> loadDataFromTable (Class<M> tableClass, ArrayList<P> objects, Class joinClass, Class columnClass, ArrayList<P> columnObjects) {
+    public <M extends DBModel, P extends DBModel.Primary> ArrayList<M> loadDataFromTable (Class<M> tableClass, ArrayList<P> objects, Class joinClass, Class columnClass, ArrayList<P> columnObjects) {
 
         String queryString = stringForQueryDataFromTable(tableClass, objects, joinClass);
         String andColumnNameID = DBModel.dbTableName(columnObjects.get(0).getClass()) + "_id";
@@ -430,7 +436,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     }
 
     /** @brief SELECT * FROM table WHERE id IN (SELECT table_id FROM user_table WHERE user_id=1) */
-    public <M extends DBModel, P extends DBModel.DBPrimaryModelProtocol> ArrayList<M> loadDataFromTable (Class<M> tableClass, ArrayList<P> objects, Class joinClass) {
+    public <M extends DBModel, P extends DBModel.Primary> ArrayList<M> loadDataFromTable (Class<M> tableClass, ArrayList<P> objects, Class joinClass) {
         String queryString = stringForQueryDataFromTable (tableClass, objects, joinClass) + " ;";
         return loadDataWithQueryToClass(queryString, tableClass);
     }
@@ -445,7 +451,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     //region utility
 
     /** @brief SELECT * FROM table WHERE id IN (SELECT table_id FROM user_table WHERE user_id=1) */
-    private <P extends DBModel.DBPrimaryModelProtocol> String stringForQueryDataFromTable (Class tableClass, ArrayList<P> objects, Class joinClass) {
+    private <P extends DBModel.Primary> String stringForQueryDataFromTable (Class tableClass, ArrayList<P> objects, Class joinClass) {
 
         if (objects.size() == 0) return null;
 
@@ -457,11 +463,11 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         return queryString;
     }
 
-    private <P extends DBModel.DBPrimaryModelProtocol> String whereInObjects (ArrayList<P> objects) {
+    private <P extends DBModel.Primary> String whereInObjects (ArrayList<P> objects) {
         ArrayList<String> andValues = new ArrayList<>();
         ArrayList<Class> classes = new ArrayList<>();
 
-        for (DBModel.DBPrimaryModelProtocol obj : objects) {
+        for (DBModel.Primary obj : objects) {
             Class objectClass = obj.getClass();
             if (!classes.contains(objectClass)) classes.add(objectClass);
         }
@@ -469,7 +475,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         for (Class objectClass : classes) {
             ArrayList<String> values = new ArrayList<>();
 
-            for (DBModel.DBPrimaryModelProtocol obj : objects) {
+            for (DBModel.Primary obj : objects) {
                 if (!objectClass.isInstance(obj)) {
                     continue;
                 }
@@ -484,10 +490,10 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         return andStr;
     }
 
-    private <P extends DBModel.DBPrimaryModelProtocol> String valuesInObjects (ArrayList<P> objects) {
+    private <P extends DBModel.Primary> String valuesInObjects (ArrayList<P> objects) {
         ArrayList<String> values = new ArrayList<>();
 
-        for (DBModel.DBPrimaryModelProtocol obj : objects) {
+        for (DBModel.Primary obj : objects) {
             values.add(obj.IDString());
         }
         String valuesStr = ArrayUtility.componentsJoinedByString(values, ", ");
