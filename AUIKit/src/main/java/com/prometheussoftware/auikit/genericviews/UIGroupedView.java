@@ -5,6 +5,7 @@ import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
@@ -42,9 +43,7 @@ public class UIGroupedView <V extends UIView> extends UIView {
     public void setViews(V ...args) {
 
         this.views.clear();
-        for (V v: args) {
-            views.add(v);
-        }
+        Collections.addAll(views, args);
         init();
         if (dataDelegate != null) dataDelegate.groupDidSetViews(this, views);
     }

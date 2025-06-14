@@ -158,7 +158,6 @@ public class BaseActivity extends AppCompatActivity implements UITargetManager.D
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             this.startActivity(callIntent);
-            return;
         }
     }
 

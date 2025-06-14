@@ -13,8 +13,9 @@ public interface UIAccessoryViewProtocol {
     default int textPadding() { return 0; }
     default UIEdgeInsets imageInsets() {
         return new UIEdgeInsets();
-    };
+    }
+
     default UIEdgeInsets labelInsets() {
         return new UIEdgeInsets();
-    };
+    }
 }
