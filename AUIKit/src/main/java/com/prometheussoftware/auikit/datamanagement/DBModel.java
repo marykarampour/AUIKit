@@ -144,7 +144,7 @@ public class DBModel extends BaseModel implements DBModelProtocol {
 
     }
 
-    public static class DBStaticPrimaryModel extends DBModel implements DBPrimaryModelProtocol {
+    public static class DBStaticPrimaryModel extends DBModel implements DBModelProtocol.Primary {
 
         @SerializedName("id")
         public Integer Id;

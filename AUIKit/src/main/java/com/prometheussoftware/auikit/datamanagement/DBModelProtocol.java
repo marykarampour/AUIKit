@@ -6,8 +6,7 @@ public interface DBModelProtocol {
      */
     String dbTableName();
 
-    public interface DBPrimaryModelProtocol extends DBModelProtocol {
-
+    public interface Primary extends DBModelProtocol {
         String IDString();
     }
 }
