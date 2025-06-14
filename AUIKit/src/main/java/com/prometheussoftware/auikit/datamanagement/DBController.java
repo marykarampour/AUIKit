@@ -247,6 +247,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         }
         return true;
     }
+
     public <M extends DBModel> boolean insertDataWithObject (M data, Class cls) {
         if (data == null) return false;
 
