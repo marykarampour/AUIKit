@@ -195,7 +195,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         return true;
     }
 
-        protected String whereStringForCRUD (DBModel object, String table_name) {
+    protected String whereStringForCRUD (DBModel object, String table_name) {
 
         ArrayList<String> columnNames = idColumnsForTable(table_name);
         StringBuilder whereString = new StringBuilder();
