@@ -22,26 +22,35 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
 
     public SQLiteDB(@Nullable String name, int version) {
         super(MainApplication.getContext(), name, null, version);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
         init();
     }
 
     public SQLiteDB(@Nullable Context context, @Nullable String name, int version) {
         super(context, name, null, version);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
         init();
+    }
+
+    public SQLiteDB(@Nullable Context context, @Nullable String name, int version, boolean init) {
+        super(context, name, null, version);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
+        if (init) init();
     }
 
     public SQLiteDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
         init();
     }
 
     public SQLiteDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version, @Nullable DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
         init();
     }
 
     protected void init() {
-        DEBUGLOG.s(this, getReadableDatabase().getPath());
         createTables(this.tb_create_pairs());
     }
 
@@ -59,7 +68,7 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
 
     @Override
     public HashMap<String, String> tb_create_pairs () {
-        return null;
+        return new HashMap<>();
     }
 
     //DB creation
@@ -117,9 +126,7 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
         ArrayList<String> columns = new ArrayList<>();
 
         synchronized (this) {
-
             if (!isExecutable) {
-
                 SQLiteDatabase readDB = this.getReadableDatabase();
                 String[] selectionArgs = new String[0];
 

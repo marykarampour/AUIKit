@@ -9,6 +9,7 @@ import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 import com.prometheussoftware.auikit.utility.DEBUGLOG;
+import com.prometheussoftware.auikit.utility.ObjectUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -31,17 +32,29 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         this.setSqLiteDB(context);
     }
 
-    public void setSqLiteDB() { }
+    public void setSqLiteDB() {
+        setSqLiteDB(MainApplication.getContext());
+    }
 
-    public void setSqLiteDB(Context context) { }
+    public void setSqLiteDB(Context context) {
+        createSqLiteDB(context);
+    }
 
     public T getSqLiteDB() {
         return sqLiteDB;
     }
 
+    private void createSqLiteDB(Context context) {
+        this.sqLiteDB = (T) ObjectUtility.objectWithParams(db_class(),
+                new ObjectUtility.Params(Context.class, context),
+                new ObjectUtility.Params(String.class, this.db_name()),
+                new ObjectUtility.Params(int.class, this.db_version()),
+                new ObjectUtility.Params(boolean.class, false));
+    }
+
     @Override
     public String db_name() {
-        return "";
+        return "sqlite.db";
     }
 
     @Override
@@ -80,7 +93,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         resetDBVersionSyncTime();
     }
 
-    protected void dropDB() {
+    public void dropDB() {
         MainApplication.getContext().deleteDatabase(db_name());
     }
 
@@ -265,7 +278,6 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     public <M extends DBModel> ArrayList<M> loadDataWithQueryToClass (String query, Class<M> objectClass) {
 
         ArrayList<HashMap<String, String>> result = sqLiteDB.loadData(query, null);
-
         ArrayList<M> array = new ArrayList<>();
 
         for (HashMap map : result) {
