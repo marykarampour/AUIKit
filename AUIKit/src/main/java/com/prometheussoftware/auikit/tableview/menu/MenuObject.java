@@ -139,9 +139,9 @@ public class MenuObject {
             UIViewController nextViewController = null;
 
             if (UIViewController.class.isAssignableFrom(VCClass)) {
-                nextViewController = (UIViewController) ObjectUtility.objectWithParams(VCClass, int.class);
+                nextViewController = (UIViewController) ObjectUtility.objectWithParams(VCClass, new ObjectUtility.Params(int.class, type));
                 if (nextViewController == null) {
-                    nextViewController = (UIViewController) ObjectUtility.objectWithParams(VCClass, int.class);
+                    nextViewController = (UIViewController) ObjectUtility.objectWithParams(VCClass);
                 }
             }
             if (nextViewController != null) {
@@ -166,5 +166,4 @@ public class MenuObject {
         BaseModel.Register(RowData.class);
         BaseModel.Register(Item.class);
     }
-
 }
