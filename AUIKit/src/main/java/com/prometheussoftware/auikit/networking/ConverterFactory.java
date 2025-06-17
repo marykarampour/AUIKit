@@ -25,11 +25,11 @@ public class ConverterFactory  extends Converter.Factory {
     public enum TYPE {
         DEFAULT(0);
 
-        private int value;
+        private final int value;
 
         TYPE(int i) { value = i; }
 
-        private static HashMap<Integer, TYPE> map = new HashMap<>();
+        private static final HashMap<Integer, TYPE> map = new HashMap<>();
 
         static {
             for (TYPE type : values()) {
