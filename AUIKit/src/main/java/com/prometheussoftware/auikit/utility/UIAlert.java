@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
-import androidx.annotation.StyleRes;
-
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.MainApplication;
 
