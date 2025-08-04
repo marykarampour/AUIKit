@@ -21,7 +21,8 @@ public class UIAlert {
                         .show());
     }
 
-    public static void OKAlert(String title, String message, @StyleRes int styleResId) {
+    // TODO: Decide whether to use @StyleRes annotations.
+    public static void OKAlert(String title, String message, int styleResId) {
         MainApplication.getWindow().runOnUiThread(() ->
                 new AlertDialog.Builder(MainApplication.getWindow(), styleResId)
                         .setTitle(title)
@@ -41,7 +42,7 @@ public class UIAlert {
                         .show());
     }
 
-    public static void OKAlert(String title, String message, @StyleRes int styleResId, DialogInterface.OnClickListener listener) {
+    public static void OKAlert(String title, String message, int styleResId, DialogInterface.OnClickListener listener) {
         MainApplication.getWindow().runOnUiThread(() ->
                 new AlertDialog.Builder(MainApplication.getWindow(), styleResId)
                         .setTitle(title)
@@ -60,7 +61,7 @@ public class UIAlert {
                         .show());
     }
 
-    public static void OKAlert(String title, @StyleRes int styleResId) {
+    public static void OKAlert(String title, int styleResId) {
         MainApplication.getWindow().runOnUiThread(() ->
                 new AlertDialog.Builder(MainApplication.getWindow(), styleResId)
                         .setMessage(title)
@@ -121,7 +122,7 @@ public class UIAlert {
                         .show());
     }
 
-    public static void OKCancelAlert(String title, @StyleRes int styleResId, DialogInterface.OnClickListener listener) {
+    public static void OKCancelAlert(String title, int styleResId, DialogInterface.OnClickListener listener) {
         MainApplication.getWindow().runOnUiThread(() ->
                 new AlertDialog.Builder(MainApplication.getWindow(), styleResId)
                         .setMessage(title)
