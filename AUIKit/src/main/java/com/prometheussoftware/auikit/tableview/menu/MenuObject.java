@@ -6,10 +6,8 @@ import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.PairArray;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
-import com.prometheussoftware.auikit.utility.DEBUGLOG;
+import com.prometheussoftware.auikit.utility.ObjectUtility;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 public class MenuObject {
@@ -141,48 +139,16 @@ public class MenuObject {
             UIViewController nextViewController = null;
 
             if (UIViewController.class.isAssignableFrom(VCClass)) {
-
-                try {
-                    Constructor constructor = VCConstructor(int.class);
-                    if (constructor == null) {
-                        constructor = VCConstructor();
-                        if (constructor != null) {
-                            constructor.setAccessible(true);
-                            nextViewController = (UIViewController) constructor.newInstance();
-                        }
-                    }
-                    else {
-                        constructor.setAccessible(true);
-                        nextViewController = (UIViewController) constructor.newInstance(type);
-                    }
+                nextViewController = (UIViewController) ObjectUtility.objectWithParams(VCClass, new ObjectUtility.Params(int.class, type));
+                if (nextViewController == null) {
+                    nextViewController = (UIViewController) ObjectUtility.objectWithParams(VCClass);
                 }
-                catch (IllegalAccessException e) { e.printStackTrace(); }
-                catch (InstantiationException e) { e.printStackTrace(); }
-                catch (InvocationTargetException e) { e.printStackTrace(); }
             }
             if (nextViewController != null) {
                 trueVCClass = nextViewController.getClass();
                 nextViewController.setTitle(title);
             }
             return (VC) nextViewController;
-        }
-
-        private Constructor VCConstructor(Class<?>... parameterTypes) {
-            try {
-                return VCClass.getDeclaredConstructor(parameterTypes);
-            }
-            catch (NoSuchMethodException e) {
-                DEBUGLOG.s(VCClass, " --> Failed to create menu item from VCClass");
-                e.printStackTrace();
-                try {
-                    return VCClass.getConstructor(parameterTypes);
-                }
-                catch (NoSuchMethodException ex) {
-                    DEBUGLOG.s(VCClass, " --> Failed to create menu item from VCClass");
-                    ex.printStackTrace();
-                    return null;
-                }
-            }
         }
 
         public Action getAction() {
@@ -200,5 +166,4 @@ public class MenuObject {
         BaseModel.Register(RowData.class);
         BaseModel.Register(Item.class);
     }
-
 }

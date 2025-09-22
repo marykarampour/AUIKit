@@ -380,6 +380,5 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         this.multiSelectEnabled = multiSelectEnabled;
     }
 
-
     //endregion
 }
