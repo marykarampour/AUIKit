@@ -316,4 +316,8 @@ public class DateUtility {
 
         return components;
     }
+
+    public static int timestamp() {
+        return Math.toIntExact(System.currentTimeMillis() / 1000);
+    }
 }

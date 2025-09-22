@@ -254,7 +254,6 @@ public class BaseModel implements Serializable, Cloneable {
                 Method setter = setter(field);
                 if (setter != null) setter.invoke(this, value);
                 else field.set(this, value);
-                return;
             }
         } catch (InvocationTargetException | IllegalAccessException e) { }
     }
@@ -308,9 +307,8 @@ public class BaseModel implements Serializable, Cloneable {
             if (method.getName().matches("^get[A-Z].*") &&
                     !method.getReturnType().equals(void.class))
                 return true;
-            if (method.getName().matches("^is[A-Z].*") &&
-                    method.getReturnType().equals(boolean.class))
-                return true;
+            return method.getName().matches("^is[A-Z].*") &&
+                    method.getReturnType().equals(boolean.class);
         }
         return false;
     }
