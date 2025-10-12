@@ -265,9 +265,24 @@ public class StringUtility {
         return s.replaceAll("[^0-9A-Z]", "");
     }
 
+    public static String parnumericOnly (String s) {
+        if (isEmpty(s)) return null;
+        return s.replaceAll("[^0-9()]", "");
+    }
+
+    public static String paralphanumericOnly (String s) {
+        if (isEmpty(s)) return null;
+        return s.replaceAll("[^0-9A-Z()]", "");
+    }
+
     public static boolean isNumbersOnly (String s) {
         if (isEmpty(s)) return false;
         return s.equals(numbersOnly(s));
+    }
+
+    public static boolean isparnumericOnly (String s) {
+        if (isEmpty(s)) return false;
+        return s.equals(parnumericOnly(s));
     }
 
         /** Use range.length = 0 for ranges intended to the end of string */
