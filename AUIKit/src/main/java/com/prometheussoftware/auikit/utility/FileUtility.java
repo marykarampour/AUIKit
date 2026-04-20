@@ -80,7 +80,7 @@ public class FileUtility {
         return null;
     }
 
-    /** Returns file */
+    /** Returns File */
     public static File writeToFile (byte[] data, String fileName, File fileDir) {
         File file = null;
         try {
@@ -93,6 +93,17 @@ public class FileUtility {
         }
         catch (IOException e) { }
         return file;
+    }
+
+    /** Uses a UUID for filename. */
+    public static File writeToFile (byte[] data, File fileDir) {
+        String filename = ObjectUtility.GUID() + "." + DataUtility.extension(data);
+        return writeToFile(data, filename, fileDir);
+    }
+
+    /** Uses a UUID for filename and FilesDir for directory. */
+    public static File writeToFile (byte[] data) {
+        return writeToFile(data, context.getFilesDir());
     }
 
     /** Returns file */
@@ -116,4 +127,5 @@ public class FileUtility {
     public static boolean fileExists (String path) {
         return new File(path).exists();
     }
+
 }

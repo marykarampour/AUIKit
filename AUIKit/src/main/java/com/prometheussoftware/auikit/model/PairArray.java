@@ -127,7 +127,7 @@ public class PairArray <S, T> extends BaseModel {
     public T objectForKey(S key) {
         for (Pair<S, T> obj : array) {
             if (obj.getFirst().equals(key)) {
-                return (T) obj.getSecond();
+                return obj.getSecond();
             }
         }
         return null;
@@ -155,7 +155,7 @@ public class PairArray <S, T> extends BaseModel {
         if (pairs == null) return new ArrayList();
         ArrayList<S> keys = new ArrayList<>();
         for (P pair : pairs) {
-            keys.add((S) pair.getFirst());
+            keys.add(pair.getFirst());
         }
         return keys;
     }
@@ -164,7 +164,7 @@ public class PairArray <S, T> extends BaseModel {
         if (pairs == null) return new ArrayList<>();
         ArrayList<T> values = new ArrayList<>();
         for (P pair : pairs) {
-            values.add((T) pair.getSecond());
+            values.add(pair.getSecond());
         }
         return values;
     }

@@ -4,10 +4,15 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.common.MainApplication;
 import com.prometheussoftware.auikit.model.BaseModel;
+import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
+import com.prometheussoftware.auikit.utility.DEBUGLOG;
+import com.prometheussoftware.auikit.utility.ObjectUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -27,17 +32,29 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         this.setSqLiteDB(context);
     }
 
-    public void setSqLiteDB() { }
+    public void setSqLiteDB() {
+        setSqLiteDB(MainApplication.getContext());
+    }
 
-    public void setSqLiteDB(Context context) { }
+    public void setSqLiteDB(Context context) {
+        createSqLiteDB(context);
+    }
 
     public T getSqLiteDB() {
         return sqLiteDB;
     }
 
+    private void createSqLiteDB(Context context) {
+        this.sqLiteDB = (T) ObjectUtility.objectWithParams(db_class(),
+                new ObjectUtility.Params(Context.class, context),
+                new ObjectUtility.Params(String.class, this.db_name()),
+                new ObjectUtility.Params(int.class, this.db_version()),
+                new ObjectUtility.Params(boolean.class, false));
+    }
+
     @Override
     public String db_name() {
-        return "";
+        return "sqlite.db";
     }
 
     @Override
@@ -61,14 +78,23 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     }
 
     protected void initializeDB () {
-        if (!dbVersionIsUpToDate()) {
+        if (dbVersionIsUpToDate())
+            createDB();
+        else
             updateDB();
-        }
+    }
+
+    protected void createDB() {
+        MainApplication.getContext().openOrCreateDatabase(db_name(), Context.MODE_PRIVATE, null);
     }
 
     protected void updateDB () {
         //Do the update e.g. updateVersion_1_0_0
         resetDBVersionSyncTime();
+    }
+
+    public void dropDB() {
+        MainApplication.getContext().deleteDatabase(db_name());
     }
 
     private static void resetDBVersionSyncTime () {
@@ -82,12 +108,176 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     
     //end region
 
-    //Querying
+    //region Querying
     //TODO: formatting is handled by @SerializedName, could use a custom mapper
+
+    public boolean executeWithMaps (ArrayList<HashMap<String, String>> data, String table) {
+        Class classO;
+        try {
+            classO = Class.forName(table);
+            if (!classO.isAssignableFrom(DBModel.class) || data.isEmpty()) return false;
+        }
+        catch (ClassNotFoundException e) {
+            return false;
+        }
+
+        String table_name = StringUtility.format(table, DBModel.dbColumnNameFormat());
+        boolean result = true;
+        HashMap<SQLConstants.QUERY_TYPE, ArrayList<DBModel>> objects = new HashMap<>();
+
+        for (HashMap<String, String> dict : data) {
+
+            String json = new JSONObject(dict).toString();
+            DBModel object = (DBModel) new Gson().fromJson(json, classO);
+
+            String queryType = dict.get("operation_type");
+            if (queryType == null || queryType.isEmpty()) continue;
+
+            SQLConstants.QUERY_TYPE type = SQLConstants.QUERY_TYPE.valueOf(queryType.charAt(0));
+            String query = type.getQuery();
+            if (query == null || query.isEmpty()) continue;
+
+            object.operationType = SQLConstants.QUERY_TYPE.NONE.getType();
+            object.dtModified = NumberUtils.createInteger(dict.get("dt_modified"));
+
+            ArrayList<DBModel> map = objects.get(type);
+            if (map == null) map = new ArrayList<>();
+            map.add(object);
+        }
+
+        for (SQLConstants.QUERY_TYPE type : objects.keySet()) {
+            ArrayList<DBModel> map = objects.get(type);
+            if (map == null || !executeWithObjects(map, table_name)) result = false;
+        }
+
+        return result;
+    }
+
+    public <T extends DBModel> boolean executeWithObjects (ArrayList<T> data, String table) {
+
+        String table_name = StringUtility.format(table, DBModel.dbColumnNameFormat());
+        boolean result = true;
+
+        for (T object : data) {
+            SQLConstants.QUERY_TYPE type = SQLConstants.QUERY_TYPE.valueOf(object.operationType);
+            if (type == SQLConstants.QUERY_TYPE.NONE) continue;
+            if (!executeWithObject(object, type, table_name)) result = false;
+        }
+        return result;
+    }
+
+    public <T extends DBModel> boolean executeWithObject (T object, SQLConstants.QUERY_TYPE type, String table_name) {
+
+        String query = type.getQuery();
+        if (query == null || query.isEmpty()) return false;
+
+        SQLConstants.QUERY_TYPE insert = SQLConstants.QUERY_TYPE.INSERT;
+        SQLConstants.QUERY_TYPE update = SQLConstants.QUERY_TYPE.UPDATE;
+        SQLConstants.QUERY_TYPE delete = SQLConstants.QUERY_TYPE.DELETE;
+
+        String stmt = "";
+        String whereString = whereStringForCRUD(object, table_name);
+        Pair<String, String> keyWValues = object.SQLKeysWithValues();
+        String keyEValues = object.SQLKeysEqualValues();
+
+        switch (type) {
+            case INSERT: {
+                if (!keyWValues.getFirst().isEmpty()) {
+                    stmt = String.format(query, table_name, keyWValues.getFirst(), keyWValues.getSecond());
+                    if (!sqLiteDB.executeQuery(stmt)) {
+                        stmt = String.format(update.getQuery(), table_name, keyEValues, whereString);
+                        return sqLiteDB.executeQuery(stmt);
+                    }
+                }
+            }
+            break;
+
+            case UPDATE: {
+                stmt = String.format(query, table_name, keyEValues, whereString);
+                if (!sqLiteDB.executeQuery(stmt) && !keyWValues.getFirst().isEmpty()) {
+                    stmt = String.format(insert.getQuery(), table_name, keyWValues.getFirst(), keyWValues.getSecond());
+                    return sqLiteDB.executeQuery(stmt);
+                }
+            }
+            break;
+
+            case DELETE: {
+                stmt = String.format(delete.getQuery(), table_name, whereString);
+                return sqLiteDB.executeQuery(stmt);
+            }
+
+            default:
+                break;
+        }
+
+        DEBUGLOG.s("%s", stmt);
+        return true;
+    }
+
+    protected String whereStringForCRUD (DBModel object, String table_name) {
+
+        ArrayList<String> columnNames = idColumnsForTable(table_name);
+        StringBuilder whereString = new StringBuilder();
+
+        if (columnNames.contains("id")) {
+            whereString.append(String.format("id=\"%s\"", object.id));
+        }
+        else {
+            String last = ArrayUtility.lastObject(columnNames);
+
+            for (String name : columnNames) {
+                String column = StringUtility.format(name, DBModel.dbColumnNameFormat());
+
+                whereString.append(String.format("%s=\"%s\"", name, object.valueForKey(column)));
+
+                if (name.equalsIgnoreCase(last))
+                    whereString.append(" AND ");
+            }
+        }
+        return whereString.toString();
+    }
+
+    protected ArrayList<String> idColumnsForTable (String table_name) {
+
+        String query = String.format(SQLConstants.execute_PRAGMA_table(), table_name);
+        ArrayList<HashMap<String, String>> columns = sqLiteDB.loadData(query);
+        ArrayList<String> columnNames = new ArrayList<>();
+
+        for (HashMap<String, String> column : columns) {
+            String name = column.get("name");
+            if (name.contains("id"))
+                columnNames.add(name);
+        }
+        return columnNames;
+    }
+
+    public <M extends DBModel> boolean insertDataWithObjects (ArrayList<M> data, Class cls) {
+        if (!cls.isAssignableFrom(DBModel.class) || data.isEmpty()) return false;
+
+        for (M object : data) {
+            Pair<String, String> keyValues = object.SQLKeysWithValues();
+
+            if (!keyValues.getFirst().isEmpty()) {
+                String name = StringUtility.format(cls.getName(), DBModel.dbColumnNameFormat());
+                String stmt = String.format(SQLConstants.execute_insert(), name, keyValues.getFirst(), keyValues.getSecond());
+                DEBUGLOG.s("%s", stmt);
+                sqLiteDB.executeQuery(stmt);
+            }
+        }
+        return true;
+    }
+
+    public <M extends DBModel> boolean insertDataWithObject (M data, Class cls) {
+        if (data == null) return false;
+
+        ArrayList<M> arr = new ArrayList<>();
+        arr.add(data);
+        return insertDataWithObjects(arr, cls);
+    }
+
     public <M extends DBModel> ArrayList<M> loadDataWithQueryToClass (String query, Class<M> objectClass) {
 
         ArrayList<HashMap<String, String>> result = sqLiteDB.loadData(query, null);
-
         ArrayList<M> array = new ArrayList<>();
 
         for (HashMap map : result) {
@@ -101,12 +291,12 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     }
 
     /** @note Models consumed by this API should have public columns */
-    public <M extends DBModel, P extends DBModel.DBPrimaryModelProtocol> ArrayList<M> dataFromParentTable (Class<M> tableClass, ArrayList<P> objects) {
+    public <M extends DBModel, P extends DBModel.Primary> ArrayList<M> dataFromParentTable (Class<M> tableClass, ArrayList<P> objects) {
 
         ArrayList<String> objectsValues = new ArrayList<>();
         String propertyName = DBModel.classIDName(tableClass);
 
-        for (DBModel.DBPrimaryModelProtocol object : objects) {
+        for (DBModel.Primary object : objects) {
 
             Class columnClass = object.getClass();
 
@@ -141,7 +331,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     /** @brief SELECT * FROM table WHERE table_id=1 AND parent_column_id=1
      * @note Models consumed by this API should have public columns
      */
-    public <M extends DBModel, P extends DBModel.DBPrimaryModelProtocol> ArrayList<M> dataFromChildTable (Class tableClass, ArrayList<P> objects) {
+    public <M extends DBModel, P extends DBModel.Primary> ArrayList<M> dataFromChildTable (Class tableClass, ArrayList<P> objects) {
 
         ArrayList<String> columnNames = new ArrayList<>();
 
@@ -193,7 +383,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
                     Class columnClass = first.getClass();
                     String propertyName = "";
 
-                    if (DBModel.DBPrimaryModelProtocol.class.isInstance(first)) {
+                    if (DBModel.Primary.class.isInstance(first)) {
                         propertyName = column.name != null ? DBModel.dbPropertyName(columnClass) : DBModel.classIDName(columnClass);
                     }
                     else if (column.name.length() > 0) {
@@ -208,8 +398,8 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
                     String columnName = StringUtility.format(propertyName, DBModel.dbColumnNameFormat());
 
                     for (Object object : values) {
-                        if (DBModel.DBPrimaryModelProtocol.class.isInstance(object)) {
-                            String objectID = ((DBModel.DBPrimaryModelProtocol)object).IDString();
+                        if (DBModel.Primary.class.isInstance(object)) {
+                            String objectID = ((DBModel.Primary)object).IDString();
                             if (objectID != null) {
                                 objectsValues.add(objectID);
                             }
@@ -227,7 +417,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
                 }
             }
             else if (values == null) {
-                String base = column.isNull ? " %s IS NULL " : " %s IS NULL ";
+                String base = column.isNull ? " %s IS NULL " : " %s NOT NULL ";
                 String whereStr = String.format(base, StringUtility.format(column.name, DBModel.dbColumnNameFormat()));
                 columnValues.add(whereStr);
             }
@@ -241,7 +431,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     }
 
     /** @brief SELECT * FROM table WHERE id IN (SELECT table_id FROM user_table WHERE user_id IN (1, 2)) AND address_table_id IN (3, 4) */
-    public <M extends DBModel, P extends DBModel.DBPrimaryModelProtocol> ArrayList<M> loadDataFromTable (Class<M> tableClass, ArrayList<P> objects, Class joinClass, Class columnClass, ArrayList<P> columnObjects) {
+    public <M extends DBModel, P extends DBModel.Primary> ArrayList<M> loadDataFromTable (Class<M> tableClass, ArrayList<P> objects, Class joinClass, Class columnClass, ArrayList<P> columnObjects) {
 
         String queryString = stringForQueryDataFromTable(tableClass, objects, joinClass);
         String andColumnNameID = DBModel.dbTableName(columnObjects.get(0).getClass()) + "_id";
@@ -258,7 +448,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     }
 
     /** @brief SELECT * FROM table WHERE id IN (SELECT table_id FROM user_table WHERE user_id=1) */
-    public <M extends DBModel, P extends DBModel.DBPrimaryModelProtocol> ArrayList<M> loadDataFromTable (Class<M> tableClass, ArrayList<P> objects, Class joinClass) {
+    public <M extends DBModel, P extends DBModel.Primary> ArrayList<M> loadDataFromTable (Class<M> tableClass, ArrayList<P> objects, Class joinClass) {
         String queryString = stringForQueryDataFromTable (tableClass, objects, joinClass) + " ;";
         return loadDataWithQueryToClass(queryString, tableClass);
     }
@@ -268,12 +458,12 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         return loadDataWithQueryToClass(String.format(SQLConstants.load_all(), DBModel.dbTableName(tableClass)), tableClass);
     }
 
-
+    //endregion
 
     //region utility
 
     /** @brief SELECT * FROM table WHERE id IN (SELECT table_id FROM user_table WHERE user_id=1) */
-    private <P extends DBModel.DBPrimaryModelProtocol> String stringForQueryDataFromTable (Class tableClass, ArrayList<P> objects, Class joinClass) {
+    private <P extends DBModel.Primary> String stringForQueryDataFromTable (Class tableClass, ArrayList<P> objects, Class joinClass) {
 
         if (objects.size() == 0) return null;
 
@@ -285,11 +475,11 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         return queryString;
     }
 
-    private <P extends DBModel.DBPrimaryModelProtocol> String whereInObjects (ArrayList<P> objects) {
+    private <P extends DBModel.Primary> String whereInObjects (ArrayList<P> objects) {
         ArrayList<String> andValues = new ArrayList<>();
         ArrayList<Class> classes = new ArrayList<>();
 
-        for (DBModel.DBPrimaryModelProtocol obj : objects) {
+        for (DBModel.Primary obj : objects) {
             Class objectClass = obj.getClass();
             if (!classes.contains(objectClass)) classes.add(objectClass);
         }
@@ -297,7 +487,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         for (Class objectClass : classes) {
             ArrayList<String> values = new ArrayList<>();
 
-            for (DBModel.DBPrimaryModelProtocol obj : objects) {
+            for (DBModel.Primary obj : objects) {
                 if (!objectClass.isInstance(obj)) {
                     continue;
                 }
@@ -312,10 +502,10 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         return andStr;
     }
 
-    private <P extends DBModel.DBPrimaryModelProtocol> String valuesInObjects (ArrayList<P> objects) {
+    private <P extends DBModel.Primary> String valuesInObjects (ArrayList<P> objects) {
         ArrayList<String> values = new ArrayList<>();
 
-        for (DBModel.DBPrimaryModelProtocol obj : objects) {
+        for (DBModel.Primary obj : objects) {
             values.add(obj.IDString());
         }
         String valuesStr = ArrayUtility.componentsJoinedByString(values, ", ");

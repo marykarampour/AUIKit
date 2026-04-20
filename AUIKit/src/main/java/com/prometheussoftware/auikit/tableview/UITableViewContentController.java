@@ -1,5 +1,8 @@
 package com.prometheussoftware.auikit.tableview;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiview.UIRefreshView;
 import com.prometheussoftware.auikit.uiview.UIView;
 
@@ -114,12 +117,22 @@ public class UITableViewContentController <D extends UITableViewDataController> 
     }
 
     public D getDataController() {
-        return (D) dataController;
+        return dataController;
     }
 
     public <T extends D> void setDataController(T dataController) {
         this.dataController = dataController;
         createAdapter();
+    }
+
+    public void requestfocusForViewAtPosition(int position) {
+        RecyclerView.ViewHolder viewHolder = tableView.getView().findViewHolderForLayoutPosition(position);
+        viewHolder.itemView.requestFocus();
+    }
+
+    public void requestfocusForRowAtIndexPath(IndexPath indexPath) {
+        int position = dataController.positionForIndexPath(indexPath);
+        requestfocusForViewAtPosition(position);
     }
 
     //endregion

@@ -6,6 +6,8 @@ import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.model.PairArray;
 import com.prometheussoftware.auikit.model.Text;
+import com.prometheussoftware.auikit.utility.DEBUGLOG;
+import com.prometheussoftware.auikit.utility.ObjectUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.lang.reflect.Field;
@@ -13,12 +15,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class DBModel extends BaseModel {
+public class DBModel extends BaseModel implements DBModelProtocol {
 
-    public String operationType;
+    public Integer id;
+
+    @SerializedName("operation_type")
+    public char operationType;
+
+    @SerializedName("dt_modified")
+    public Integer dtModified;
 
     static {
         BaseModel.Register(DBModel.class);
+    }
+
+    public DBModel() {
+        super();
+        operationType = SQLConstants.QUERY_TYPE.NONE.getType();
     }
 
     public String SQLKeysEqualValues () {
@@ -32,7 +45,7 @@ public class DBModel extends BaseModel {
         return str;
     }
 
-    public Pair SQLKeysWithValues () {
+    public Pair<String, String> SQLKeysWithValues () {
         PairArray<String, String> pairs = SQLKeyValuePairs();
         String keyStr = "";
         String valueStr = "";
@@ -72,24 +85,23 @@ public class DBModel extends BaseModel {
                     if (objectType == Date.class) {
                         Date date = (Date)object;
                         value = String.valueOf(date.getTime()*1000);
-
-                        if (value.length() > 0) {
-                            value = StringUtility.quotations(value);
-                        }
-                        else {
-                            value = "NULL";
-                        }
-
-                        //TODO: from property format
-                        keyStr = StringUtility.format(name, dbColumnNameFormat());
-                        valueStr = value;
-                        Pair pair = new Pair(keyStr, valueStr);
-                        pairs.addPair(pair);
                     }
                 }
 
-            } catch (NoSuchFieldException e) {
-            } catch (IllegalAccessException e) { }
+                valueStr = (0 < value.length()) ? StringUtility.quotations(value) : "NULL";
+
+                keyStr = StringUtility.format(name, dbColumnNameFormat());
+                keyStr = StringUtility.quotations(keyStr);
+
+                Pair pair = new Pair(keyStr, valueStr);
+                pairs.addPair(pair);
+            }
+            catch (NoSuchFieldException e) {
+                DEBUGLOG.s(e);
+            }
+            catch (IllegalAccessException e) {
+                DEBUGLOG.s(e);
+            }
         }
         return pairs;
     }
@@ -112,23 +124,27 @@ public class DBModel extends BaseModel {
     }
     /** @brief table name from class, e.g. ABCTable ---> table, subclass can override for custom format, default underscore */
     public static String dbTableName (Class tableClass) {
-        return StringUtility.format(tableClass.getSimpleName(), Text.TEXT_FORMAT.UnderScoreIgnoreDigits);
+        Object obj = ObjectUtility.objectWithParams(tableClass);
+        String name = "";
+        if (obj instanceof DBModel)
+            name = ((DBModel)obj).dbTableName();
+        return StringUtility.format(name, Text.TEXT_FORMAT.UnderScoreIgnoreDigits);
     }
     /** @brief property name from class, e.g. ABCTableType ---> tableType, subclass can override for custom format, default camel case */
     public static String dbPropertyName (Class tableClass) {
         return StringUtility.format(tableClass.getSimpleName(), Text.TEXT_FORMAT.CamelCase);
     }
 
+    @Override
+    public String dbTableName() {
+        return this.getClass().getSimpleName();
+    }
+
     public static class DBStaticModel extends DBModel {
 
     }
 
-    public interface DBPrimaryModelProtocol {
-
-        String IDString();
-    }
-
-    public static class DBStaticPrimaryModel extends DBModel implements DBPrimaryModelProtocol {
+    public static class DBStaticPrimaryModel extends DBModel implements DBModelProtocol.Primary {
 
         @SerializedName("id")
         public Integer Id;

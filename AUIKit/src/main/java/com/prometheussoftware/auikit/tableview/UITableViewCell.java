@@ -294,6 +294,10 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         interactionLayer.addTouchUpTarget(obj, target);
     }
 
+    public void setSelectionKeyAction(Object obj, UITargetDelegate.KeyUp target) {
+        interactionLayer.addKeyUpTarget(obj, target);
+    }
+
     //endregion
 
     /** onAttachedToWindow and onDetachedFromWindow are called

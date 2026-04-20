@@ -19,6 +19,17 @@ public class UIAlert {
                         .show());
     }
 
+    // TODO: Decide whether to use @StyleRes annotations.
+    public static void OKAlert(String title, String message, int styleResId) {
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow(), styleResId)
+                        .setTitle(title)
+                        .setMessage(message)
+                        .setCancelable(false)
+                        .setPositiveButton(Constants.OK_STR(), (DialogInterface d, int w) -> {})
+                        .show());
+    }
+
     public static void OKAlert(String title, String message, DialogInterface.OnClickListener listener) {
         MainApplication.getWindow().runOnUiThread(() ->
                 new AlertDialog.Builder(MainApplication.getWindow())
@@ -29,9 +40,28 @@ public class UIAlert {
                         .show());
     }
 
+    public static void OKAlert(String title, String message, int styleResId, DialogInterface.OnClickListener listener) {
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow(), styleResId)
+                        .setTitle(title)
+                        .setMessage(message)
+                        .setCancelable(false)
+                        .setPositiveButton(Constants.OK_STR(), listener)
+                        .show());
+    }
+
     public static void OKAlert(String title) {
         MainApplication.getWindow().runOnUiThread(() ->
                 new AlertDialog.Builder(MainApplication.getWindow())
+                        .setMessage(title)
+                        .setCancelable(false)
+                        .setPositiveButton(Constants.OK_STR(), (DialogInterface d, int w) -> {})
+                        .show());
+    }
+
+    public static void OKAlert(String title, int styleResId) {
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow(), styleResId)
                         .setMessage(title)
                         .setCancelable(false)
                         .setPositiveButton(Constants.OK_STR(), (DialogInterface d, int w) -> {})
@@ -83,6 +113,16 @@ public class UIAlert {
     public static void OKCancelAlert(String title, DialogInterface.OnClickListener listener) {
         MainApplication.getWindow().runOnUiThread(() ->
                 new AlertDialog.Builder(MainApplication.getWindow())
+                        .setMessage(title)
+                        .setCancelable(false)
+                        .setPositiveButton(Constants.OK_STR(), listener)
+                        .setNegativeButton(Constants.Cancel_STR(), (DialogInterface d, int w) -> {})
+                        .show());
+    }
+
+    public static void OKCancelAlert(String title, int styleResId, DialogInterface.OnClickListener listener) {
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow(), styleResId)
                         .setMessage(title)
                         .setCancelable(false)
                         .setPositiveButton(Constants.OK_STR(), listener)

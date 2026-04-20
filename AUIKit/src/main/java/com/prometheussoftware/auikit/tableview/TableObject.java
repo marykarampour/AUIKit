@@ -37,19 +37,19 @@ public class TableObject {
 
         /** Will create a pair of CellInfo and item */
         public RowData(T item, Class cellClass) {
-            if (items == null) items = new PairArray();;
+            if (items == null) items = new PairArray();
             this.items.addPair(new CellInfo(cellClass, true), item);
         }
 
         /** Will create a pair of CellInfo and item */
         public RowData(T item, Class cellClass, int estimatedHeight, boolean instanceId) {
-            if (items == null) items = new PairArray();;
+            if (items == null) items = new PairArray();
             this.items.addPair(new CellInfo(cellClass, estimatedHeight, instanceId), item);
         }
 
         /** Will create a pair of CellInfo and item */
         public RowData(T item, Class cellClass, int estimatedHeight, int identifier) {
-            if (items == null) items = new PairArray();;
+            if (items == null) items = new PairArray();
             this.items.addPair(new CellInfo(cellClass, estimatedHeight, identifier), item);
         }
 
@@ -60,7 +60,7 @@ public class TableObject {
 
         /** Will create a pair of CellInfo and item */
         public void addItem(T item, CellInfo info) {
-            if (items == null) items = new PairArray();;
+            if (items == null) items = new PairArray();
             this.items.addPair(info, item);
         }
 

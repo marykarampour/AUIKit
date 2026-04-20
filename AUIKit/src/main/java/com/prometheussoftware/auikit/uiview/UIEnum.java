@@ -17,8 +17,8 @@ public class UIEnum {
         CENTER_X(1 << 3),
         CENTER_Y(1 << 4);
 
-        private int value;
-        private static HashMap<Integer, ALIGNMENT> map = new HashMap<>();
+        private final int value;
+        private static final HashMap<Integer, ALIGNMENT> map = new HashMap<>();
 
         static {
             for (ALIGNMENT al : values()) {

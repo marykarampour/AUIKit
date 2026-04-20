@@ -12,8 +12,8 @@ public enum DATE_FORMAT {
         this.name = s;
     }
 
-    private int index;
-    private String name;
+    private final int index;
+    private final String name;
 
     public int getIndex() {
         return this.index;
@@ -23,7 +23,7 @@ public enum DATE_FORMAT {
         return name;
     }
 
-    private static Map map = new HashMap<>();
+    private static final Map map = new HashMap<>();
 
     static {
         for (DATE_FORMAT format : DATE_FORMAT.values()) {

@@ -125,7 +125,6 @@ public class UINavigationBar extends UIView {
             default: {
                 if (view == null) {
                     addItem(new UILabel(), position);
-                    return;
                 }
                 else {
                     titleViewHolder.setView(view);

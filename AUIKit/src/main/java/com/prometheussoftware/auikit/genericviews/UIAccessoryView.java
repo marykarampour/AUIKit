@@ -329,8 +329,8 @@ public abstract class UIAccessoryView extends UISwitch implements UIAccessoryVie
         IMAGE(1),
         TITLE(2);
 
-        private int value;
-        private static HashMap<Integer, TYPE> map = new HashMap<>();
+        private final int value;
+        private static final HashMap<Integer, TYPE> map = new HashMap<>();
 
         static  {
             for (TYPE type : values()) {

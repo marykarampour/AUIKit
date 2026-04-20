@@ -22,26 +22,35 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
 
     public SQLiteDB(@Nullable String name, int version) {
         super(MainApplication.getContext(), name, null, version);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
         init();
     }
 
     public SQLiteDB(@Nullable Context context, @Nullable String name, int version) {
         super(context, name, null, version);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
         init();
+    }
+
+    public SQLiteDB(@Nullable Context context, @Nullable String name, int version, boolean init) {
+        super(context, name, null, version);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
+        if (init) init();
     }
 
     public SQLiteDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
         init();
     }
 
     public SQLiteDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version, @Nullable DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
+        DEBUGLOG.s(this, getReadableDatabase().getPath());
         init();
     }
 
     protected void init() {
-        DEBUGLOG.s(this, getReadableDatabase().getPath());
         createTables(this.tb_create_pairs());
     }
 
@@ -59,7 +68,7 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
 
     @Override
     public HashMap<String, String> tb_create_pairs () {
-        return null;
+        return new HashMap<>();
     }
 
     //DB creation
@@ -80,20 +89,24 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
     }
 
     public void createTables (HashMap<String, String> tables) {
-
         for (Map.Entry<String, String> entry : tables.entrySet()) {
             createTable(entry.getKey(), entry.getValue());
         }
     }
 
-    //Execute query
-
-    public void execute_query (String query) {
-        execute_query(query, null);
+    public void  clearTable (String table) {
+        String query = String.format(SQLConstants.clear_table(), table);
+        executeQuery(query);
     }
 
-    public void execute_query (String query, PairArray<String, String> parameters) {
-        runQuery(query, parameters, true);
+    //Execute query
+
+    public boolean executeQuery (String query) {
+        return executeQuery(query, null);
+    }
+
+    public boolean executeQuery (String query, PairArray<String, String> parameters) {
+        return runQuery(query, parameters, true) != null;
     }
 
     //Select
@@ -113,9 +126,7 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
         ArrayList<String> columns = new ArrayList<>();
 
         synchronized (this) {
-
             if (!isExecutable) {
-
                 SQLiteDatabase readDB = this.getReadableDatabase();
                 String[] selectionArgs = new String[0];
 
@@ -148,14 +159,18 @@ public class SQLiteDB extends SQLiteOpenHelper implements SQLiteTableCreation {
                 SQLiteStatement compliedStatement = writeDB.compileStatement(query);
 
                 if (compliedStatement != null) {
-
                     if (parameters != null) {
                         for (int i = 0; i <= parameters.getArray().size(); i++) {
                             compliedStatement.bindString(i, parameters.getArray().get(i).getSecond());
                         }
                     }
+                    try {
+                        compliedStatement.execute();
+                    }
+                    catch (SQLiteException e) {
+                        DEBUGLOG.s(e);
+                    }
                 }
-                compliedStatement.execute();
             }
         }
 

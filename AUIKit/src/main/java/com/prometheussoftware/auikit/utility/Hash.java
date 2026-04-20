@@ -16,7 +16,7 @@ public class Hash {
 
         if (StringUtility.isEmpty(string)) return "";
         String hashStr = StringEscapeUtils.escapeJava(prefix);
-        hashStr = new StringBuilder(hashStr).append(string).append(salt).toString();
+        hashStr = hashStr + string + salt;
         return computeHash(hashStr);
     }
 }

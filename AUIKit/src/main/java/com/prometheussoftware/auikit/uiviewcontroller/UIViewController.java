@@ -178,7 +178,7 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
                 animationHandler.postDelayed(() -> {
                     viewDidAppear(true);
                 }, animationDuration);
-            }, 2*animationDuration);
+            }, 2L *animationDuration);
         }
         else {
             viewWillAppear(false);
@@ -200,8 +200,8 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
                 viewWillDisappear(true);
                 animationHandler.postDelayed(() -> {
                     viewDidDisappear(true);
-                }, 2*animationDuration);
-            }, 2*animationDuration);
+                }, 2L *animationDuration);
+            }, 2L *animationDuration);
         }
         else {
             viewWillDisappear(false);
@@ -377,7 +377,7 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
                 return (UINavigationController) presentingParent;
             else {
                 UINavigationController nav = presentingParent.getNavigationController();
-                if (nav != null) return nav;
+                return nav;
             }
         }
         else if (this instanceof UINavigationController) {

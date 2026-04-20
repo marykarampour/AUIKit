@@ -237,13 +237,13 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
             this.value = value;
         }
 
-        private int value;
+        private final int value;
 
         public int intValue() {
             return this.value;
         }
 
-        private static Map map = new HashMap<>();
+        private static final Map map = new HashMap<>();
 
         static {
             for (ORIENTATION flavor : ORIENTATION.values()) {
