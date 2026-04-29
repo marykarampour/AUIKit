@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
 import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
@@ -69,7 +70,9 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
     }
 
     protected void setActionBarProperties() {
-        getSupportActionBar().hide();
+        ActionBar bar = getSupportActionBar();
+        if (bar == null) return;
+        bar.hide();
     }
 
     @Override protected void onStart() {

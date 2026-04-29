@@ -31,6 +31,10 @@ public class Assets implements AssetsProtocol {
         return new UIImage(id);
     }
 
+    public static UIImage imageFromID(int id, int color) {
+        return new UIImage(id, color);
+    }
+
     // navigation
 
     @Override

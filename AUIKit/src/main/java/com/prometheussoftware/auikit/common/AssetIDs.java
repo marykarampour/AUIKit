@@ -32,6 +32,14 @@ public class AssetIDs {
         return R.drawable.checkmark;
     }
 
+    public static int Checkbox_On_ID() {
+        return R.drawable.checkmark_square;
+    }
+
+    public static int Checkbox_Off_ID() {
+        return R.drawable.square;
+    }
+
     public static int Disclosure_ID() {
         return R.drawable.disclosure;
     }

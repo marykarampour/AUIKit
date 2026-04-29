@@ -13,20 +13,20 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
     public UIImageView() {
         super();
-        this.image = new UIImage();
+        setImage(new UIImage());
         init();
     }
 
     public UIImageView(UIImage image) {
         super();
-        this.image = image;
         init();
+        setImage(image);
     }
 
     public UIImageView(int image) {
         super();
-        this.image = new UIImage(image);
         init();
+        setImage(new UIImage(image));
     }
 
     @Override

@@ -21,5 +21,6 @@
     <string name="sign_in">Sign in</string>
     <string name="logout">Logout</string>
     <string name="error">Error!</string>
+    <string name="email">email</string>
 
 </resources>
