@@ -35,6 +35,16 @@ public class UIImage extends BaseModel {
         this.drawable = drawable;
     }
 
+    public UIImage(Drawable drawable, int tintColor) {
+        super();
+        setDrawable(drawable, tintColor);
+    }
+
+    public UIImage(int ID, int tintColor) {
+        super();
+        setDrawable(Assets.drawableFromID(ID), tintColor);
+    }
+
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
         this.image = 0;
@@ -42,6 +52,14 @@ public class UIImage extends BaseModel {
     }
 
     public void setDrawable(Drawable drawable) {
+        this.drawable = drawable;
+        this.drawable.setTint(tintColor);
+        this.image = 0;
+        this.bitmap = null;
+    }
+
+    public void setDrawable(Drawable drawable, int tintColor) {
+        this.tintColor = tintColor;
         this.drawable = drawable;
         this.drawable.setTint(tintColor);
         this.image = 0;
