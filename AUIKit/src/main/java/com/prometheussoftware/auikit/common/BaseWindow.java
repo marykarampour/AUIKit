@@ -123,8 +123,18 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
     }
 
     private void setRootViewController(V rootViewController) {
+        setRootViewController(rootViewController, Navigation.TRANSITION_ANIMATION.NONE, null);
+    }
+
+    public void replaceRootViewController(V rootViewController, Navigation.TRANSITION_ANIMATION animation, CompletionCallback completion) {
+        setRootViewController(rootViewController, animation, completion);
+    }
+
+    private void setRootViewController(V rootViewController, Navigation.TRANSITION_ANIMATION animation, CompletionCallback completion) {
+        if (rootViewController == null) return;
+        rootViewController.setPresentingViewController(null);
         this.rootViewController = rootViewController;
-        presentVisibleViewController(rootViewController, Navigation.TRANSITION_ANIMATION.NONE, null);
+        presentVisibleViewController(rootViewController, animation, completion);
     }
 
     //endregion
