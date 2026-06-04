@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class DateUtility {
@@ -260,7 +261,6 @@ public class DateUtility {
         return formattedDate;
     }
 
-
     public static int daysBetweenFromDate(Date start, Date end) {
 
         Calendar calendar1 = Calendar.getInstance();
@@ -365,5 +365,13 @@ public class DateUtility {
 
     public static int timestamp() {
         return Math.toIntExact(System.currentTimeMillis() / 1000);
+    }
+
+    public static String dateStringWithFormat(Date currentDate, String dateFormat, Locale locale) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, locale);
+        String formattedDate = formatter.format(currentDate);
+
+        return formattedDate;
     }
 }
