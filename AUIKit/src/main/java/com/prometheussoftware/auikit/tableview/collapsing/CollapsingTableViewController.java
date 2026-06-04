@@ -6,7 +6,7 @@ import com.prometheussoftware.auikit.tableview.UITableViewController;
 
 import java.util.ArrayList;
 
-public class CollapsingTableViewController extends UITableViewController <CollapsingTableViewDataController, CollapsingTableViewContentController> {
+public class CollapsingTableViewController extends UITableViewController<CollapsingTableViewDataController, CollapsingTableViewContentController> {
 
     @Override
     protected CollapsingTableViewContentController createContentController(CollapsingTableViewDataController dataController) {
@@ -54,8 +54,8 @@ public class CollapsingTableViewController extends UITableViewController <Collap
                     int position = controller.positionForIndexPath(new IndexPath(index, 0));
                     int count = controller.numberOfRowsInSection(index, obj.isExpanded);
 
-                    contentController.getAdapter().notifyItemRangeRemoved(position+1, count);
-                    contentController.getAdapter().notifyItemRangeChanged(position, 1);
+                    contentController.notifyItemRangeRemoved(position+1, count);
+                    contentController.notifyItemRangeChanged(position, 1);
                     obj.isExpanded = false;
                 }
             }
@@ -65,15 +65,15 @@ public class CollapsingTableViewController extends UITableViewController <Collap
         int count = controller.numberOfRowsInSection(section, isExpanded);
 
         if (isExpanded) {
-            contentController.getAdapter().notifyItemRangeInserted(position, count);
+            contentController.notifyItemRangeInserted(position, count);
         }
         else {
-            contentController.getAdapter().notifyItemRangeRemoved(position+1, count);
-            contentController.getAdapter().notifyItemRangeChanged(position, 1);
+            contentController.notifyItemRangeRemoved(position+1, count);
+            contentController.notifyItemRangeChanged(position, 1);
         }
 
         item.isExpanded = isExpanded;
-        if (isExpanded && contentController.getAdapter().getItemCount() > position) contentController.getTableView().getView().smoothScrollToPosition(position);
+        if (isExpanded && contentController.getItemCount() > position) contentController.getTableView().getView().smoothScrollToPosition(position);
     }
 }
 

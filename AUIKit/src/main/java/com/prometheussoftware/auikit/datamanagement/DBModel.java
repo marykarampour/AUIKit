@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.model.PairArray;
-import com.prometheussoftware.auikit.model.Text;
 import com.prometheussoftware.auikit.utility.DEBUGLOG;
 import com.prometheussoftware.auikit.utility.ObjectUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
@@ -111,16 +110,16 @@ public class DBModel extends BaseModel implements DBModelProtocol {
     }
 
     /** @brief column name format, subclass can override for custom format */
-    public static Text.TEXT_FORMAT dbColumnNameFormat () {
-        return Text.TEXT_FORMAT.UnderScore;
+    public static StringUtility.FORMAT dbColumnNameFormat () {
+        return StringUtility.FORMAT.UnderScore;
     }
     /** @brief property name format, subclass can override for custom format */
-    public static Text.TEXT_FORMAT dbPropertyNameFormat () {
-        return Text.TEXT_FORMAT.CamelCase;
+    public static StringUtility.FORMAT dbPropertyNameFormat () {
+        return StringUtility.FORMAT.CamelCase;
     }
     /** @brief class name from table, e.g. table --> ABCTable, subclass can override for custom format, default capitalized camel case */
     public static String dbClassNameForTable (String table) {
-        return StringUtility.format(table, Text.TEXT_FORMAT.CapitalizedCamelCase);
+        return StringUtility.format(table, StringUtility.FORMAT.CapitalizedCamelCase);
     }
     /** @brief table name from class, e.g. ABCTable ---> table, subclass can override for custom format, default underscore */
     public static String dbTableName (Class tableClass) {
@@ -128,11 +127,11 @@ public class DBModel extends BaseModel implements DBModelProtocol {
         String name = "";
         if (obj instanceof DBModel)
             name = ((DBModel)obj).dbTableName();
-        return StringUtility.format(name, Text.TEXT_FORMAT.UnderScoreIgnoreDigits);
+        return StringUtility.format(name, StringUtility.FORMAT.UnderScoreIgnoreDigits);
     }
     /** @brief property name from class, e.g. ABCTableType ---> tableType, subclass can override for custom format, default camel case */
     public static String dbPropertyName (Class tableClass) {
-        return StringUtility.format(tableClass.getSimpleName(), Text.TEXT_FORMAT.CamelCase);
+        return StringUtility.format(tableClass.getSimpleName(), StringUtility.FORMAT.CamelCase);
     }
 
     @Override

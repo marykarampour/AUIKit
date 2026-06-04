@@ -23,16 +23,18 @@ import androidx.core.widget.TextViewCompat;
 
 import com.prometheussoftware.auikit.baseviews.TextView;
 import com.prometheussoftware.auikit.classes.UIColor;
+import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
+import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Range;
-import com.prometheussoftware.auikit.model.Text;
+import com.prometheussoftware.auikit.uiview.protocols.IndexPathProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.KeyboardEventListener;
 import com.prometheussoftware.auikit.utility.DEBUGLOG;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.lang.reflect.Field;
 
-public class UITextView <V extends UIView, W extends UIView> extends UISingleLayerView <UITextView.UITextLayer> implements KeyboardEventListener, TextView.KeyDownDelegate {
+public class UITextView <V extends UIView, W extends UIView> extends UISingleLayerView <UITextView.UITextLayer> implements KeyboardEventListener, TextView.KeyDownDelegate, IndexPathProtocol {
 
     private enum IGNORE_VALIDATION_STATUS {
         NONE,
@@ -45,10 +47,13 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
     private static boolean isFocused;
     private TextViewDelegate delegate;
     private TextChange currentChange;
-    private Text.REGEX_FORMAT format;
+    private StringUtility.TYPE format;
+    private IndexPath indexPath;
 
-    /** -1 indicates no limit on number of characters */
-    private int maxChars = -1;
+    /** Pass NOT_FOUND_ID for no check for length */
+    public int maxChars = Constants.NOT_FOUND_ID;
+    /** Pass 0 for no check for length */
+    public int minChars;
 
     private IGNORE_VALIDATION_STATUS ignoreValidation = IGNORE_VALIDATION_STATUS.NONE;
 
@@ -165,6 +170,17 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         this.delegate = delegate;
     }
 
+    @Override
+    public void setIndexPath(IndexPath indexPath) {
+        this.indexPath = indexPath;
+    }
+
+    @Override
+    public IndexPath getIndexPath() {
+        return indexPath;
+    }
+
+
     public TextView getEditText() {
         return view();
     }
@@ -214,7 +230,7 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         this.ignoreValidation = ignoreValidation;
     }
 
-    public void setFormat(Text.REGEX_FORMAT format) {
+    public void setFormat(StringUtility.TYPE format) {
         this.format = format;
         switch (format) {
             case INT:
@@ -248,7 +264,7 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         }
     }
 
-    public Text.REGEX_FORMAT getFormat() {
+    public StringUtility.TYPE getFormat() {
         return format;
     }
 
@@ -285,21 +301,21 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
     private void dispatchTextViewDidBeginEditing() {
         if (delegate != null)
             runOnUiThread(() -> {
-                delegate.TextViewDidBeginEditing(self);
+                delegate.textViewDidBeginEditing(self);
                 view().setSelection(getText().length());
             });
     }
 
     private void dispatchTextViewDidEndEditing() {
         if (delegate != null)
-            runOnUiThread(() -> delegate.TextViewDidEndEditing(self));
+            runOnUiThread(() -> delegate.textViewDidEndEditing(self));
     }
 
     private boolean dispatchTextViewShouldChangeCharactersInRange() {
         if (delegate != null) {
             boolean hasMethod = delegate.implementsTextViewDidChangeCharactersInRange();
             if (hasMethod) {
-                return delegate.TextViewShouldChangeCharactersInRange(self, currentChange.range, currentChange.text.toString());
+                return delegate.textViewShouldChangeCharactersInRange(self, currentChange.range, currentChange.text.toString());
             }
         }
         return canAddToCharCount();
@@ -307,18 +323,18 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
 
     private void dispatchTextViewDidChangeCharactersInRange() {
         if (delegate != null)
-            runOnUiThread(() -> delegate.TextViewDidChangeCharactersInRange(self, currentChange.range));
+            runOnUiThread(() -> delegate.textViewDidChangeCharactersInRange(self, currentChange.range));
     }
 
     private boolean dispatchTextViewShouldReturn() {
         if (delegate != null)
-            return delegate.TextViewShouldReturn(self);
+            return delegate.textViewShouldReturn(self);
         return true;
     }
 
     private void dispatchTextViewDidReturn() {
         if (delegate != null)
-            runOnUiThread(() -> delegate.TextViewDidReturn(self));
+            runOnUiThread(() -> delegate.textViewDidReturn(self));
     }
 
     private boolean canAddToCharCount() {
@@ -433,37 +449,37 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
     public interface TextViewDelegate {
 
         // return NO to disallow editing.
-        default boolean TextViewShouldBeginEditing (UITextView TextView) {
+        default boolean textViewShouldBeginEditing (UITextView textView) {
             return true;
         }
         // became first responder
-        void TextViewDidBeginEditing (UITextView TextView);
+        void textViewDidBeginEditing (UITextView textView);
         // return YES to allow editing to stop and to resign first responder status. NO to disallow the editing session to end
-        default boolean TextViewShouldEndEditing (UITextView TextView) {
+        default boolean TextViewShouldEndEditing (UITextView textView) {
             return true;
         }
         // may be called if forced even if shouldEndEditing returns NO (e.g. view removed from window) or endEditing:YES called
-        void TextViewDidEndEditing (UITextView TextView);
+        void textViewDidEndEditing (UITextView textView);
         // return NO to not change text
-        default boolean TextViewShouldChangeCharactersInRange (UITextView TextView, Range range, String replacementString) {
-            if (TextView != null && TextView.delegate != null && TextView.delegate.implementsTextViewDidChangeCharactersInRange()) {
-                return TextView.delegate.TextViewShouldChangeCharactersInRange(TextView, range, replacementString);
+        default boolean textViewShouldChangeCharactersInRange (UITextView textView, Range range, String replacementString) {
+            if (textView != null && textView.delegate != null && textView.delegate.implementsTextViewDidChangeCharactersInRange()) {
+                return textView.delegate.textViewShouldChangeCharactersInRange(textView, range, replacementString);
             }
-            return StringUtility.hasValidCharacers(TextView.getText(), TextView.getFormat(), TextView.getMaxChars());
+            return StringUtility.hasValidCharacers(textView.getText(), textView.getFormat(), textView.getMaxChars());
         }
         // called when text is changed
-        default void TextViewDidChangeCharactersInRange (UITextView TextView, Range range) { }
+        default void textViewDidChangeCharactersInRange (UITextView textView, Range range) { }
         // called when clear button pressed. return NO to ignore (no notifications)
-        default boolean TextViewShouldClear (UITextView TextView) {
+        default boolean TextViewShouldClear (UITextView textView) {
             return true;
         }
         // called when 'return' key pressed. return NO to ignore.
-        default boolean TextViewShouldReturn (UITextView TextView) {
-            return TextView.view().getMaxLines() == 1 && TextView.view().getMinLines() == 1 && TextView.nextTextView == null;
+        default boolean textViewShouldReturn (UITextView textView) {
+            return textView.view().getMaxLines() == 1 && textView.view().getMinLines() == 1 && textView.nextTextView == null;
         }
 
-        default void TextViewDidReturn (UITextView TextView) {
-            TextView.hideKeyboard();
+        default void textViewDidReturn (UITextView textView) {
+            textView.hideKeyboard();
         }
 
         /** If your class implements the default method, this need to be implemented as well and return true
@@ -546,7 +562,7 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
             DEBUGLOG.s(e, this);
         }
     }
-    
+
     private int keyboardOption(int option) {
         return option | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN;
     }

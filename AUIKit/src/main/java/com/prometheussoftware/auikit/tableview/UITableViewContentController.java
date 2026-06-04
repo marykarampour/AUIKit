@@ -1,5 +1,9 @@
 package com.prometheussoftware.auikit.tableview;
 
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.prometheussoftware.auikit.model.IndexPath;
@@ -8,11 +12,11 @@ import com.prometheussoftware.auikit.uiview.UIView;
 
 import java.util.ArrayList;
 
-public class UITableViewContentController <D extends UITableViewDataController> implements UITableViewProtocol.TableView {
+public class UITableViewContentController <D extends UITableViewProtocol.Data> implements UITableViewProtocol.TableView<D> {
 
     private UITableView tableView;
     private UIRefreshView refreshView;
-    private UITableViewAdapter adapter;
+    private Adapter adapter;
     private D dataController;
     private UIView view;
 
@@ -57,21 +61,17 @@ public class UITableViewContentController <D extends UITableViewDataController> 
     }
 
     private void createAdapter() {
-        setAdapter(new UITableViewAdapter(dataController));
+        setAdapter(new Adapter());
     }
 
-    protected void setAdapter(UITableViewAdapter adapter) {
+    protected void setAdapter(Adapter adapter) {
         this.adapter = adapter;
-        adapter.setView(tableView);
-        adapter.getDataController().setViewDelegate(this);
+        tableView.getView().setAdapter(adapter);
     }
 
-    public UITableViewAdapter getAdapter() {
-        return adapter;
-    }
-
+    @Override
     public <S extends TableObject.Section> void setData(ArrayList<S> data) {
-        adapter.getDataController().setSections(data);
+        dataController.setSections(data);
     }
 
     //region helpers
@@ -112,16 +112,19 @@ public class UITableViewContentController <D extends UITableViewDataController> 
         return tableView;
     }
 
+    @Override
     public void disableRecycling(int viewType) {
         tableView.disableRecycling(viewType);
     }
 
+    @Override
     public D getDataController() {
         return dataController;
     }
 
     public <T extends D> void setDataController(T dataController) {
         this.dataController = dataController;
+        dataController.setViewDelegate(this);
         createAdapter();
     }
 
@@ -133,6 +136,58 @@ public class UITableViewContentController <D extends UITableViewDataController> 
     public void requestfocusForRowAtIndexPath(IndexPath indexPath) {
         int position = dataController.positionForIndexPath(indexPath);
         requestfocusForViewAtPosition(position);
+    }
+
+    //endregion
+
+    //region adapter
+
+    public void notifyItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
+        adapter.notifyItemRangeChanged(positionStart, itemCount, payload);
+    }
+
+    public final void notifyItemRangeChanged(int positionStart, int itemCount) {
+        adapter.notifyItemRangeChanged(positionStart, itemCount);
+    }
+
+    public final void notifyItemRangeInserted(int positionStart, int itemCount) {
+        adapter.notifyItemRangeInserted(positionStart, itemCount);
+    }
+
+    public final void notifyItemRangeRemoved(int positionStart, int itemCount) {
+        adapter.notifyItemRangeRemoved(positionStart, itemCount);
+    }
+
+    public int getItemCount() {
+        return adapter.getItemCount();
+    }
+
+    public int getItemViewType(int position) {
+        return adapter.getItemViewType(position);
+    }
+
+    private final class Adapter extends RecyclerView.Adapter {
+
+        @NonNull
+        @Override public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return dataController.viewHolderForViewType(parent, viewType);
+        }
+
+        @Override public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+            if (!UITableViewHolder.class.isInstance(holder)) return;
+
+            UITableViewHolder obj = (UITableViewHolder)holder;
+            dataController.bindData(obj, position);
+        }
+
+        @Override public int getItemCount() {
+            return dataController.numberOfVisibleViews();
+        }
+
+        @Override public int getItemViewType(int position) {
+            return dataController.viewTypeForPosition(position);
+        }
     }
 
     //endregion

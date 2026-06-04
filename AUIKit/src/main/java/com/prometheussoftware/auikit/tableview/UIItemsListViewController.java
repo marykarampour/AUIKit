@@ -1,16 +1,21 @@
-package com.prometheussoftware.auikit.uiviewcontroller;
+package com.prometheussoftware.auikit.tableview;
 
+import android.text.SpannableStringBuilder;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
-import com.prometheussoftware.auikit.tableview.TableObject;
-import com.prometheussoftware.auikit.tableview.UITableViewCell;
-import com.prometheussoftware.auikit.tableview.UITableViewController;
-import com.prometheussoftware.auikit.tableview.search.BaseCellDataSource;
+import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.uiviewcontroller.BaseTableViewCell;
+import com.prometheussoftware.auikit.uiviewcontroller.ItemsListProtocol;
 
 import java.util.ArrayList;
 
-public class UIItemsListViewController  <T extends BaseModel & BaseCellDataSource, D extends UIItemsListDataController<T>, C extends UIItemsListContentController<T, D>> extends UITableViewController <D, C> {
+public class UIItemsListViewController<T extends BaseModel & BaseCellDataSource, C extends BaseTableViewCell> extends UITableViewController implements ItemsListProtocol.VC {
 
     private ArrayList<T> items = new ArrayList<>();
 
@@ -92,18 +97,12 @@ public class UIItemsListViewController  <T extends BaseModel & BaseCellDataSourc
     }
 
     @Override
-    protected C createContentController(D dataController) {
-        return (C)new UIItemsListContentController(view(), dataController);
-    }
-
-
-    @Override
-    protected D createDataController() {
-        return (D)new UIItemsListDataController();
+    protected DataController createDataController() {
+        return new DataController();
     }
 
     protected Class cellClass() {
-        return UITableViewCell.class;
+        return BaseTableViewCell.class;
     }
 
     @Override
@@ -118,4 +117,41 @@ public class UIItemsListViewController  <T extends BaseModel & BaseCellDataSourc
     }
 
     protected void didSelectItemAtIndexPath(T item, IndexPath indexPath) { }
+
+    public class DataController <T extends BaseModel & BaseCellDataSource> extends UITableViewDataController {
+
+        @Override
+        public <V extends UITableViewHolder, C extends UITableViewCell> V viewHolderForCell(C cell) {
+            return (V) new CellViewHolder(cell);
+        }
+
+        public class CellViewHolder extends UITableViewHolder.Cell <BaseTableViewCell> {
+
+            public CellViewHolder(@NonNull UIView itemView) {
+                super(itemView);
+            }
+
+            @Override
+            protected BaseTableViewCell getView() {
+                return super.getView();
+            }
+
+            @Override
+            public void bindDataForRow(Object item, IndexPath indexPath, @Nullable UITableViewProtocol.Data delegate) {
+                super.bindDataForRow(item, indexPath, delegate);
+
+                if (item instanceof Pair) {
+                    Pair<TableObject.CellInfo, BaseCellDataSource> obj = (Pair<TableObject.CellInfo, BaseCellDataSource>)item;
+                    SpannableStringBuilder title = obj.getSecond().attributedTitle();
+                    view.getTitleLabel().setText(title != null ? title : obj.getSecond().plainTitle());
+                    view.setHeight(0 < obj.getFirst().minHeight ? obj.getFirst().minHeight : delegate.heightForRowAtIndexPath(item, indexPath));
+                }
+            }
+        }
+
+        @Override
+        public int heightForRowAtIndexPath(Object item, IndexPath indexPath) {
+            return Dimensions.Int_56();
+        }
+    }
 }

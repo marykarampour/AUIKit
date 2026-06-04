@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.model.Identifier;
-import com.prometheussoftware.auikit.uiview.UIEnum;
 import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIView;
 
@@ -36,8 +35,8 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     private Size rightViewSize;
     private Size leftViewSize;
-    public UIEnum.ALIGNMENT rightViewVerticalAlignment = UIEnum.ALIGNMENT.CENTER_Y;
-    public UIEnum.ALIGNMENT leftViewVerticalAlignment = UIEnum.ALIGNMENT.CENTER_Y;
+    public ALIGNMENT rightViewVerticalAlignment = UIView.ALIGNMENT.CENTER_Y;
+    public ALIGNMENT leftViewVerticalAlignment = UIView.ALIGNMENT.CENTER_Y;
 
 
     static {
@@ -350,7 +349,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     //region helpers
 
-    protected void constraintVertical (UIView view, UIEnum.ALIGNMENT alignment) {
+    protected void constraintVertical (UIView view, ALIGNMENT alignment) {
         switch (alignment) {
             case TOP:
                 contentView.constraintForView(ConstraintSet.TOP, view, insets.top);

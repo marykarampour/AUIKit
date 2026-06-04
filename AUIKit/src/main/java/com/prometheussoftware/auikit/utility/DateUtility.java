@@ -6,23 +6,69 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class DateUtility {
 
-    public static final String DateFormatServerStyle             = "YYYY-MM-dd HH:mm:ss";
-    public static final String DateFormatShortStyle              = "yyyy-MM-dd";
-    public static final String DateFormatWeekdayShortStyle       = "EEEE MMM dd";
-    public static final String DateFormatFullStyle               = "EEEE, MMMM dd, yyyy";
-    public static final String DateFormatMonthDayYearStyle       = "MMMM dd, yyyy";
-    public static final String DateFormatMonthYearStyle          = "MMMM yyyy";
-    public static final String DateFormatDayMonthYearStyle       = "dd MMMM yyyy";
-    public static final String DateFormatDayMonthYearNumericStyle= "dd MM yyyy";
-    public static final String DateFormatWeekdayDayStyle         = "EEEE dd";
-    public static final String DateFormatFullTimeStyle           = "HH:mm:ss EEEE, MMMM dd, yyyy";
-    public static final String DateFormatTimeStyle               = "HH:mm:ss a";
-    public static final String DateFormatShortAPMStyle           = "yyyy/MM/dd hh:mm a";
-    public static final String DateFormatFullAPMStyle            =  "hh:mm:ss aa EEEE, MMMM dd, yyyy";
+    public enum FORMAT {
+
+        SERVER_STYLE                        (0,  "YYYY-MM-dd HH:mm:ss"),
+        SHORT_STYLE                         (1,  "yyyy-MM-dd"),
+        WEEKDAY_SHORT_STYLE                 (2,  "EEEE MMM dd"),
+        FULL_STYLE                          (3,  "MMMM dd, yyyy"),
+        MONTHDAY_YEAR_STYLE                 (4,  "MMMM yyyy"),
+        MONTH_YEAR_STYLE                    (5,  "dd MMMM yyyy"),
+        DAY_MONTH_YEAR_STYLE                (6,  "dd MM yyyy"),
+        DAY_MONTH_YEAR_NUMERIC_STYLE        (7,  "EEEE dd"),
+        WEEKDAY_DAY_STYLE                   (8,  "HH:mm:ss EEEE, MMMM dd, yyyy"),
+        FULL_TIME_STYLE                     (9,  "yyyy/MM/dd hh:mm a"),
+        TIME_STYLE                          (10, "yyyy-MM-dd'T'HH:mm:ss.SS"),
+        SHORT_APM_STYLE                     (11, "HH:mm:ss"),
+        WEEKDAY_MONTH_LONG_STYLE            (12, "EEEE, MMMM dd, yyyy"),
+        TIME_APM_STYLE                      (13, "HH:mm:ss a"),
+        FULL_TIMEZONE_STYLE                 (14, "yyyy-MM-dd'T'HH:mm:ss.SS zzz"),
+        FULL_MICROSECONDS_TIMEZONE_STYLE    (15, "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"),
+        LONG_STYLE                          (16, "yyyy-MM-dd'T'HH:mm:ss"),
+        SHORT_SLASH_STYLE                   (17, "MM/dd/yy"),
+        TIME_LONG_STYLE                     (18, "MM-dd HH:mm"),
+        TIME_SHORT_STYLE                    (19, "HH:mm"),
+        DAY_TIME_STYLE                      (20, "EEEE, MMM. d, yyyy h:mm a"),
+        DAY_TIME_LINEBREAK_STYLE            (21, "EEEE, MMM. d, yyyy\nh:mm a"),
+        DAY_STYLE                           (22, "EEEE, MMM. d, yyyy"),
+        DATE_TIME_STYLE                     (23, "yyyy-MM-dd HH:mm:ss"),
+        DATE_TIME_COMPACT_STYLE             (24, "MM-dd-yy HH:mm"),
+        MONTH_TIME_COMPACT_STYLE            (25, "MMM dd HH:mm");
+
+        FORMAT(int i, String s) {
+            this.index = i;
+            this.name = s;
+        }
+
+        private final int index;
+        private final String name;
+
+        public int getIndex() {
+            return this.index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        private static final Map map = new HashMap<>();
+
+        static {
+            for (FORMAT format : FORMAT.values()) {
+                map.put(format.index, format.name);
+            }
+        }
+
+        public static FORMAT valueOf(int index) {
+            return (FORMAT) map.get(index);
+        }
+    }
 
     public static class Components {
         public long second;

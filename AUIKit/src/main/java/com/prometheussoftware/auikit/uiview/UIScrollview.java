@@ -9,11 +9,11 @@ import com.prometheussoftware.auikit.utility.ViewUtility;
 
 public class UIScrollview extends UIView {
 
-    private UIEnum.DIRECTION direction;
+    private DIRECTION direction;
     private UIView contentView;
     private ViewGroup scrollView;
 
-    public UIScrollview(UIEnum.DIRECTION direction) {
+    public UIScrollview(DIRECTION direction) {
         super();
         this.direction = direction;
         init();
@@ -21,7 +21,7 @@ public class UIScrollview extends UIView {
 
     public UIScrollview() {
         super();
-        this.direction = UIEnum.DIRECTION.VERTICAL;
+        this.direction = UIView.DIRECTION.VERTICAL;
         init();
     }
 
@@ -32,7 +32,7 @@ public class UIScrollview extends UIView {
         scrollView = viewWithType(direction);
     }
 
-    private ViewGroup viewWithType(UIEnum.DIRECTION direction) {
+    private ViewGroup viewWithType(DIRECTION direction) {
         switch (direction) {
             case VERTICAL: {
 

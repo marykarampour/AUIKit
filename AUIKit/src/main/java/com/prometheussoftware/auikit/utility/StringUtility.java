@@ -7,17 +7,110 @@ import com.google.common.base.CaseFormat;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.model.Range;
-import com.prometheussoftware.auikit.model.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtility {
-    
-    public static String format (String string, Text.TEXT_FORMAT form) {
+
+    public enum TYPE {
+        NONE(-1),
+        STRING(0),
+        INT(1),
+        INT_POSITIVE(2),
+        FLOAT(3),
+        FLOAT_POSITIVE(4),
+        ALPHABET(5),
+        ALPHANUMERIC(6),
+        ALPHASPACEDOT(7),
+        NAME(8),
+        EMAIL(9),
+        PHONE(10),
+        ADDRESS(11),
+        DATE(12),
+        GENDER(13),
+        PASSWORD(14),
+        HTML(15),
+        COUNT(16);
+
+        private final int value;
+        private static final HashMap<Integer, TYPE> map = new HashMap<>();
+
+        static  {
+            for (TYPE type : values()) {
+                map.put(type.value, type);
+            }
+        }
+
+        TYPE(int i) {
+            value = i;
+        }
+
+        public int intValue() { return value; }
+
+        public static TYPE valueOf (int i) {
+            return map.get(i);
+        }
+
+        public boolean isOption (int option) {
+            return (option & value) == value;
+        }
+    }
+
+    public enum FORMAT {
+
+        //No change, the output string will be the same as input, example:
+        //1. example_string -> example_string
+        //2. exampleString -> exampleString
+        None,
+
+        //Capitaliazing the input string, example:
+        //1. example_string -> Example_string
+        //2. exampleString -> ExampleString
+        Capitalized,
+
+        //camelCasing the input string, example:
+        //1. example_string -> exampleString
+        //2. exampleString -> exampleString
+        CamelCase,
+
+        //camelCasing the input string, example:
+        //1. example_string -> ExampleString
+        //2. exampleString -> ExampleString
+        //3. example_string_0 -> exampleString0
+        CapitalizedCamelCase,
+
+        //Upper case all charachters of input string, example:
+        //1. example_string -> EXAMPLE_STRING
+        //2. exampleString -> EXAMPLESTRING
+        UpperCaseAll,
+
+        //camelCase to under_score
+        //1. exampleString -> example_string
+        //2. exampleString0 -> example_string_0
+        UnderScore,
+
+        //camelCase to under_score with all characters uppercased
+        //1. exampleString -> EXAMPLE_STRING
+        //2. exampleString0 -> EXAMPLE_STRING_0
+        UnderScoreUpperCaseAll,
+
+        //camelCase to under_score - this option will not underscore digits
+        //1. exampleString -> example_string
+        //2. exampleString0 -> example_string0
+        UnderScoreIgnoreDigits,
+
+        //camelCase to under_score with all characters uppercased - this option will not underscore digits
+        //1. exampleString -> EXAMPLE_STRING
+        //2. exampleString0 -> EXAMPLE_STRING0
+        UnderScoreIgnoreDigitsUpperCaseAll,
+    }
+
+    public static String format (String string, FORMAT form) {
 
         switch (form) {
             case CamelCase: return underScoreToCamelCase(string, false);
@@ -106,9 +199,9 @@ public class StringUtility {
     /** @brief Uses a regex format to validate string
      * @param format If format is null, returns true
      * @param maxChars If maxchars is 0, returns true */
-    public static boolean hasValidCharacers (String string, Text.REGEX_FORMAT format, int maxChars) {
-        if (StringUtility.isEmpty(string)) return true;
-        if (format == null || format == Text.REGEX_FORMAT.DEFAULT) return true;
+    public static boolean hasValidCharacers (String string, TYPE format, int maxChars) {
+        if (isEmpty(string)) return true;
+        if (format == null || format == TYPE.NONE) return true;
         if (maxChars == 0) return true;
         if (maxChars != Constants.NOT_FOUND_ID && maxChars < string.length()) return false;
 
@@ -121,7 +214,7 @@ public class StringUtility {
     }
 
     public static boolean hasValidCharacers (String string, String regex) {
-        if (StringUtility.isEmpty(string)) return true;
+        if (isEmpty(string)) return true;
         if (isEmpty(regex)) return true;
 
         Pattern pattern = Pattern.compile(regex);
@@ -129,7 +222,7 @@ public class StringUtility {
         return matcher.matches();
     }
 
-    public static String regexForFormat (Text.REGEX_FORMAT format, int length) {
+    public static String regexForFormat (TYPE format, int length) {
 
         length = (length < 0 ? App.constants().Max_Regex_Chars() : length);
         switch (format) {
@@ -173,9 +266,9 @@ public class StringUtility {
     }
 
     public static int positiveNumValue(String string) {
-        String text = StringUtility.nonNull(string);
+        String text = nonNull(string);
         try {
-            return StringUtility.isNotEmpty(text) ? Integer.parseInt(text.replaceAll("[\\D]","")) : 0;
+            return isNotEmpty(text) ? Integer.parseInt(text.replaceAll("[\\D]","")) : 0;
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -183,8 +276,8 @@ public class StringUtility {
     }
 
     public static Number numValue (String string) {
-        String text = StringUtility.nonNull(string);
-        if (StringUtility.isEmpty(text)) return 0;
+        String text = nonNull(string);
+        if (isEmpty(text)) return 0;
 
         try {
             return Float.parseFloat(text);
@@ -202,8 +295,8 @@ public class StringUtility {
     }
 
     public static Float floatValue (String string) {
-        String text = StringUtility.nonNull(string);
-        if (StringUtility.isEmpty(text) || ".".equals(text)) return null;
+        String text = nonNull(string);
+        if (isEmpty(text) || ".".equals(text)) return null;
         try {
             return Float.parseFloat(text);
         }
@@ -213,8 +306,8 @@ public class StringUtility {
     }
 
     public static Float notNullFloatValue (String string) {
-        String text = StringUtility.nonNull(string);
-        if (StringUtility.isEmpty(text) || ".".equals(text)) return 0.0f;
+        String text = nonNull(string);
+        if (isEmpty(text) || ".".equals(text)) return 0.0f;
         try {
             return Float.parseFloat(text);
         }
@@ -224,8 +317,8 @@ public class StringUtility {
     }
 
     public static long positiveLongValue(String string) {
-        String text = StringUtility.nonNull(string);
-        return StringUtility.isNotEmpty(text) ? Long.parseLong(text.replaceAll("[\\D]","")) : 0;
+        String text = nonNull(string);
+        return isNotEmpty(text) ? Long.parseLong(text.replaceAll("[\\D]","")) : 0;
     }
 
     public static ArrayList<String> safeSplit (String string, String regex) {
@@ -239,7 +332,7 @@ public class StringUtility {
 
     public static String removeCharactersInSet (String s, Set<String> set) {
 
-        if (StringUtility.isEmpty(s) || set == null) return s;
+        if (isEmpty(s) || set == null) return s;
         String cleared = s;
 
         for (String string : set) {
@@ -308,7 +401,7 @@ public class StringUtility {
 
     public static int height(String string, int fontSize, int width) {
 
-        if (StringUtility.isEmpty(string)) return 0;
+        if (isEmpty(string)) return 0;
         if (width <= 0) return 0;
 
         Paint paint = new Paint();
@@ -323,7 +416,7 @@ public class StringUtility {
 
     public static int width(String string, int fontSize) {
 
-        if (StringUtility.isEmpty(string)) return 0;
+        if (isEmpty(string)) return 0;
 
         Paint paint = new Paint();
         paint.setTextSize(fontSize);

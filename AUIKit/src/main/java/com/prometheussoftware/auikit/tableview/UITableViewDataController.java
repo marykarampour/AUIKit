@@ -93,14 +93,13 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         }
     }
 
-    @Override public <V extends UITableViewHolder> void bindData(UITableView tableView, V holder, int position) {
-
-    }
+    @Override public <V extends UITableViewHolder> void bindData(UITableView tableView, V holder, int position) {}
 
     //endregion
 
     //region rows and sections
 
+    @Override
     public int numberOfVisibleViews() {
 
         int count = 0;
@@ -114,6 +113,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         return count;
     }
 
+    @Override
     public int positionForIndexPath (IndexPath indexPath) {
         int count = 0;
         for (int i = 0; i < numberOfSectionsInTableView(); i++) {
@@ -177,10 +177,12 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         return true;
     }
 
+    @Override
     public ArrayList<TableObject.Section> getSections() {
         return sections;
     }
 
+    @Override
     public <S extends TableObject.Section> void setSections (ArrayList<S> sections) {
 
         this.sections.clear();
@@ -367,6 +369,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         }
     }
 
+    @Override
     public void setUpdateDelegate(UITableViewProtocol.UpdateDelegate updateDelegate) {
         this.updateDelegate = updateDelegate;
     }
@@ -376,6 +379,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
     //helpers and fields
 
+    @Override
     public void setMultiSelectEnabled(boolean multiSelectEnabled) {
         this.multiSelectEnabled = multiSelectEnabled;
     }

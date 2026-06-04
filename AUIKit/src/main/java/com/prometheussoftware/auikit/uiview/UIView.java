@@ -16,6 +16,7 @@ import com.prometheussoftware.auikit.uiviewcontroller.LifeCycleDelegate;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UIView extends ConstraintLayout implements UIViewProtocol {
 
@@ -791,6 +792,50 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     public ConstraintSet getConstraintSet() {
         return constraintSet;
+    }
+
+    public enum DIRECTION {
+        VERTICAL,
+        HORIZONTAL
+    }
+
+    public enum ALIGNMENT {
+        NONE    (0),
+        TOP     (1 << 0),
+        BOTTOM  (1 << 1),
+        LEFT    (1 << 2),
+        RIGHT   (1 << 3),
+        CENTER_X(1 << 4),
+        CENTER_Y(1 << 5);
+
+        private final int value;
+        private static final HashMap<Integer, ALIGNMENT> map = new HashMap<>();
+
+        static {
+            for (ALIGNMENT al : values()) {
+                map.put(al.value, al);
+            }
+        }
+
+        ALIGNMENT(int i) { value = i; }
+
+        public int intValue() { return value; }
+
+        public static ALIGNMENT valueOf (int i) {
+            return map.get(i);
+        }
+
+        public boolean isOption (int option) {
+            return (option & value) == value;
+        }
+
+        public boolean isValue (int option) {
+            return (option & value) == option;
+        }
+
+        public boolean isOption (ALIGNMENT option) {
+            return (option.value & value) == value;
+        }
     }
 
     //endregion

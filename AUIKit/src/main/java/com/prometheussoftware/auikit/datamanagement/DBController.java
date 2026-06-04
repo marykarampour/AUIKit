@@ -115,7 +115,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
         Class classO;
         try {
             classO = Class.forName(table);
-            if (!classO.isAssignableFrom(DBModel.class) || data.isEmpty()) return false;
+            if (!DBModel.class.isAssignableFrom(classO) || data.isEmpty()) return false;
         }
         catch (ClassNotFoundException e) {
             return false;
@@ -252,7 +252,7 @@ public class DBController <T extends SQLiteDB> implements SQLiteDBCreation {
     }
 
     public <M extends DBModel> boolean insertDataWithObjects (ArrayList<M> data, Class cls) {
-        if (!cls.isAssignableFrom(DBModel.class) || data.isEmpty()) return false;
+        if (!DBModel.class.isAssignableFrom(cls) || data.isEmpty()) return false;
 
         for (M object : data) {
             Pair<String, String> keyValues = object.SQLKeysWithValues();

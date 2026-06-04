@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.BaseModel;
+import com.prometheussoftware.auikit.tableview.BaseCellDataSource;
 import com.prometheussoftware.auikit.tableview.UITableViewContentController;
 import com.prometheussoftware.auikit.uiview.UISearchBar;
 import com.prometheussoftware.auikit.uiview.UIView;

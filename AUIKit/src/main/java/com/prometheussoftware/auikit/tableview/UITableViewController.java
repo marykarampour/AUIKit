@@ -3,7 +3,8 @@ package com.prometheussoftware.auikit.tableview;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 
-public class UITableViewController <D extends UITableViewDataController, C extends UITableViewContentController<D>> extends UIViewController implements UITableViewProtocol.UpdateDelegate {
+
+public abstract class UITableViewController <D extends UITableViewProtocol.Data, C extends UITableViewProtocol.TableView<D>> extends UIViewController implements UITableViewProtocol.UpdateDelegate {
 
     protected C contentController;
 

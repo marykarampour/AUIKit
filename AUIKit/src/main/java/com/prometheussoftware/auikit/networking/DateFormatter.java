@@ -7,7 +7,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.prometheussoftware.auikit.model.DATE_FORMAT;
+import com.prometheussoftware.auikit.utility.DateUtility;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -22,8 +22,7 @@ public class DateFormatter {
         @Override
         public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 
-            for (DATE_FORMAT format : DATE_FORMAT.values()) {
-
+            for (DateUtility.FORMAT format : DateUtility.FORMAT.values()) {
                 try {
                     return new SimpleDateFormat(format.getName(), Locale.US).parse(json.getAsString());
                 } catch (ParseException e) {

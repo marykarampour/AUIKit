@@ -2,6 +2,7 @@ package com.prometheussoftware.auikit.model;
 
 import com.google.gson.Gson;
 import com.prometheussoftware.auikit.utility.DEBUGLOG;
+import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -225,6 +226,11 @@ public class BaseModel implements Serializable, Cloneable {
         }
     }
 
+    public static Class classOfPropertyForObjectClass (String name, Class objectClass) {
+        Field field = fieldOrDeclared(objectClass, name);
+        return field != null ? field.getType() : null;
+    }
+
     /** This method only works for public fields of a class and its ancestors */
     public void setValueForKey (Object value, String key) {
 
@@ -276,8 +282,13 @@ public class BaseModel implements Serializable, Cloneable {
     /** This method looks for the field in all fields of a class and its ancestors
      * even private and protected. */
     private Field fieldOrDeclared (String key) {
+        return fieldOrDeclared(getClass(), key);
+    }
 
-        Class cls = getClass();
+    /** This method looks for the field in all fields of a class and its ancestors
+     * even private and protected. */
+    public static Field fieldOrDeclared (Class cls, String key) {
+
         while (cls != BaseModel.class) {
             try {
                 Field field = cls.getDeclaredField(key);
@@ -347,10 +358,10 @@ public class BaseModel implements Serializable, Cloneable {
                 Field field = fieldOrDeclared(name);
                 if (field != null) {
 
-                    if (field.getType().isAssignableFrom(Number.class)) {
+                    if (Number.class.isAssignableFrom(field.getType())) {
                         field.set(this, 0);
                     }
-                    else if (field.getType().isAssignableFrom(String.class)) {
+                    else if (String.class.isAssignableFrom(field.getType())) {
                         field.set(this, "");
                     }
                     else {
@@ -369,13 +380,11 @@ public class BaseModel implements Serializable, Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         Object obj = super.clone();
-
         Set<String> properties = BaseModel.propertyNamesForClass(getClass());
 
-        if (properties == null) return null;
+        if (properties == null) return obj;
 
         for (String name : properties) {
-
             try {
                 Field field = fieldOrDeclared(name);
                 if (field != null) {
@@ -433,6 +442,8 @@ public class BaseModel implements Serializable, Cloneable {
     }
 
     public static boolean hasMethod (Class cls, String name, boolean isDeclared) {
+        if (StringUtility.isEmpty(name)) return false;
+
         Method[] methods = isDeclared ? cls.getDeclaredMethods() : cls.getMethods();
         for (Method method : methods) {
             if (method.getName().equals(name)) {
@@ -454,12 +465,18 @@ public class BaseModel implements Serializable, Cloneable {
 
     /** If clone is supported returns a cloned object from obj
      * else returns null */
-    public static <T extends BaseModel> T copy(T obj) {
+    public <T extends BaseModel> T copy() {
         try {
-            return (T) obj.clone();
+            return (T) clone();
         } catch (CloneNotSupportedException e) {
             return null;
         }
+    }
+
+    /** If clone is supported returns a cloned object from obj
+     * else returns null */
+    public static <T extends BaseModel> T copy(T obj) {
+        return obj.copy();
     }
 
     public static <T extends Object> T elementInArray (ArrayList<T> arr, Class<T> objectClass, String name, Object value) {

@@ -100,9 +100,9 @@ public class UINavigationBar extends UIView {
         return button;
     }
 
-    /** Adds a view at the position defined by UIEnum.ALIGNMENT.
+    /** Adds a view at the position defined by ALIGNMENT.
      * @param view The view to be added. Pass null to add a button at left or right, or label in center. */
-    public void addItem (UIView view, UIEnum.ALIGNMENT position) {
+    public void addItem (UIView view, ALIGNMENT position) {
         switch (position) {
             case LEFT: {
                 if (view == null) {

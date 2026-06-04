@@ -36,6 +36,12 @@ public interface ConstantsProtocol {
     //controls
     default int TextField_Height() { return Dimensions.Int_44(); }
 
+    default int MaxValue1CellCharacterCount() { return 16; }
+
+    default int MaxTextViewCharacters() { return 400; }
+
+    default int MaxTextViewCharactersLong() { return 1024; }
+
     //data
     default String File_Provider_Authority() { return null; }
     default int Max_Transition_Bitmap_Size() { return Dimensions.Int_512(); }

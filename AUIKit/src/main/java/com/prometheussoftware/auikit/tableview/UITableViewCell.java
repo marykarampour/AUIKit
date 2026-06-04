@@ -276,6 +276,11 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         setSizeForView(rightViewSize(), rightView);
     }
 
+    public enum STYLE {
+        DEFAULT,
+        SUBTITLE
+    }
+
     public enum ACCESSORY_TYPE {
         NONE,
         DISCLOSURE_INDICATOR,
@@ -284,6 +289,11 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         DETAIL_DISCLOSURE_BUTTON,
         CHECKMARK,
         DETAIL_BUTTON
+    }
+
+    public enum SELECTION_STYLE {
+        NONE,
+        DEFAULT
     }
 
     //endregion

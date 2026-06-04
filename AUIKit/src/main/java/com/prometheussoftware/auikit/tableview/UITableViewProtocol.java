@@ -7,10 +7,15 @@ import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIView;
 
+import java.util.ArrayList;
+
 public interface UITableViewProtocol {
 
-    interface TableView {
+    interface TableView <D extends Data> {
         void reloadData();
+        default D getDataController() { return null; }
+        default <S extends TableObject.Section> void setData(ArrayList<S> data) {}
+        default void disableRecycling(int viewType) {}
     }
 
     interface UpdateDelegate {
@@ -113,24 +118,38 @@ public interface UITableViewProtocol {
         default void didSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {
         }
 
-        <V extends UIView> void customizeHeaderViewForViewType(V header, int viewType);
+        default <V extends UIView> void customizeHeaderViewForViewType(V header, int viewType) {}
+
+        default void setUpdateDelegate(UITableViewProtocol.UpdateDelegate updateDelegate) {}
+
+        default void setViewDelegate(UITableViewProtocol.TableView viewDelegate) {}
+
+        default <S extends TableObject.Section> void setSections (ArrayList<S> sections) {}
+
+        default ArrayList<TableObject.Section> getSections() { return new ArrayList<>(); }
+
+        default int positionForIndexPath (IndexPath indexPath) { return -1; }
+
+        default int numberOfVisibleViews() { return 0; }
+
+        default void setMultiSelectEnabled(boolean multiSelectEnabled) {};
 
         //recycler view
 
-        int viewTypeForPosition(int position);
+        default int viewTypeForPosition(int position) { return 0; };
 
-        <V extends UITableViewCell> V cellForViewType(ViewGroup parent, int viewType);
+        default <V extends UITableViewCell> V cellForViewType(ViewGroup parent, int viewType) { return null; };
 
-        <V extends UIView> V headerForViewType(ViewGroup parent, int viewType);
+        default <V extends UIView> V headerForViewType(ViewGroup parent, int viewType) { return null; };
 
-        <V extends UITableViewHolder, C extends UITableViewCell> V viewHolderForCell(C cell);
+        default <V extends UITableViewHolder, C extends UITableViewCell> V viewHolderForCell(C cell) { return null; };
 
-        <V extends UITableViewHolder, W extends UIView> V viewHolderForHeader(W header);
+        default <V extends UITableViewHolder, W extends UIView> V viewHolderForHeader(W header) { return null; };
 
-        <V extends UITableViewHolder> void bindData(V holder, int position);
+        default <V extends UITableViewHolder> void bindData(V holder, int position) {};
 
-        <V extends UITableViewHolder> void bindData(UITableView tableView, V holder, int position);
+        default <V extends UITableViewHolder> void bindData(UITableView tableView, V holder, int position) {};
 
-        <V extends UITableViewHolder> V viewHolderForViewType(ViewGroup parent, int viewType);
+        default <V extends UITableViewHolder> V viewHolderForViewType(ViewGroup parent, int viewType) { return null; };
     }
 }
