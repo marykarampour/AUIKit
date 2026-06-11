@@ -139,7 +139,7 @@ public abstract class UIAccessoryView extends UISwitch implements UIAccessoryVie
 
         @Override public void loadView() {
             super.loadView();
-            addSubView(imageView);
+            addSubview(imageView);
         }
 
         @Override public void constraintLayout() {
@@ -168,7 +168,7 @@ public abstract class UIAccessoryView extends UISwitch implements UIAccessoryVie
 
         @Override public void loadView() {
             super.loadView();
-            addSubView(label);
+            addSubview(label);
         }
 
         @Override public void constraintLayout() {
@@ -205,8 +205,8 @@ public abstract class UIAccessoryView extends UISwitch implements UIAccessoryVie
 
         @Override public void loadView() {
             super.loadView();
-            addSubView(label);
-            addSubView(imageView);
+            addSubview(label);
+            addSubview(imageView);
         }
 
         @Override public void constraintLayout() {
@@ -247,7 +247,7 @@ public abstract class UIAccessoryView extends UISwitch implements UIAccessoryVie
 
         public void setView(V view) {
             this.view = view;
-            addSubView(view);
+            addSubview(view);
             constraintSidesForView(view, imageInsets());
             applyConstraints();
         }

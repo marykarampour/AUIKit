@@ -86,14 +86,14 @@ public class UITableViewContentController <D extends UITableViewProtocol.Data> i
         if (tableView == null) return;
 
         this.tableView = tableView;
-        view.addSubView(tableView);
+        view.addSubview(tableView);
     }
 
     public void setRefreshView(UIRefreshView refreshView) {
         if (refreshView == null) return;
 
         this.refreshView = refreshView;
-        view.addSubView(refreshView);
+        view.addSubview(refreshView);
     }
 
     public UIRefreshView getRefreshView() {

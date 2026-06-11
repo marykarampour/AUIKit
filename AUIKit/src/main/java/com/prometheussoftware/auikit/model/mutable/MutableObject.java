@@ -27,10 +27,11 @@ public class MutableObject <O extends MutableProtocol.Field, U extends MutablePr
     NSCFString, and might not recognize selectors such as allocWithZone otherwise used to copy these properties in case of MKUModel. */
     public MutableObject (O object) {
         super();
+        setupWithObject(object);
     }
 
     public MutableObject() {
-        super();
+        this(null);
     }
 
     void setupWithObject (O object) {
@@ -38,22 +39,22 @@ public class MutableObject <O extends MutableProtocol.Field, U extends MutablePr
         Object obj = object;//TODO: should be copy, but clone is broken BaseModel.copy(object);
 
         if (obj == null) {
-            Class cls = classForOriginalObject;
+            Class cls = getClassForOriginalObject();
             if (!Cloneable.class.isAssignableFrom(cls))
                 cls = classOfPropertyForObjectClass("OriginalObject", getClass());
             obj = ObjectUtility.objectWithParams(cls);
         }
 
-        OriginalObject = (O) obj;
+        setOriginalObject((O) obj);
     }
 
     /** @brief Reinitializes both OriginalObject and UpdatedObject. */
     public void reset() {
-        if (classForUpdatedObject.isAssignableFrom(OriginalObject.getClass())) {
-            UpdatedObject = (U) OriginalObject;//TODO: should be copy, but clone is broken BaseModel.copy((U) OriginalObject);
+        if (getClassForUpdatedObject().isAssignableFrom(OriginalObject.getClass())) {
+            setUpdatedObject((U) OriginalObject);//TODO: should be copy, but clone is broken BaseModel.copy((U) OriginalObject);
         }
         else {
-            UpdatedObject = (U) ObjectUtility.objectWithParams(classForUpdatedObject);
+            setUpdatedObject((U) ObjectUtility.objectWithParams(getClassForUpdatedObject()));
         }
     }
 

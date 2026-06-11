@@ -25,7 +25,8 @@ public class UIScrollview extends UIView {
         init();
     }
 
-    @Override public void initView() {
+    @Override
+    public void initView() {
         super.initView();
 
         contentView = new UIView();
@@ -35,7 +36,6 @@ public class UIScrollview extends UIView {
     private ViewGroup viewWithType(DIRECTION direction) {
         switch (direction) {
             case VERTICAL: {
-
                 ScrollView view = new ScrollView(getActivity());
                 view.setFillViewport(false);
                 view.setScrollContainer(false);
@@ -63,8 +63,8 @@ public class UIScrollview extends UIView {
         applyConstraints();
     }
 
-    public void addContentSubView(UIView view) {
-        contentView.addSubView(view);
+    public void addContentSubview(UIView view) {
+        contentView.addSubview(view);
     }
 
     public UIView getContentView() {

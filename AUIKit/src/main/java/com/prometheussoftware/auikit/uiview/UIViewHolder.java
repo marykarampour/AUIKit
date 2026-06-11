@@ -23,7 +23,7 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
 
         clearViews();
         this.views = views;
-        addSubViews(views);
+        addSubviews(views);
         updateConstraints();
     }
 
@@ -55,7 +55,7 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
     }
 
     private void clearViews() {
-        removeSubViews(views);
+        removeSubviews(views);
         views.clear();
     }
 

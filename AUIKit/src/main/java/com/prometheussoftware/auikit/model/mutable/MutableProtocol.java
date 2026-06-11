@@ -10,8 +10,8 @@ import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.uiview.UITextField;
 import com.prometheussoftware.auikit.uiview.UITextView;
 import com.prometheussoftware.auikit.uiview.UIView;
-import com.prometheussoftware.auikit.uiview.protocols.UIViewProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
+import com.prometheussoftware.auikit.uiviewcontroller.ItemsListProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 import com.prometheussoftware.auikit.utility.DateUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
@@ -19,6 +19,7 @@ import com.prometheussoftware.auikit.utility.StringUtility;
 import java.io.Serializable;
 import java.text.AttributedString;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,7 +50,7 @@ public interface MutableProtocol {
     }
 
     public interface SaveCallback<E extends Error> {
-        void onSuccess(Number ID);
+        void onSuccess(Integer ID);
         void onFailure(E error);
     }
 
@@ -109,8 +110,14 @@ public interface MutableProtocol {
         String missingObjectErrorMessage();
         /** @brief Set to implement custom updates when a value is updated. Useful in cases custom
          * calculations require a view update. */
-        void setUpdateDelegate(Delegate obj);
-        Delegate getUpdateDelegate();
+        default void setUpdateDelegate(Delegate obj) {}
+        default Delegate UpdateDelegate() { return null; }
+
+
+        /** @brief Returns an array for a property that conforms to protocol MKUArrayPropertyProtocol. */
+        default <O extends ViewContentProtocol.Placeholder> List<O> arrayForObjectType (int type) { return null; }
+        /** @brief Returns an array for a section corresponding to a property that conforms to protocol MKUArrayPropertyProtocol. */
+        default <O extends ViewContentProtocol.Placeholder> List<O> arrayForSectionType (int type) { return null; }
     }
 
     public interface Mutable {
@@ -132,7 +139,7 @@ public interface MutableProtocol {
         default void objectDidUpdateObjectType(O obj, Integer type, UITextField textField, boolean endEditing, IndexPath indexPath) {}
     }
 
-    public interface ViewController <O extends UpdateObject> extends Delegate, ModelProtocol.Object<O> {
+    public interface ViewController <ObjectType extends BaseModel & MutableProtocol.Field, UpdateObjectType extends BaseModel & MutableProtocol.Field, O extends MutableUpdateObject<ObjectType, UpdateObjectType>> extends Delegate, ModelProtocol.Object<O>, ItemsListProtocol.ListVC {
 
         /**
          * @note Default checks:
@@ -176,18 +183,18 @@ public interface MutableProtocol {
          * @brief This is called in reset, setObject and setUpdatedObject methods, use this to update any single cells like segments, or other needed updates,
          * default does nothing. Call super if you have date cells, it will automatically set the values in date cells.
          */
-        default void didResetUpdateObject(Field object) {}
+        default void didResetUpdateObject(UpdateObjectType object) {}
         /**
          * @brief Called every time object is set. Use this as a replacement for overriding setObject: which is implemented in category UIViewController (MKUMutableObjectVC)
          * and should not be overriden.
          */
-        default void didSetObject(UpdateObject object) {}
+        default void didSetObject(O object) {}
         /**
          * @brief Only calls dispatchDelegateForSaveDone after end editing. Defalt returns NO.
          */
         default boolean performDefaultSavePressedAction() { return false; }
         default void dispatchDelegateForSaveDone() {}
-        default Class classForObject() { return UpdateObject.class; }
+        default Class classForObject() { return MutableUpdateObject.class; }
         default boolean showSaveSuccessAlert() { return true; }
         default <O extends Field> void updateObjectDidUpdateKey(O object, String key) {}
         /** @brief This is called when save is pressed as the completion of performSaveOrUpdateObjectWithCompletion.
@@ -195,15 +202,12 @@ public interface MutableProtocol {
          @note Default completion is nil. Set to perform other actions. */
         public UpdateCallback performSaveOrUpdateObjectCompletionHandler();
         /** @brief It calls setObject: */
-        public void setUpdatedObject (Field updatedObject);
-    }
-
-    public interface TableViewController extends ViewController {
+        public void setUpdatedObject (UpdateObjectType updatedObject);
 
         /** @brief Set initial isEditable state. Called in initBase. */
         default void initIsEditable() {}
         default boolean isHeaderSection (int section) { return false; };
-        default UITableViewCell singleCellForRowAtIndexPath (IndexPath indexPath) { return new UITableViewCell.Concrete(); };
+        default UIView singleCellForRowAtIndexPath (IndexPath indexPath) { return new UIView(); };
         /** @brief Default is based on isEditable. */
         default boolean userInteractionEnabledForSingleCellAtIndexPath (IndexPath indexPath) { return false; };
         default FIELD_TYPE typeForSection (int section) { return FIELD_TYPE.BLANK; };
@@ -268,10 +272,10 @@ public interface MutableProtocol {
         void handleSelectionAtIndexPath (IndexPath indexPath);
         /** @brief It is called in tableView:didSelectRowAtIndexPath: via handleSelectionAtIndexPath when type is MKU_MUTABLE_OBJECT_FIELD_TYPE_SELECTION.
         By default calls presentSelectionVC:atIndexPath: */
-        void createPresentingSelectionVCAtIndexPath (IndexPath indexPath, ViewControllerCallback completion);
+        default void createPresentingSelectionVCAtIndexPath (IndexPath indexPath, ViewControllerCallback completion) {}
         /** @brief It is called in tableView:didSelectRowAtIndexPath: via didSelectListItem:atIndexPath when type is MKU_MUTABLE_OBJECT_FIELD_TYPE_LIST.
         By default calls presentTransitioningViewControllerWithItem:atIndexPath: */
-        void createPresentingSelectionVCForItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath, ViewControllerCallback completion);
+
         /** @brief By default does [self.navigationController pushViewController:VC animated:YES]. In case of a container or popover
         for example you can override to provide other actions.*/
         void presentSelectionVCAtIndexPath (UIViewController VC, IndexPath indexPath);

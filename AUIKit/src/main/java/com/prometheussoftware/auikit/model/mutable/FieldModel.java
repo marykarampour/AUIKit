@@ -24,10 +24,11 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
 
     MutableProtocol.Delegate updateDelegate;
 
-    /** @brief Returns an array for a property that conforms to protocol MKUArrayPropertyProtocol. */
-    <O extends ViewContentProtocol.Placeholder> List<O> arrayForObjectType (int type) { return null; }
-    /** @brief Returns an array for a section corresponding to a property that conforms to protocol MKUArrayPropertyProtocol. */
-    <O extends ViewContentProtocol.Placeholder> List<O> arrayForSectionType (int type) { return null; }
+    @Override
+    public <O extends ViewContentProtocol.Placeholder> List<O> arrayForObjectType(int type) { return null; }
+
+    @Override
+    public <O extends ViewContentProtocol.Placeholder> List<O> arrayForSectionType (int type) { return null; }
 
     NumberUtility.STYLE numberStyleForObjectType (int type) {
         StringUtility.TYPE textType = textTypeForObjectType(type);
@@ -343,23 +344,23 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
     }
 
     @Override
-    public MutableProtocol.Delegate getUpdateDelegate() {
+    public MutableProtocol.Delegate UpdateDelegate() {
         return updateDelegate;
     }
 
     /** @brief Call this method to send a message to updateDelegate that a value is updated.
     Useful in cases custom calculations require a view update. */
     public void dispatchUpdateDelegateWithObjectType(int type) {
-        if (getUpdateDelegate() == null) return;
-        getUpdateDelegate().objectDidUpdateObjectType(this, type);
+        if (UpdateDelegate() == null) return;
+        UpdateDelegate().objectDidUpdateObjectType(this, type);
     }
 
     /**
      * @brief Call this method to send a message to updateDelegate that a value is updated.
      * Useful in cases custom calculations require a view update. */
     public void dispatchUpdateDelegateWithObjectType(int type, UITextField textField, boolean endEditing, IndexPath indexPath) {
-        if (getUpdateDelegate() == null) return;
-        getUpdateDelegate().objectDidUpdateObjectType(this, type, textField, endEditing, indexPath);
+        if (UpdateDelegate() == null) return;
+        UpdateDelegate().objectDidUpdateObjectType(this, type, textField, endEditing, indexPath);
     }
 
     //endregion

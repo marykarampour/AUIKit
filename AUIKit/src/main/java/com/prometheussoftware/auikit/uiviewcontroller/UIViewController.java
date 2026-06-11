@@ -17,7 +17,7 @@ import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
 
-public class UIViewController <V extends UIView> extends BaseModel implements LifeCycleDelegate.ViewController, LifeCycleDelegate.View, NavigationControllerProtocol, UITabBarProtocol.Item {
+public class UIViewController <V extends UIView> extends BaseModel implements LifeCycleDelegate.ViewController, LifeCycleDelegate.View, NavigationControllerProtocol, UITabBarProtocol.Item, ViewControllerTransition.Protocol {
 
     static {
         BaseModel.Register(UIViewController.class);
@@ -551,4 +551,12 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     }
 
     //endregion
+
+    public void dispathTransitionDelegateToReturnWithObject(Object object) {
+        dispathTransitionDelegateToReturnWithResult(ViewControllerTransition.RESULT_TYPE.SUCCESS, object);
+    }
+
+    public void dispathTransitionDelegateToReturnWithResult(ViewControllerTransition.RESULT_TYPE resultType, Object object) {
+        if (transitionDelegate() != null) transitionDelegate().viewControllerDidReturnWithResult(this, resultType, object);
+    }
 }

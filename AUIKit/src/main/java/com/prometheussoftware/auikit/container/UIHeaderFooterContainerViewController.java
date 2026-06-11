@@ -32,13 +32,15 @@ public abstract class UIHeaderFooterContainerViewController <H extends UIView, F
         this.object = object;
     }
 
-    @Override public UIViewController init() {
+    @Override
+    public UIViewController init() {
         createChildVCWithChildObject(object);
         if (childViewController != null) childViewController.setHeaderDelegate(this);
         return super.init();
     }
 
-    @Override public void viewDidLoad() {
+    @Override
+    public void viewDidLoad() {
         super.viewDidLoad();
 
         createHeaderView();
@@ -47,34 +49,40 @@ public abstract class UIHeaderFooterContainerViewController <H extends UIView, F
 
         backView = new UIView();
 
-        view().addSubView(backView);
-        backView.addSubView(headerView);
-        backView.addSubView(contentView);
-        backView.addSubView(footerView);
+        view().addSubview(backView);
+        backView.addSubview(headerView);
+        backView.addSubview(contentView);
+        backView.addSubview(footerView);
         constraintViews();
     }
 
-    @Override public void createHeaderView() {
+    @Override
+    public void createHeaderView() {
         headerView = (H)new UIView();
     }
 
-    @Override public void createFooterView() {
+    @Override
+    public void createFooterView() {
         footerView = (F)new UIView();
     }
 
-    @Override public int maxFooterHeight() {
+    @Override
+    public int maxFooterHeight() {
         return Dimensions.Int_256();
     }
 
-    @Override public int maxHeaderHeight() {
+    @Override
+    public int maxHeaderHeight() {
         return Dimensions.Int_256();
     }
 
-    @Override public void createChildVCWithChildObject(Object object) {
+    @Override
+    public void createChildVCWithChildObject(Object object) {
         createChildVC();
     }
 
-    @Override public void setContentView() {
+    @Override
+    public void setContentView() {
         if (childViewController != null) {
             addChildViewController(childViewController);
             contentView = (C) childViewController.view();

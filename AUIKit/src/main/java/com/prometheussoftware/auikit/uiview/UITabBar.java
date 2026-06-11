@@ -74,9 +74,9 @@ public class UITabBar extends UIView {
     @Override
     public void loadView() {
         super.loadView();
-        addSubView(shadowImageView);
-        addSubView(backgroundImageView);
-        addSubView(contentView);
+        addSubview(shadowImageView);
+        addSubview(backgroundImageView);
+        addSubview(contentView);
     }
 
     @Override
@@ -116,14 +116,14 @@ public class UITabBar extends UIView {
                 selectItem(item);
             });
 
-            contentView.addSubView(button);
+            contentView.addSubview(button);
             arr.add(button);
         }
 
         this.items = items;
         this.buttons = arr;
 
-        contentView.addSubView(selectionIndicatorImageView);
+        contentView.addSubview(selectionIndicatorImageView);
         contentView.constraintHorizontally(arr, Dimensions.Int_2(), true);
         contentView.applyConstraints();
     }

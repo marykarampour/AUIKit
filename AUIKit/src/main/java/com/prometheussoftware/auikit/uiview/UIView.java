@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
+import com.prometheussoftware.auikit.callback.CompletionCallback;
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.BaseActivity;
@@ -340,31 +341,38 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         return views;
     }
 
-    public void addSubView(UIView view) {
+    public void addSubview(UIView view) {
         if (view == null) return;
         ViewUtility.addViewWithID(view, this);
         view.setVisibility(view.opacity);
     }
 
-    public void removeSubView(UIView view) {
+    public void removeSubview(UIView view) {
 
         if (view == null || view.getParent() != this) return;
         constraintSet.clear(view.getId());
         removeView(view);
     }
 
-    public <T extends UIView> void removeSubViews(ArrayList<T> views) {
+    public <T extends UIView> void removeSubviews(ArrayList<T> views) {
 
         if (views == null || views.size() == 0) return;
 
         for (UIView view : subUIViews()) {
             if (views.contains(view)) {
-                removeSubView(view);
+                removeSubview(view);
             }
         }
     }
 
-    public <T extends UIView> void addSubViews(ArrayList<T> views) {
+    public void removeFromSuperview() {
+
+        if (getParent() == null || !(getParent() instanceof UIView)) return;
+        UIView parent = (UIView) getParent();
+        parent.removeSubview(this);
+    }
+
+    public <T extends UIView> void addSubviews(ArrayList<T> views) {
 
         if (views == null || views.size() == 0) return;
 
@@ -372,7 +380,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
         for (UIView view : views) {
             if (!subviews.contains(view)) {
-                addSubView(view);
+                addSubview(view);
             }
         }
     }
@@ -382,7 +390,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         if (top) {
             UIView topBar = new UIView();
             topBar.setBackgroundColor(color);
-            addSubView(topBar);
+            addSubview(topBar);
 
             constraintHeightForView(topBar, height);
             constraintForView(ConstraintSet.END, topBar);
@@ -393,7 +401,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         if (bottom) {
             UIView bottomBar = new UIView();
             bottomBar.setBackgroundColor(color);
-            addSubView(bottomBar);
+            addSubview(bottomBar);
 
             constraintHeightForView(bottomBar, height);
             constraintForView(ConstraintSet.END, bottomBar);
@@ -408,7 +416,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
         UIView bar = new UIView();
         bar.setBackgroundColor(color);
-        addSubView(bar);
+        addSubview(bar);
 
         constraintWidthForView(bar, width);
         constraintForView((onLeft ? ConstraintSet.START : ConstraintSet.END), bar, margin);
@@ -445,6 +453,12 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     public void clearConstraints(ArrayList<? extends UIView> views) {
         for (UIView view : views) {
+            clearConstraints(view);
+        }
+    }
+
+    public void clearAllConstraints() {
+        for (UIView view : subUIViews()) {
             clearConstraints(view);
         }
     }
@@ -774,6 +788,14 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
     public void constraintViews (UIView view1, int constraint1, UIView view2, int constraint2) {
         constraintViews(view1, constraint1, view2, constraint2, 0);
+    }
+
+    public static void setContentViewForSuperview (UIView view, UIView superview, UIEdgeInsets insets, CompletionCallback setterHandler) {
+        if (!(view instanceof UIView)) return;
+        if (setterHandler != null) setterHandler.done();
+
+        superview.addSubview(view);
+        superview.constraintSidesForView(view, insets);
     }
 
     public void removeAllConstraints () {

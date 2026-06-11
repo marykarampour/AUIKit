@@ -259,13 +259,13 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
         private static final Map map = new HashMap<>();
 
         static {
-            for (ORIENTATION flavor : ORIENTATION.values()) {
-                map.put(flavor.value, flavor);
+            for (ORIENTATION type : ORIENTATION.values()) {
+                map.put(type.value, type);
             }
         }
 
-        public static ORIENTATION valueOf(int flavor) {
-            return (ORIENTATION) map.get(flavor);
+        public static ORIENTATION valueOf(int i) {
+            return (ORIENTATION) map.get(i);
         }
     }
 
@@ -279,7 +279,7 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
 
     public void addOverlay (UIView overlay) {
 
-        view.addSubView(overlay);
+        view.addSubview(overlay);
         view.constraintSidesForView(overlay);
         view.applyConstraints();
         view.bringChildToFront(overlay);

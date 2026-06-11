@@ -2,9 +2,11 @@ package com.prometheussoftware.auikit.model.mutable;
 
 import com.prometheussoftware.auikit.model.BaseModel;
 
-import java.io.Serializable;
+public class MutableUpdateObject<O extends BaseModel & MutableProtocol.Field, U extends BaseModel & MutableProtocol.Field> extends MutableObject <O, U> implements MutableProtocol.Update {
 
-public class UpdateObject <O extends BaseModel & MutableProtocol.Field, U extends BaseModel & MutableProtocol.Field> extends MutableObject <O, U> implements MutableProtocol.Update {
+    public MutableUpdateObject (O object) {
+        super(object);
+    }
 
     @Override
     public boolean isLongValueForSectionType(int section) {

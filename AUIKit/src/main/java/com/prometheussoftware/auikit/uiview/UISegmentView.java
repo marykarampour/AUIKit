@@ -51,7 +51,7 @@ public class UISegmentView extends UIView {
     @Override
     public void loadView() {
         super.loadView();
-        addSubView(backView);
+        addSubview(backView);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class UISegmentView extends UIView {
         for (String title : titles) {
             UILabel label = label(title);
             labels.add(label);
-            backView.getView().addSubView(label);
+            backView.getView().addSubview(label);
         }
 
         setSelectedIndex(-1);

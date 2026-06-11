@@ -37,8 +37,8 @@ public class UIButton extends UIControl {
     @Override
     public void loadView() {
         super.loadView();
-        addSubView(titleLabel);
-        addSubView(imageView);
+        addSubview(titleLabel);
+        addSubview(imageView);
     }
 
     @Override

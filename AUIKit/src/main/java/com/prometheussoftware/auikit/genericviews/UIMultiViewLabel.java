@@ -56,7 +56,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
     public void setTopView(UIView backView) {
         this.backView = backView;
         backView.setBackgroundColor(UIColor.clear());
-        contentView.addSubView(backView);
+        contentView.addSubview(backView);
         contentView.bringChildToFront(backView);
         contentView.constraintSidesForView(backView);
         contentView.applyConstraints();
@@ -75,7 +75,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
         this.backView = backView;
         backView.setBackgroundColor(UIColor.clear());
-        contentView.addSubView(backView);
+        contentView.addSubview(backView);
         contentView.bringChildToFront(backView);
 
         if (!coverLeft && leftView != null) {
@@ -120,10 +120,10 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     @Override public void loadView() {
         super.loadView();
-        addSubView(contentView);
-        contentView.addSubView(titleLabel);
-        contentView.addSubView(rightView);
-        contentView.addSubView(leftView);
+        addSubview(contentView);
+        contentView.addSubview(titleLabel);
+        contentView.addSubview(rightView);
+        contentView.addSubview(leftView);
     }
 
     //endregion
@@ -266,18 +266,18 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 //    /** It will NOT set the view if view is already loaded */
     public void setLeftView(L leftView) {
 //        if (!isLoaded())
-        contentView.removeSubView(this.leftView);
+        contentView.removeSubview(this.leftView);
         this.leftView = leftView;
-        contentView.addSubView(leftView);
+        contentView.addSubview(leftView);
         constraintLayout();
     }
 
 //    /** It will NOT set the view if view is already loaded */
     public void setRightView(R rightView) {
 //        if (!isLoaded())
-        contentView.removeSubView(this.rightView);
+        contentView.removeSubview(this.rightView);
         this.rightView = rightView;
-        contentView.addSubView(rightView);
+        contentView.addSubview(rightView);
         constraintLayout();
     }
 

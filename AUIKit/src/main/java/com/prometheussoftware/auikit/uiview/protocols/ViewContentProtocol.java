@@ -39,7 +39,7 @@ public interface ViewContentProtocol {
         default UIColor cellSubtitleColor() { return null; };
     }
 
-//    public interface RefreshViewControllerDelegate {
-//        default void performRefreshWithControl(RefreshControl sender) {}
-//    }
+   //public interface RefreshViewControllerDelegate {
+   //    default void performRefreshWithControl(RefreshControl sender) {}
+   //}
 }

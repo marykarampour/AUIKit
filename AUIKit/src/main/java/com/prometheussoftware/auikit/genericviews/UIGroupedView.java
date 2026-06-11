@@ -59,10 +59,10 @@ public class UIGroupedView <V extends UIView> extends UIView {
     public void loadView() {
         super.loadView();
 
-        addSubView(contentView);
+        addSubview(contentView);
 
         for (V view: views) {
-            contentView.addSubView(view);
+            contentView.addSubview(view);
         }
     }
 

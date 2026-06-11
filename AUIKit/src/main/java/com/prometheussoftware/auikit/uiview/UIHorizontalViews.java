@@ -1,32 +1,32 @@
 package com.prometheussoftware.auikit.uiview;
 
-import com.prometheussoftware.auikit.uiview.protocols.SingleIndexViewCreationHandler;
+import com.prometheussoftware.auikit.uiview.protocols.ViewCreation;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 public class UIHorizontalViews <T extends UIView> extends UIStackedViews<T> {
-    public UIHorizontalViews(int count, SingleIndexViewCreationHandler<T> handler) {
+    public UIHorizontalViews(int count, ViewCreation <T> handler) {
         super(count, handler);
     }
 
-    public UIHorizontalViews(int count, int padding, SingleIndexViewCreationHandler<T> handler) {
+    public UIHorizontalViews(int count, int padding, ViewCreation<T> handler) {
         super(count, padding, handler);
     }
 
-    public UIHorizontalViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, SingleIndexViewCreationHandler<T> handler) {
+    public UIHorizontalViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, ViewCreation<T> handler) {
         super(count, interItemSpacing, horizontalMargin, verticalMargin, handler);
     }
 
-    public UIHorizontalViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, Map<Integer, Integer> sizes, SingleIndexViewCreationHandler<T> handler) {
+    public UIHorizontalViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, Map<Integer, Integer> sizes, ViewCreation<T> handler) {
         super(count, interItemSpacing, horizontalMargin, verticalMargin, sizes, handler);
     }
 
-    public UIHorizontalViews(int count, int padding, int interItemMargin, SingleIndexViewCreationHandler<T> handler) {
+    public UIHorizontalViews(int count, int padding, int interItemMargin, ViewCreation<T> handler) {
         super(count, padding, interItemMargin, handler);
     }
 
-    public UIHorizontalViews(ArrayList<SingleIndexViewCreationHandler<T>> singleIndexViewCreationHandlers) {
+    public UIHorizontalViews(ArrayList<ViewCreation<T>> singleIndexViewCreationHandlers) {
         super(singleIndexViewCreationHandlers);
     }
 

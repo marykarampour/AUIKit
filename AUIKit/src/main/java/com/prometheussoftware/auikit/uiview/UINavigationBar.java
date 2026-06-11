@@ -63,10 +63,10 @@ public class UINavigationBar extends UIView {
     @Override
     public void loadView() {
         super.loadView();
-        addSubView(titleViewHolder);
-        addSubView(leftItemsViewHolder);
-        addSubView(rightItemsViewHolder);
-        addSubView(shadow);
+        addSubview(titleViewHolder);
+        addSubview(leftItemsViewHolder);
+        addSubview(rightItemsViewHolder);
+        addSubview(shadow);
         setupHolders();
     }
 
@@ -251,9 +251,9 @@ public class UINavigationBar extends UIView {
 
         public void setView(UIView view) {
 
-            removeSubView(this.view);
+            removeSubview(this.view);
             this.view = view;
-            addSubView(view);
+            addSubview(view);
             updateConstraints();
         }
 

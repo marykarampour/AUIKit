@@ -1,7 +1,7 @@
 package com.prometheussoftware.auikit.uiview;
 
-import com.prometheussoftware.auikit.uiview.protocols.SingleIndexViewCreationHandler;
 import com.prometheussoftware.auikit.uiview.protocols.UIStackedViewProtocol;
+import com.prometheussoftware.auikit.uiview.protocols.ViewCreation;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -10,42 +10,42 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
 
     private ArrayList<T> views;
 
-    public UIStackedViews(int count, SingleIndexViewCreationHandler<T> handler) {
+    public UIStackedViews(int count, ViewCreation<T> handler) {
         this(count, 0, handler);
     }
 
-    public UIStackedViews(int count, int padding, SingleIndexViewCreationHandler<T> handler) {
+    public UIStackedViews(int count, int padding, ViewCreation<T> handler) {
         this(count, padding, padding, handler);
     }
 
-    public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, SingleIndexViewCreationHandler<T> handler) {
+    public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, ViewCreation<T> handler) {
         this(count, interItemSpacing, horizontalMargin, verticalMargin, null, handler);
     }
 
-    public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, Map<Integer, Integer> sizes, SingleIndexViewCreationHandler<T> handler) {
+    public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, Map<Integer, Integer> sizes, ViewCreation<T> handler) {
         super();
         initViewsWithCount(count, handler);
         constraintViews(sizes, interItemSpacing, horizontalMargin, verticalMargin);
         applyConstraints();
     }
 
-    public UIStackedViews(int count, int padding, int interItemMargin, SingleIndexViewCreationHandler<T> handler) {
+    public UIStackedViews(int count, int padding, int interItemMargin, ViewCreation<T> handler) {
         super();
         initViewsWithCount(count, handler);
         constraintViews(padding, interItemMargin);
         applyConstraints();
     }
 
-    public UIStackedViews(ArrayList<SingleIndexViewCreationHandler<T>> handlers) {
+    public UIStackedViews(ArrayList<ViewCreation<T>> handlers) {
         super();
 
         this.views = new ArrayList<>();
 
         for (int i = 0; i < handlers.size(); i++) {
-            T view = handlers.get(i).createView(0);
+            T view = handlers.get(i).view(0);
             if (view == null) continue;
 
-            addSubView(view);
+            addSubview(view);
             this.views.add(view);
         }
 
@@ -53,16 +53,16 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
         applyConstraints();
     }
 
-    private void initViewsWithCount(int count, SingleIndexViewCreationHandler<T> handler) {
+    private void initViewsWithCount(int count, ViewCreation<T> handler) {
         views = new ArrayList<>();
 
         if (handler == null) return;
 
         for (int i = 0; i < count; i++) {
-            T view = handler.createView(i);
+            T view = handler.view(i);
             if (view == null) continue;
 
-            addSubView(view);
+            addSubview(view);
             this.views.add(view);
         }
     }

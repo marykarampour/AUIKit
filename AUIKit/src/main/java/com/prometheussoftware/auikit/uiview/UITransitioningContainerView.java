@@ -50,15 +50,15 @@ public class UITransitioningContainerView extends UIView {
         transitioningView.setScaleType(ImageView.ScaleType.FIT_XY);
 
         fadeOverlay = new UIView();
-        addSubView(transitioningView);
-        addSubView(fadeOverlay);
+        addSubview(transitioningView);
+        addSubview(fadeOverlay);
 
         constraintSidesForView(transitioningView);
         applyConstraints();
     }
 
     private void addCurrentContentView() {
-        addSubView(currentContentView);
+        addSubview(currentContentView);
         constraintSidesForView(currentContentView);
         applyConstraints();
     }
@@ -174,7 +174,7 @@ public class UITransitioningContainerView extends UIView {
         int constraintView = leftRight ? ConstraintSet.END : ConstraintSet.START;
         int constraintParent = !leftRight ? ConstraintSet.END : ConstraintSet.START;
 
-        addSubView(currentContentView);
+        addSubview(currentContentView);
         clearConstraints(transitioningView);
         constraintSidesForView(transitioningView);
 
@@ -226,7 +226,7 @@ public class UITransitioningContainerView extends UIView {
         int constraintView = topBottom ? ConstraintSet.BOTTOM : ConstraintSet.TOP;
         int constraintParent = !topBottom ? ConstraintSet.BOTTOM : ConstraintSet.TOP;
 
-        addSubView(currentContentView);
+        addSubview(currentContentView);
         clearConstraints(transitioningView);
         constraintSidesForView(transitioningView);
 
@@ -274,7 +274,7 @@ public class UITransitioningContainerView extends UIView {
     }
 
     private void applyInitialConstraintsForVerticalDismiss() {
-        addSubView(currentContentView);
+        addSubview(currentContentView);
         transitioningView.bringToFront();
         fadeOverlay.bringToFront();
 

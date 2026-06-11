@@ -1,7 +1,5 @@
 package com.prometheussoftware.auikit.model;
 
-import com.prometheussoftware.auikit.uiview.UITextField;
-
 public interface ModelProtocol {
 
     public interface Object<O extends BaseModel> {

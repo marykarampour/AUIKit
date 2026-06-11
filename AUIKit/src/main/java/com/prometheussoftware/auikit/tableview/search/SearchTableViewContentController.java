@@ -40,7 +40,7 @@ public class SearchTableViewContentController <T extends BaseModel & BaseCellDat
         if (searchView == null) return;
 
         this.searchView = searchView;
-        getView().addSubView(searchView);
+        getView().addSubview(searchView);
     }
 
     @Override

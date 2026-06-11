@@ -2,6 +2,7 @@ package com.prometheussoftware.auikit.uiviewcontroller;
 
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.model.IndexPath;
+import com.prometheussoftware.auikit.tableview.BaseTableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 
@@ -33,7 +34,7 @@ public interface ItemsListProtocol {
         default UITableViewCell.SELECTION_STYLE selectionStyleForListOfType (int type)  { return UITableViewCell.SELECTION_STYLE.NONE; }
 
         /** @brief Default returns YES. */
-        default boolean canSelectSection (int section) { return false; }
+        default boolean canSelectSection (int section) { return true; }
         default String noItemAvailableTitleForListOfType (int type) { return ""; }
         default String textLabelAtIndexPath (IndexPath indexPath) { return ""; }
         default String detailTextLabelAtIndexPath (IndexPath indexPath) { return ""; }
@@ -48,12 +49,12 @@ public interface ItemsListProtocol {
         default List<ViewContentProtocol.Placeholder> listItemsForListOfType (int type) { return new ArrayList<>(); }
         default List<ViewContentProtocol.Placeholder> listItemsForListInSection (int section) { return new ArrayList<>(); }
         default boolean canSelectItemsInListOfType (int type) { return false; }
-        default int listTypeForListInSection (int section) { return 0; }
+        default int listTypeForListInSection (int section) { return section; }
         default ViewContentProtocol.Placeholder listItemAtIndexPath (IndexPath indexPath) { return null; }
 
         /** @brief Retun view controller to be pushed when an item is selected. It will be called in
         willAddItemToListOfType (int)type withCompletion as well. Return nil to do custom actions. */
-        default void transitioningViewControllerForItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath, ViewControllerCallback completion) {}
+        default ViewControllerCallback transitioningViewControllerForItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) { return null; }
 
         /** @brief Pushes the view controller returned by transitioningViewControllerForItem:atIndexPath when an item is selected. It will be called in willAddItemToListOfType (int)type withCompletion as well. Return nil in transitioningViewControllerForItem to do custom actions, or override this. */
         default void presentTransitioningViewControllerWithItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
@@ -64,4 +65,16 @@ public interface ItemsListProtocol {
         default void setTransitionVCDelegate() {}
     }
 
+    public interface ListVC {
+        default ViewControllerCallback createPresentingSelectionVCForItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) {
+            return () -> { return null; };
+        }
+    }
+
+    public interface EditingListVC extends ViewControllerTransition {
+    }
+
+
+    public interface UpdateDelegate {
+    }
 }

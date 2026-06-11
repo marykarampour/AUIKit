@@ -243,7 +243,7 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
         this.currentNavigationBar = currentNavigationBar;
 
         headerView.removeAllViews();
-        headerView.addSubView(currentNavigationBar);
+        headerView.addSubview(currentNavigationBar);
         headerView.constraintSidesForView(currentNavigationBar);
         headerView.applyConstraints();
 

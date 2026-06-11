@@ -24,14 +24,32 @@ public interface UITableViewProtocol {
         void performUpdateForDidSelectRowAtIndexPath (Object item, IndexPath indexPath);
     }
 
-    interface Data {
+    interface RecyclerViewData {
+        default int viewTypeForPosition(int position) { return 0; };
+
+        default <V extends UITableViewCell> V cellForViewType(ViewGroup parent, int viewType) { return null; };
+
+        default <V extends UIView> V headerForViewType(ViewGroup parent, int viewType) { return null; };
+
+        default <V extends UITableViewHolder, C extends UITableViewCell> V viewHolderForCell(C cell) { return null; };
+
+        default <V extends UITableViewHolder, W extends UIView> V viewHolderForHeader(W header) { return null; };
+
+        default <V extends UITableViewHolder> void bindData(V holder, int position) {};
+
+        default <V extends UITableViewHolder> void bindData(UITableView tableView, V holder, int position) {};
+
+        default <V extends UITableViewHolder> V viewHolderForViewType(ViewGroup parent, int viewType) { return null; };
+    }
+
+    interface TableViewData <V extends UIView> {
 
         default int numberOfRowsInSection(UITableView tableView, int section) {
             return 0;
         }
 
-        default UITableViewCell cellForRowAtIndexPath(UITableView tableView, IndexPath indexPath) {
-            return new UITableViewCell.Concrete();
+        default V cellForRowAtIndexPath(UITableView tableView, IndexPath indexPath) {
+            return (V) new UIView();
         }
 
         default int numberOfSectionsInTableView(UITableView tableView) {
@@ -71,12 +89,13 @@ public interface UITableViewProtocol {
         }
 
         //Single table view
+
         default int numberOfRowsInSection(int section) {
             return 0;
         }
 
-        default UITableViewCell cellForRowAtIndexPath(IndexPath indexPath) {
-            return new UITableViewCell.Concrete();
+        default V cellForRowAtIndexPath(IndexPath indexPath) {
+            return (V) new UIView();
         }
 
         default int numberOfSectionsInTableView() {
@@ -84,6 +103,10 @@ public interface UITableViewProtocol {
         }
 
         default int heightForRowAtIndexPath(Object item, IndexPath indexPath) {
+            return App.constants().Default_Row_Height();
+        }
+
+        default int heightForRowAtIndexPath(IndexPath indexPath) {
             return App.constants().Default_Row_Height();
         }
 
@@ -133,23 +156,16 @@ public interface UITableViewProtocol {
         default int numberOfVisibleViews() { return 0; }
 
         default void setMultiSelectEnabled(boolean multiSelectEnabled) {};
+    }
 
-        //recycler view
+    interface Data extends RecyclerViewData, TableViewData<UITableViewCell> {
 
-        default int viewTypeForPosition(int position) { return 0; };
+        default UITableViewCell cellForRowAtIndexPath(UITableView tableView, IndexPath indexPath) {
+            return new UITableViewCell.Concrete();
+        }
 
-        default <V extends UITableViewCell> V cellForViewType(ViewGroup parent, int viewType) { return null; };
-
-        default <V extends UIView> V headerForViewType(ViewGroup parent, int viewType) { return null; };
-
-        default <V extends UITableViewHolder, C extends UITableViewCell> V viewHolderForCell(C cell) { return null; };
-
-        default <V extends UITableViewHolder, W extends UIView> V viewHolderForHeader(W header) { return null; };
-
-        default <V extends UITableViewHolder> void bindData(V holder, int position) {};
-
-        default <V extends UITableViewHolder> void bindData(UITableView tableView, V holder, int position) {};
-
-        default <V extends UITableViewHolder> V viewHolderForViewType(ViewGroup parent, int viewType) { return null; };
+        default UITableViewCell cellForRowAtIndexPath(IndexPath indexPath) {
+            return new UITableViewCell.Concrete();
+        }
     }
 }

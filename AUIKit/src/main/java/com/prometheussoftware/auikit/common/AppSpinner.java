@@ -29,7 +29,7 @@ public class AppSpinner {
 
         backView = new UIView();
         backView.setBackgroundColor(Color.TRANSPARENT);
-        backView.addSubView(spinnerLayer);
+        backView.addSubview(spinnerLayer);
         backView.constraintSizeForView(spinnerLayer, hudSize);
         backView.constraintCenterXForView(spinnerLayer);
         backView.constraintCenterYForView(spinnerLayer);

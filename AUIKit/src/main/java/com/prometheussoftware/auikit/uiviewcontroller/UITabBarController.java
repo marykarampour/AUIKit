@@ -124,7 +124,7 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
         super.createFooterView();
 
         tabBar = new UITabBar();
-        footerView.addSubView(tabBar);
+        footerView.addSubview(tabBar);
         footerView.constraintSidesForView(tabBar);
         footerView.applyConstraints();
         tabBar.setDelegate(this);

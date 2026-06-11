@@ -82,7 +82,7 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         separator = (S) new UIView();
         separator.setEnabled(false);
         setSeparatorColor(App.theme().Tableview_Separator_Color());
-        contentView.addSubView(separator);
+        contentView.addSubview(separator);
     }
 
     private void createInteractionLayer() {

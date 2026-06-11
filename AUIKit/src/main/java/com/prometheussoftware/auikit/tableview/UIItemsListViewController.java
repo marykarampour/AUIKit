@@ -5,17 +5,18 @@ import android.text.SpannableStringBuilder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.uiview.UIView;
-import com.prometheussoftware.auikit.uiviewcontroller.BaseTableViewCell;
+import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.ItemsListProtocol;
 
 import java.util.ArrayList;
 
-public class UIItemsListViewController<T extends BaseModel & BaseCellDataSource, C extends BaseTableViewCell> extends UITableViewController implements ItemsListProtocol.VC {
+public class UIItemsListViewController<T extends BaseModel & BaseCellDataSource, C extends BaseTableViewCell> extends UITableViewController implements ItemsListProtocol.VC, ItemsListProtocol.ListVC {
 
     private ArrayList<T> items = new ArrayList<>();
 
@@ -117,6 +118,11 @@ public class UIItemsListViewController<T extends BaseModel & BaseCellDataSource,
     }
 
     protected void didSelectItemAtIndexPath(T item, IndexPath indexPath) { }
+
+    @Override
+    public ViewControllerCallback transitioningViewControllerForItemAtIndexPath(ViewContentProtocol.Placeholder item, IndexPath indexPath) {
+        return createPresentingSelectionVCForItemAtIndexPath(item, indexPath);
+    }
 
     public class DataController <T extends BaseModel & BaseCellDataSource> extends UITableViewDataController {
 

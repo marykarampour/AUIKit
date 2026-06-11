@@ -1,10 +1,9 @@
-package com.prometheussoftware.auikit.uiviewcontroller;
+package com.prometheussoftware.auikit.tableview;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Dimensions;
-import com.prometheussoftware.auikit.tableview.UITableViewCell;
 
 public class BaseTableViewCell extends UITableViewCell {
 
