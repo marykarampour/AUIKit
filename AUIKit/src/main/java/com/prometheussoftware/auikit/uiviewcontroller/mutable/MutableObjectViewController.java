@@ -4,6 +4,8 @@ import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
+import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.mutable.MutableProtocol;
@@ -18,6 +20,7 @@ import com.prometheussoftware.auikit.uiviewcontroller.ItemsListProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 import com.prometheussoftware.auikit.uiviewcontroller.ViewControllerTransition;
 import com.prometheussoftware.auikit.utility.ObjectUtility;
+import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.text.AttributedString;
 import java.util.ArrayList;
@@ -41,7 +44,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         super.viewDidLoad();
         scrollview = new UIScrollview();
         scrollview.setBackgroundColor(UIColor.yellow(1.0f));
-        scrollview.getContentView().setBackgroundColor(UIColor.black(1.0f));
         view().addSubview(scrollview);
         constraintViews();
     }
@@ -258,17 +260,17 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public float checkboxButtonHeightForSection(int section) {
+    public int checkboxButtonHeightForSection(int section) {
         return 0;
     }
 
     @Override
-    public float checkboxButtonRowHeightForSection(int section) {
+    public int checkboxButtonRowHeightForSection(int section) {
         return 0;
     }
 
     @Override
-    public float checkboxButtonWidthForSection(int section) {
+    public int checkboxButtonWidthForSection(int section) {
         return 0;
     }
 
@@ -298,17 +300,94 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public float heightForStandardSelectionCell() {
+    public int heightForRowAtIndexPath(IndexPath indexPath) {
+
+        int section = indexPath.section;
+        String value = valueForSection(section);
+        boolean isEditable = canEditSection(section);
+
+        switch (typeForSection(section)) {
+            case VERTICAL_FIELD:
+                return Dimensions.Int_80();
+
+            case FIELD:
+            case CHECKBOX:
+            case STEPPER_FIELD:
+                return App.constants().Extended_Row_Height();
+
+            case CHECKBOX_BUTTON:
+                return checkboxButtonRowHeightForSection(section);
+
+            case LIST: {
+                if (isAddIndexPath(indexPath))
+                    return heightForStandardSelectionCell();
+                return heightForNonEditingListRowAtIndexPath(indexPath);
+            }
+
+            case TITLE_FIELD: {
+                if (isEditable)
+                    return heightForTextFieldCellAtIndexPath(indexPath);
+                return adjustHeight(heightForTitle(titleForSection(section)) + heightForTitle(value));
+            }
+
+            case COMMENT: {
+                if (isEditable)
+                    return heightForTextViewCellAtIndexPath(indexPath);
+                return adjustHeight(heightForTitle(titleForSection(section)) + heightForTitle(value));
+            }
+
+            case CHECKBOX_COMMENT: {
+                int titleHeight = adjustHeight(heightForTitle(titleForSection(section)) + App.constants().Table_Cell_Line_Height());
+
+                if (isEditable)
+                    return indexPath.row == UITableViewProtocol.TEXTVIEW_CELL_ROW.TITLE.intValue() ? titleHeight : App.constants().TextView_Medium_Height();
+                return adjustHeight(heightForTitle(titleForSection(section)) + heightForTitle(value));
+            }
+
+            case SINGLE_CELL:
+                return heightForSingleCellRowAtIndexPath(indexPath);
+
+            case BLANK: {
+                if (hasNoValueOrAattributedValueInSection(section))
+                    return 0;
+            }
+
+            default: {
+                if (hideSection(section) || shouldHideSelectionSection(section))
+                    return 0;
+                return attributedHeightForRowAtIndexPath(indexPath);
+            }
+        }
+    }
+
+    private boolean hasNoValueOrAattributedValueInSection(int section) {
+        return valueForSection(section).length() == 0 && attributedValueForSection(section) == null &&
+           subvalueForSection(section).length() == 0 && attributedSubvalueForSection(section) == null;
+    }
+
+    private int adjustHeight(int height) {
+        return Math.max(height, heightForStandardSelectionCell());
+    }
+
+    private int heightForTitle(String title) {
+        if (title.isEmpty()) return 0;
+
+        int height = StringUtility.height(title, 0, view().getFrame().width()) + App.constants().Table_Cell_Line_Height();
+        return height;
+    }
+
+    @Override
+    public int heightForStandardSelectionCell() {
         return 0;
     }
 
     @Override
-    public float heightForSingleCellRowAtIndexPath(IndexPath indexPath) {
+    public int heightForSingleCellRowAtIndexPath(IndexPath indexPath) {
         return 0;
     }
 
     @Override
-    public float attributedHeightForRowAtIndexPath(IndexPath indexPath) {
+    public int attributedHeightForRowAtIndexPath(IndexPath indexPath) {
         return 0;
     }
 
@@ -396,6 +475,28 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         return UITableViewCell.SELECTION_STYLE.NONE;
     }
 
+
+    boolean isAddIndexPath (IndexPath indexPath) {
+        if (typeForSection(indexPath.section) != MutableProtocol.FIELD_TYPE.LIST)
+            return false;
+
+        int count = listItemsForListInSection(indexPath.section).size();
+        return count <= indexPath.row;
+    }
+
+    IndexPath indexPathForItem (ViewContentProtocol.Placeholder item) {
+        for (int i=0; i<numberOfSectionsInTableView(); i++) {
+            MutableProtocol.FIELD_TYPE type = typeForSection(i);
+            if (type != MutableProtocol.FIELD_TYPE.LIST) continue;
+
+            List arr = listItemsForListInSection(i);
+            if (arr.contains(item)) {
+                return new IndexPath(i, arr.indexOf(item));
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean isSelectedRowAtIndexPath(IndexPath indexPath) {
         int type = listTypeForListInSection(indexPath.section);
@@ -467,6 +568,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     //region layout
 
     protected void reload() {
+
+        int width = view().getFrame().width();
         ArrayList views = new ArrayList();
         UIView content = scrollview.getContentView();
         content.clearAllConstraints();
@@ -477,6 +580,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 views.add(section);
                 content.addSubview(section);
                 content.constraintHeightForView(section, heightForHeaderInSection(i));
+                content.constraintWidthForView(section, width);
             }
             for (int j = 0; j < numberOfRowsInSection(i); j++) {
                 IndexPath indexPath = new IndexPath(i, j);
@@ -484,6 +588,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 views.add(cell);
                 content.addSubview(cell);
                 content.constraintHeightForView(cell, heightForRowAtIndexPath(indexPath));
+                content.constraintWidthForView(cell, width);
             }
         }
 

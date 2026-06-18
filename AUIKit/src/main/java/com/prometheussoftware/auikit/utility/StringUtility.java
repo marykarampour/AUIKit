@@ -405,7 +405,7 @@ public class StringUtility {
         if (width <= 0) return 0;
 
         Paint paint = new Paint();
-        paint.setTextSize(fontSize);
+        paint.setTextSize(0 < fontSize ? fontSize : App.theme().Medium_Regular_Font().size());
         paint.setStyle(Paint.Style.FILL);
 
         Rect rect = new Rect();

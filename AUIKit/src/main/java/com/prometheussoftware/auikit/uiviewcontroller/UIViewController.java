@@ -2,12 +2,14 @@ package com.prometheussoftware.auikit.uiviewcontroller;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.BaseWindow;
+import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.uiview.UIButton;
 import com.prometheussoftware.auikit.uiview.UINavigationBar;
@@ -92,7 +94,7 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     //region life cycle
 
     @Override public void loadView() {
-        setView((V)new UIView());
+        setView((V)new UIView(new Rect(0, 0, Constants.Screen_Size().getWidth(), Constants.Screen_Size().getHeight())));
         view().setBackgroundColor(Color.WHITE);
     }
 

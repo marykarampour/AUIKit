@@ -35,6 +35,14 @@ public class ArrayUtility {
         return string;
     }
 
+    public static int sum (ArrayList<Integer> array) {
+        int total = 0;
+        for (int i : array) {
+            total += i;
+        }
+        return total;
+    }
+
     public static <T> ArrayList<T> arrayList (T[] array) {
         return new ArrayList<T>(Arrays.asList(array));
     }

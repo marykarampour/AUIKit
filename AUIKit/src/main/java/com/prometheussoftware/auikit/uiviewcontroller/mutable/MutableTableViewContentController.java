@@ -1,7 +1,6 @@
-package com.prometheussoftware.auikit.tableview.mutable;
+package com.prometheussoftware.auikit.uiviewcontroller.mutable;
 
 import com.prometheussoftware.auikit.tableview.UITableViewContentController;
-import com.prometheussoftware.auikit.tableview.UITableViewDataController;
 
 public class MutableTableViewContentController extends UITableViewContentController <MutableTableViewDataController> {
     public MutableTableViewContentController(MutableTableViewDataController dataController) {

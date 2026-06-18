@@ -296,6 +296,12 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         DEFAULT
     }
 
+    public enum EDITING_STYLE {
+        NONE,
+        DELETE,
+        INSERT
+    }
+
     //endregion
 
     //region actions

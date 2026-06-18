@@ -8,6 +8,7 @@ import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface UITableViewProtocol {
 
@@ -66,6 +67,14 @@ public interface UITableViewProtocol {
 
         default int heightForFooterInSection(UITableView tableView, int section) {
             return 0;
+        }
+
+        default int heightForTextFieldCellAtIndexPath (IndexPath indexPath) {
+            return App.constants().TextField_Height() + 2*App.constants().Vertical_Margin();
+        }
+
+        default int heightForTextViewCellAtIndexPath (IndexPath indexPath) {
+            return indexPath.row == TEXTVIEW_CELL_ROW.TITLE.intValue() ? App.constants().TextView_Title_Height() : App.constants().TextView_Medium_Height();
         }
 
         default UIView viewForHeaderInSection(UITableView tableView, int section) {
@@ -167,5 +176,26 @@ public interface UITableViewProtocol {
         default UITableViewCell cellForRowAtIndexPath(IndexPath indexPath) {
             return new UITableViewCell.Concrete();
         }
+    }
+
+    enum TEXTVIEW_CELL_ROW {
+        TITLE(0),
+        TEXT(1),
+        COUNT(2);
+
+        private final int value;
+        private static final HashMap<Integer, TEXTVIEW_CELL_ROW> map = new HashMap<>();
+
+        static  {
+            for (TEXTVIEW_CELL_ROW row : values()) {
+                map.put(row.value, row);
+            }
+        }
+
+        TEXTVIEW_CELL_ROW(int i) {
+            value = i;
+        }
+
+        public int intValue() { return value; }
     }
 }

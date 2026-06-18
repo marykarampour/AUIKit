@@ -1,10 +1,10 @@
 package com.prometheussoftware.auikit.uiview;
 
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 
-import com.prometheussoftware.auikit.utility.ConstraintUtility;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 
 public class UIScrollview extends UIView {
@@ -20,9 +20,7 @@ public class UIScrollview extends UIView {
     }
 
     public UIScrollview() {
-        super();
-        this.direction = UIView.DIRECTION.VERTICAL;
-        init();
+        this(UIView.DIRECTION.VERTICAL);
     }
 
     @Override
@@ -37,13 +35,13 @@ public class UIScrollview extends UIView {
         switch (direction) {
             case VERTICAL: {
                 ScrollView view = new ScrollView(getActivity());
-                view.setFillViewport(false);
+                view.setFillViewport(true);
                 view.setScrollContainer(false);
                 return view;
             }
             default: {
                 HorizontalScrollView view = new HorizontalScrollView(getActivity());
-                view.setFillViewport(false);
+                view.setFillViewport(true);
                 view.setScrollContainer(false);
                 return view;
             }
@@ -53,14 +51,17 @@ public class UIScrollview extends UIView {
     @Override
     public void loadView() {
         super.loadView();
-        ViewUtility.addViewWithID(contentView, this.scrollView);
+        ViewUtility.addViewWithID(scrollView, this);
+        ViewUtility.addViewWithID(contentView, scrollView);
     }
 
     @Override
     public void constraintLayout() {
         super.constraintLayout();
-        ConstraintUtility.constraintSidesForView(constraintSet, scrollView);
-        applyConstraints();
+
+        contentView.setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT));
     }
 
     public void addContentSubview(UIView view) {

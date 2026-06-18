@@ -8,20 +8,24 @@ import java.util.Set;
 
 public interface ViewContentProtocol {
 
-    public interface TitleSubTitle {
+    interface TitleSubTitle {
         default String title() { return null; };
         default String subtitle() { return null; };
         default AttributedString attributedTitle() { return null; };
         default AttributedString attributedSubtitle() { return null; };
     }
 
-    public interface Placeholder extends TitleSubTitle {
+    interface Placeholder extends TitleSubTitle {
         /** @brief The title of the view, section, etc. containing a list of objects of this type */
         default String titleForContainingList() { return null; };
         default String addItemTitle() { return null; };
     }
 
-    public interface Search extends Placeholder {
+    interface Callback {
+        default Placeholder item() { return null; }
+    }
+
+    interface Search extends Placeholder {
         default String searchPredicateKey() { return null; };
         /** @brief Used in constructing OR predicate in search.
         If this has count greater than 0, searchPredicateKey will be ignored. */
@@ -32,7 +36,7 @@ public interface ViewContentProtocol {
         default int numberOfLines() { return 1; };
     }
 
-    public interface CellStyle {
+    interface CellStyle {
         default UIFont cellTitleFont() { return null; };
         default UIColor cellTitleColor() { return null; };
         default UIFont cellSubtitleFont() { return null; };

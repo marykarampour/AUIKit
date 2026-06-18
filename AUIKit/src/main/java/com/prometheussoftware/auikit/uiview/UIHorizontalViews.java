@@ -35,7 +35,7 @@ public class UIHorizontalViews <T extends UIView> extends UIStackedViews<T> {
         boolean isSizesEmpty = (sizes == null || sizes.isEmpty());
         constraintHorizontally(contentViews(), interItemSpacing, horizontalMargin, verticalMargin, isSizesEmpty);
 
-        if (sizes != null) {
+        if (!isSizesEmpty) {
             for (Map.Entry<Integer, Integer> entry : sizes.entrySet()) {
                 int index = entry.getKey();
                 int width = entry.getValue();

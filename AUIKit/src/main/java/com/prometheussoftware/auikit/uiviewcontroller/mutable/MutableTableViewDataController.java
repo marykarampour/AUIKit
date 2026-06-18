@@ -1,4 +1,4 @@
-package com.prometheussoftware.auikit.tableview.mutable;
+package com.prometheussoftware.auikit.uiviewcontroller.mutable;
 
 import com.prometheussoftware.auikit.tableview.UITableViewDataController;
 

@@ -35,7 +35,8 @@ public interface ConstantsProtocol {
 
     //controls
     default int TextField_Height() { return Dimensions.Int_44(); }
-
+    default int TextView_Title_Height() { return Dimensions.Int_44(); }
+    default int TextView_Medium_Height() { return Dimensions.Int_120(); }
     default int MaxValue1CellCharacterCount() { return 16; }
 
     default int MaxTextViewCharacters() { return 400; }
@@ -54,6 +55,8 @@ public interface ConstantsProtocol {
 
     //padding and size
     default int Min_TextView_Height() { return Dimensions.Int_44(); }
+    default int Horizontal_Margin() { return Dimensions.Int_8(); }
+    default int Vertical_Margin() { return Dimensions.Int_8(); }
 
     //accessory
     default Size Accessory_Size() { return Dimensions.size(Dimensions.Int_32()); }
@@ -61,6 +64,9 @@ public interface ConstantsProtocol {
     //table view
     default Size TableView_Accessory_Size() { return Dimensions.size(Dimensions.Int_28()); }
     default int Default_Row_Height() { return Dimensions.Int_44(); }
+    default int Extended_Row_Height() { return Dimensions.Int_52(); }
+    default int Table_Cell_Line_Height() { return Dimensions.Int_22(); }
+
     default int TableView_Section_Header_Height() { return 0; }
 
     //strings

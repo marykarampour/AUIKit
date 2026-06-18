@@ -6,7 +6,6 @@ import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.ModelProtocol;
-import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.uiview.UITextField;
 import com.prometheussoftware.auikit.uiview.UITextView;
 import com.prometheussoftware.auikit.uiview.UIView;
@@ -257,11 +256,11 @@ public interface MutableProtocol {
         /** @brief Used in MKU_MUTABLE_OBJECT_FIELD_TYPE_CHECKBOX_BUTTON. Default is  MKU_VIEW_POSITION_NONE constrained to sides. */
         UIView.ALIGNMENT checkboxButtonPositionForSection (int section);
         /** @brief Used in MKU_MUTABLE_OBJECT_FIELD_TYPE_CHECKBOX_BUTTON. Default is  48.0. */
-        float checkboxButtonHeightForSection (int section);
+        int checkboxButtonHeightForSection (int section);
         /** @brief Used in MKU_MUTABLE_OBJECT_FIELD_TYPE_CHECKBOX_BUTTON. Default is  [self checkboxButtonHeightForSection:section] + 2*VerticalMargin. */
-        float checkboxButtonRowHeightForSection (int section);
+        int checkboxButtonRowHeightForSection (int section);
         /** @brief Used in MKU_MUTABLE_OBJECT_FIELD_TYPE_CHECKBOX_BUTTON. Default is  (self.view.frame.size.width - 3*HorizontalMargin) / 2.0. */
-        float checkboxButtonWidthForSection (int section);
+        int checkboxButtonWidthForSection (int section);
         void switchBoolValueAtIndexPath (IndexPath indexPath);
         /** @brief Default is isEditableSectionType of the object. */
         boolean isEditableSectionType (int section);
@@ -279,9 +278,9 @@ public interface MutableProtocol {
         /** @brief By default does [self.navigationController pushViewController:VC animated:YES]. In case of a container or popover
         for example you can override to provide other actions.*/
         void presentSelectionVCAtIndexPath (UIViewController VC, IndexPath indexPath);
-        float heightForStandardSelectionCell();
-        float heightForSingleCellRowAtIndexPath (IndexPath indexPath);
-        float attributedHeightForRowAtIndexPath (IndexPath indexPath);
+        int heightForStandardSelectionCell();
+        int heightForSingleCellRowAtIndexPath (IndexPath indexPath);
+        int attributedHeightForRowAtIndexPath (IndexPath indexPath);
         UIImage buttonImageForFieldAtIndexPath (IndexPath indexPath);
         default UITargetDelegate.TouchUp actionForFieldButtonAtIndexPath (IndexPath indexPath) { return null; }
     }

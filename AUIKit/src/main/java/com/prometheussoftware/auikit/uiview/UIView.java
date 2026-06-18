@@ -1,6 +1,7 @@
 package com.prometheussoftware.auikit.uiview;
 
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.util.Size;
 import android.view.View;
 
@@ -37,7 +38,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     private boolean selfSetOpacity;
     protected boolean loaded;
     private UIColor viewBackgroundColor = UIColor.clear();
-
+    private Rect frame = new Rect();
     /** The tintColor is inherited through the superview hierarchy */
     private UIColor tintColor = new UIColor();
 
@@ -48,6 +49,12 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     public UIView() {
         super(activity);
         ViewUtility.setViewID(this);
+    }
+
+    public UIView(Rect frame) {
+        super(activity);
+        ViewUtility.setViewID(this);
+        setFrame(frame);
     }
 
     //region visibility
@@ -257,7 +264,16 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     }
 
     public Size estimatedSize() {
-        return new Size(0, 0);
+        return new Size(frame.width(), frame.height());
+    }
+
+    public void setFrame(Rect frame) {
+        this.frame = frame;
+        setSize();
+    }
+
+    public Rect getFrame() {
+        return frame;
     }
 
     //endregion
@@ -796,6 +812,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
 
         superview.addSubview(view);
         superview.constraintSidesForView(view, insets);
+        superview.applyConstraints();
     }
 
     public void removeAllConstraints () {
