@@ -1,11 +1,7 @@
 package com.prometheussoftware.auikit.uiview;
 
 import android.graphics.Rect;
-import android.util.Size;
 
-import androidx.constraintlayout.widget.ConstraintSet;
-
-import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.uiview.protocols.ViewCreation;
 import com.prometheussoftware.auikit.utility.ArrayUtility;

@@ -3,13 +3,8 @@ package com.prometheussoftware.auikit.model.mutable;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.utility.ObjectUtility;
 
-import org.checkerframework.common.reflection.qual.GetClass;
-import org.checkerframework.common.reflection.qual.NewInstance;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /** @note Don't clone. It will reset the UpdatedObject to OriginalObject. */
 public class MutableObject <O extends MutableProtocol.Field, U extends MutableProtocol.Field> extends BaseModel implements MutableProtocol.Mutable {
