@@ -6,6 +6,7 @@ import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public interface UITableViewProtocol {
         default D getDataController() { return null; }
         default <S extends TableObject.Section> void setData(ArrayList<S> data) {}
         default void disableRecycling(int viewType) {}
+        default boolean allowsMultipleSelection() { return false; }
     }
 
     interface UpdateDelegate {
@@ -43,7 +45,7 @@ public interface UITableViewProtocol {
         default <V extends UITableViewHolder> V viewHolderForViewType(ViewGroup parent, int viewType) { return null; };
     }
 
-    interface TableViewData <V extends UIView> {
+    interface TableViewData <V extends UIView & UIControlProtocol> {
 
         default int numberOfRowsInSection(UITableView tableView, int section) {
             return 0;
@@ -133,6 +135,9 @@ public interface UITableViewProtocol {
 
         default UIView viewForFooterInSection(int section) {
             return new UILabel();
+        }
+
+        default void didSelectRowAtIndexPath(IndexPath indexPath) {
         }
 
         default void didSelectRowAtIndexPath(Object item, IndexPath indexPath) {

@@ -256,12 +256,14 @@ public class BaseModel implements Serializable, Cloneable {
         try {
             Field field = fieldOrDeclared(key);
             if (field != null) {
-
+                field.setAccessible(true);
                 Method setter = setter(field);
                 if (setter != null) setter.invoke(this, value);
                 else field.set(this, value);
             }
-        } catch (InvocationTargetException | IllegalAccessException e) { }
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            DEBUGLOG.s(e);
+        }
     }
 
     public Object valueForKey (String key) {
@@ -325,8 +327,12 @@ public class BaseModel implements Serializable, Cloneable {
     }
 
     public Method setter(Field field) {
+        return setter(this.getClass(), field);
+    }
 
-        Method[] methods = this.getClass().getMethods();
+    public static Method setter(Class cls, Field field) {
+
+        Method[] methods = cls.getMethods();
         for (Method method : methods) {
             if (method.getName()
                     .equalsIgnoreCase("set" + field.getName()))
@@ -441,16 +447,41 @@ public class BaseModel implements Serializable, Cloneable {
         return null;
     }
 
-    public static boolean hasMethod (Class cls, String name, boolean isDeclared) {
+    public static boolean hasMethod (Class cls, String name, boolean isDeclared, METHOD_TYPE type) {
         if (StringUtility.isEmpty(name)) return false;
 
         Method[] methods = isDeclared ? cls.getDeclaredMethods() : cls.getMethods();
+        String methodName;
+
+        switch (type) {
+            case GETTER:
+                methodName = "get" + StringUtility.capitalizeFirstChar(name);
+                break;
+            case SETTER:
+                methodName = "set" + StringUtility.capitalizeFirstChar(name);
+                break;
+            default:
+                methodName = name;
+        }
+
         for (Method method : methods) {
-            if (method.getName().equals(name)) {
+            if (method.getName().equals(methodName)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static boolean hasMethod (Class cls, String name, boolean isDeclared) {
+        return hasMethod(cls, name, isDeclared, METHOD_TYPE.UNKNOWN);
+    }
+
+    public static boolean hasSetter (Class cls, String name, boolean isDeclared) {
+        return hasMethod(cls, name, isDeclared, METHOD_TYPE.SETTER);
+    }
+
+    public static boolean hasGetter (Class cls, String name, boolean isDeclared) {
+        return hasMethod(cls, name, isDeclared, METHOD_TYPE.GETTER);
     }
 
     public static <T extends BaseModel> ArrayList<T> cloneArray (ArrayList<T> array) {
@@ -530,5 +561,11 @@ public class BaseModel implements Serializable, Cloneable {
 
     public String stringJSON() {
         return new Gson().toJson(this);
+    }
+
+    public enum METHOD_TYPE {
+        UNKNOWN,
+        GETTER,
+        SETTER
     }
 }

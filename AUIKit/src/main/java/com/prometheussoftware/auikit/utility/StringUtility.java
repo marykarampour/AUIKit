@@ -116,7 +116,7 @@ public class StringUtility {
             case CamelCase: return underScoreToCamelCase(string, false);
             case UnderScore: return camelCaseToUnderScore(string, false, false);
             case Capitalized: return string;
-            case UpperCaseAll: return string;
+            case UpperCaseAll: return string.toUpperCase();
             case CapitalizedCamelCase: return string;
             case UnderScoreIgnoreDigits: return camelCaseToUnderScore(string, true, false);
             case UnderScoreUpperCaseAll: return camelCaseToUnderScore(string, false, true);

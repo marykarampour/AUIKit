@@ -12,7 +12,7 @@ import java.util.Map;
 public class UIHorizontalScrollingViews <T extends UIView> extends UIView {
 
     private UIScrollview scrollview;
-    private UIHorizontalViews views;
+    private UIStackedViews.Horizontal views;
     private int estimatedContentWidth;
 
     public UIHorizontalScrollingViews(int count, ViewCreation<T> handler) {
@@ -30,19 +30,19 @@ public class UIHorizontalScrollingViews <T extends UIView> extends UIView {
     public UIHorizontalScrollingViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, Map<Integer, Integer> sizes, ViewCreation<T> handler) {
         super();
         estimatedContentWidth = ArrayUtility.sum(new ArrayList<>(sizes.values()));
-        this.views = new UIHorizontalViews(count, interItemSpacing, horizontalMargin, verticalMargin, sizes, handler);
+        this.views = new UIStackedViews.Horizontal(count, interItemSpacing, horizontalMargin, verticalMargin, sizes, handler);
         init();
     }
 
     public UIHorizontalScrollingViews(int count, int padding, int interItemMargin, ViewCreation<T> handler) {
         super();
-        this.views = new UIHorizontalViews(count, padding, interItemMargin, handler);
+        this.views = new UIStackedViews.Horizontal(count, padding, interItemMargin, handler);
         init();
     }
 
     public UIHorizontalScrollingViews(ArrayList<ViewCreation<T>> handlers) {
         super();
-        this.views = new UIHorizontalViews(handlers);
+        this.views = new UIStackedViews.Horizontal(handlers);
         init();
     }
 

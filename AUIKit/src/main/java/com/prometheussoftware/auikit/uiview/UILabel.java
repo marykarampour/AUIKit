@@ -44,7 +44,10 @@ public class UILabel extends UISingleView <TextView> {
     }
 
     public void setNumberOfLines(int lines) {
-        view.setLines(lines);
+        if (Integer.MAX_VALUE <= lines)
+            view.setMaxLines(Integer.MAX_VALUE);
+        else
+            view.setLines(lines);
     }
 
     //TODO: setAutoSizeText

@@ -47,6 +47,11 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         super();
     }
 
+    public UIMultiViewLabel(UIEdgeInsets insets) {
+        super();
+        this.insets = insets;
+    }
+
     public UIMultiViewLabel(C contentView) {
         super();
         this.contentView = contentView;
@@ -361,6 +366,10 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
                 contentView.constraintCenterYForView(view);
                 break;
         }
+    }
+
+    public void setMultiline() {
+        titleLabel.setNumberOfLines(Integer.MAX_VALUE);
     }
 
     //endregion

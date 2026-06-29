@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import javax.annotation.Nonnull;
-
+//TODO: Merge with stackedviews
 /** Class groups an array of views of the same type vertically */
 public class UIGroupedView <V extends UIView> extends UIView {
 

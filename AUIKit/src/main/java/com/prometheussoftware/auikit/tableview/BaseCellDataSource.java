@@ -22,15 +22,15 @@ public interface BaseCellDataSource {
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
 
-        ArrayList<StringFormatting.Attributes> attrs = new ArrayList<>();
-        attrs.add(new StringFormatting.Attributes(
+        ArrayList<StringFormatting.StringAttributes> attrs = new ArrayList<>();
+        attrs.add(new StringFormatting.StringAttributes(
                 title,
-                App.theme().Black_Blue_Color(),
-                App.theme().XX_Small_Bold_Font()));
-        attrs.add(new StringFormatting.Attributes(
+                App.theme().XX_Small_Bold_Font(),
+                App.theme().Black_Blue_Color()));
+        attrs.add(new StringFormatting.StringAttributes(
                 subtitle,
-                App.theme().Medium_Silver_Color(),
-                App.theme().X_Small_Regular_Font()));
+                App.theme().X_Small_Regular_Font(),
+                App.theme().Medium_Silver_Color()));
 
         SpannableStringBuilder titleBuilder = StringFormatting.attributedText(attrs, "\n");
         builder.append(titleBuilder);

@@ -20,11 +20,13 @@ import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiview.UIControl;
 import com.prometheussoftware.auikit.uiview.UIImageView;
 import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 
-public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIView> extends UIMultiViewLabel <UIImageView, A, UIView> {
+public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIView> extends UIMultiViewLabel <UIImageView, A, UIView> implements UIControlProtocol {
 
     private ACCESSORY_TYPE accessoryType;
+    private SELECTION_STYLE selectionStyle;
 
     /** Use only in case of static cells */
     public IndexPath indexPath;
@@ -107,6 +109,11 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         leftView = new UIImageView();
         leftView.view().setAdjustViewBounds(true);
         leftView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+    }
+
+    @Override
+    public void addTarget(Object ID, UITargetDelegate target) {
+        if (interactionLayer != null) interactionLayer.addTarget(ID, target);
     }
 
     //region sizes
@@ -217,6 +224,14 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
 
     public UIImageView getImageView() {
         return leftView;
+    }
+
+    public SELECTION_STYLE getSelectionStyle() {
+        return selectionStyle;
+    }
+
+    public void setSelectionStyle(SELECTION_STYLE selectionStyle) {
+        this.selectionStyle = selectionStyle;
     }
 
     public S getSeparator() {

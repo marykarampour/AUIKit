@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class FieldModel extends BaseModel implements MutableProtocol.Field {
@@ -152,7 +153,7 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
     @Override
     public Object valueForObjectType(int type) {
         String key = propertyEnumDictionary().get(type);
-        if (!BaseModel.hasMethod(getClass(), key, true))
+        if (!BaseModel.hasGetter(getClass(), key, true))
             return null;
         return valueForKey(key);
     }
@@ -171,13 +172,13 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
     @Override
     public String titleForObjectType(int type) {
         String key = propertyEnumDictionary().get(type);
-        return StringUtility.splitStringForUppercaseComponents(key.toUpperCase(), true);
+        return StringUtility.splitStringForUppercaseComponents(StringUtility.capitalizeFirstChar(key), true);
     }
 
     @Override
     public String titleForSectionType(int section) {
         String key = titleEnumDictionary().get(section);
-        return StringUtility.splitStringForUppercaseComponents(key.toUpperCase(), true);
+        return StringUtility.splitStringForUppercaseComponents(StringUtility.capitalizeFirstChar(key), true);
     }
 
     @Override
@@ -202,9 +203,9 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
     public String stringValueForSectionType(int section) {
 
         Set values = valuesForSectionType(section);
-        Object str = values.stream().anyMatch(o -> o instanceof String);
+        Optional str = values.stream().filter(o -> o instanceof String).findAny();
 
-        if (str != null) return str.toString();
+        if (str.isPresent()) return str.toString();
 
         Set<Integer> types = objectTypesForSectionType(section);
         for (Integer type : types) {
@@ -212,7 +213,9 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
             if (obj != null) return obj;
         }
 
-        return values.stream().findAny().toString();
+        str = values.stream().findAny();
+        if (str.isPresent()) return str.toString();
+        return "";
     }
 
     @Override
@@ -251,7 +254,7 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
     @Override
     public void setValueForObjectType(Object value, int type) {
         String key = propertyEnumDictionary().get(type);
-        if (BaseModel.hasMethod(getClass(), key, true))
+        if (BaseModel.hasSetter(getClass(), key, true))
             setValueForKeyForAllAccessLevels(value, key);
     }
 
@@ -371,7 +374,9 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
     void handleTextFieldUpdates (UITextField textField, String newText, boolean setTextField, boolean endEditing) {
 
         IndexPath indexPath = textField.getIndexPath();
-        String text = 0 < newText.length() ? newText : textField.getText();
+        if (indexPath == null) return;
+
+        String text = StringUtility.isNotEmpty(newText) ? newText : textField.getText();
         text = textForObjectType(text, indexPath.row);
         Integer type = indexPath.row;
         Object value = text;
@@ -416,6 +421,11 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
 
     @Override
     public boolean implementsTextViewDidChangeCharactersInRange() {
+        return true;
+    }
+
+    @Override
+    public boolean textViewShouldChangeCharactersInRange(UITextView textView, Range range, String replacementString) {
         return true;
     }
 

@@ -11,11 +11,12 @@ import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.classes.UITargetManager;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.model.IndexPath;
+import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class UIControl extends UIView implements View.OnTouchListener, UITargetManager.Delegate, UITargetDelegate.Sender {
+public class UIControl extends UIView implements View.OnTouchListener, UITargetManager.Delegate, UITargetDelegate.Sender, UIControlProtocol {
 
     private UITargetManager targetManager = new UITargetManager(this);
     public IndexPath IndexPath;
@@ -177,6 +178,7 @@ public class UIControl extends UIView implements View.OnTouchListener, UITargetM
      * lambda being executed multiple times. Set
      *  multiTargetEnabled = false to guarantee unique action on each
      *  touch event */
+    @Override
     public void addTarget(Object ID, UITargetDelegate target) {
         targetManager.addTarget(ID, target);
     }

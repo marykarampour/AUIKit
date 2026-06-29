@@ -43,7 +43,7 @@ public interface ItemsListProtocol {
         default AttributedString attributedDetailTextLabelAtIndexPath (IndexPath indexPath) { return null; }
         default boolean isSelectedRowAtIndexPath (IndexPath indexPath) { return false; }
         default <C extends BaseTableViewCell> C cellForListItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) { return (C) new BaseTableViewCell(); }
-        /** @brief Called in tableView: didSelectRowAtIndexPath: or methods called by it when a section is of type list or
+        /** @brief Called in tableView: didSelectRowAtIndexPath or methods called by it when a section is of type list or
         tableView: commitEditingStyle: forRowAtIndexPath for UITableViewCellEditingStyleInsert.
         Corresponds to selectedActionHandler of type MKU_LIST_ITEM_SELECTED_ACTION_SELECT and MKU_LIST_ITEM_SELECTED_ACTION_SHOW_DETAIL */
         default void didSelectListItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
@@ -64,6 +64,22 @@ public interface ItemsListProtocol {
         transitions when an item is selected. */
         default VCTransitionDelegate transitionVCDelegate() { return null; }
         default void setTransitionVCDelegate() {}
+
+        default boolean dispatchTransitionVCDelegateToTransitionToViewController (UIViewController VC, UIViewController sourceVC, ViewContentProtocol.Placeholder item, IndexPath indexPath) {
+            if (transitionVCDelegate() != null) {
+                transitionVCDelegate().handleTransitionToViewControllerForListItemAtIndexPath(VC, sourceVC, item, indexPath);
+                return true;
+            }
+            return false;
+        }
+
+        default <V extends UIViewController & ViewControllerTransition.Delegate> void handleTransitionForViewController (UIViewController VC, V sourceVC, ViewContentProtocol.Placeholder item, IndexPath indexPath) {
+            if (VC.transitionDelegate() == null) VC.setTransitionDelegate(sourceVC);
+
+            if (!dispatchTransitionVCDelegateToTransitionToViewController(VC, sourceVC, item, indexPath)) {
+                sourceVC.pushViewController(VC, true);
+            }
+        }
     }
 
     interface ListVC {
@@ -121,5 +137,19 @@ public interface ItemsListProtocol {
     }
 
     interface UpdateDelegate {
+        default <V extends UIViewController & EditingListVC & VC> void itemsListVCDidUpdateItemsInSection (V VC, List<ViewContentProtocol.Placeholder> items, int section) {}
+        default <V extends UIViewController & EditingListVC & VC> void itemsListVCDidUpdateItemAtIndexPath (V VC, ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
+        default <V extends UIViewController & EditingListVC & VC> void itemsListVCDidSetSelectedAtIndexPath (V VC, boolean selected, ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
+    }
+
+    interface SelectionActionHandler {
+        default LIST_ITEM_SELECTED_ACTION selectedActionHandler(int type) { return LIST_ITEM_SELECTED_ACTION.NONE; }
+    }
+
+    enum LIST_ITEM_SELECTED_ACTION {
+        NONE,
+        SELECT,
+        SHOW_DETAIL,
+        TRANSITION_TO_DETAIL
     }
 }

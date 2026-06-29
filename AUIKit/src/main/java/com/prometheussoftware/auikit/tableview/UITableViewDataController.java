@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class UITableViewDataController implements UITableViewProtocol.Data {
 
-    public boolean multiSelectEnabled = true;
+    public boolean allowsMultipleSelection = true;
     public boolean exclusiveExpandForSelected;
     protected ArrayList<TableObject.Section> sections = new ArrayList();
 
@@ -283,17 +283,20 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
     //region UITableViewDataProtocol
 
-    @Override public int numberOfSectionsInTableView() {
+    @Override
+    public int numberOfSectionsInTableView() {
         return sections.size();
     }
 
-    @Override public int numberOfRowsInSection(int section) {
+    @Override
+    public int numberOfRowsInSection(int section) {
         if (sections.size() <= section) return 0;
         if (sections.get(section).rows == null) return 0;
         return sections.get(section).rows.getItems().size();
     }
 
-    @Override public int viewTypeForPosition(int position) {
+    @Override
+    public int viewTypeForPosition(int position) {
 
         IndexPath indexPath = indexPathForPosition(position);
         if (indexPath.section <= sections.size()) {
@@ -312,13 +315,14 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         return 0;
     }
 
-    @Override public void didSelectRowAtIndexPath(Object item, IndexPath indexPath) {
+    @Override
+    public void didSelectRowAtIndexPath(Object item, IndexPath indexPath) {
 
         TableObject.CellInfo cell = infoForRowAtIndexPath(indexPath);
         if (cell == null) return;
         cell.selected = !cell.selected;
 
-        if (!multiSelectEnabled) {
+        if (!allowsMultipleSelection) {
             for (TableObject.Section sect : sections) {
                 ArrayList<Pair<TableObject.CellInfo, Object>> array = sect.rows.itemsArray();
                 for (Pair<TableObject.CellInfo, Object> info : array) {
@@ -353,7 +357,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
     //region update protocol
 
-    @Override public void didSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {
+    @Override
+    public void didSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {
 
         if (!item.isEnabled || !item.isCollapsible()) return;
         if (updateDelegate != null) {
@@ -361,7 +366,8 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         }
     }
 
-    @Override public void didSelectSectionAtIndex(TableObject.Section item, int section) {
+    @Override
+    public void didSelectSectionAtIndex(TableObject.Section item, int section) {
 
         if (!item.isEnabled || !item.isCollapsible()) return;
         if (updateDelegate != null) {
@@ -381,7 +387,7 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
 
     @Override
     public void setMultiSelectEnabled(boolean multiSelectEnabled) {
-        this.multiSelectEnabled = multiSelectEnabled;
+        this.allowsMultipleSelection = multiSelectEnabled;
     }
 
     //endregion

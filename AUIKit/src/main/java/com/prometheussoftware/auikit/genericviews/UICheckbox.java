@@ -3,6 +3,7 @@ package com.prometheussoftware.auikit.genericviews;
 import android.util.Size;
 import android.view.MotionEvent;
 
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.model.Identifier;
@@ -17,6 +18,11 @@ public abstract class UICheckbox <L extends UIView, R extends UIView> extends UI
 
     public UICheckbox() {
         super();
+        init();
+    }
+
+    public UICheckbox(UIEdgeInsets insets) {
+        super(insets);
         init();
     }
 
@@ -67,6 +73,14 @@ public abstract class UICheckbox <L extends UIView, R extends UIView> extends UI
 
     public static class Left extends UICheckbox <UIAccessoryView, UIView> {
 
+        public Left() {
+            super();
+        }
+
+        public Left(UIEdgeInsets insets) {
+            super(insets);
+        }
+
         @Override
         public UIAccessoryView checkView() {
             return leftView;
@@ -79,6 +93,14 @@ public abstract class UICheckbox <L extends UIView, R extends UIView> extends UI
     }
 
     public static class Right extends UICheckbox <UIView, UIAccessoryView> {
+
+        public Right() {
+            super();
+        }
+
+        public Right(UIEdgeInsets insets) {
+            super(insets);
+        }
 
         @Override
         public UIAccessoryView checkView() {

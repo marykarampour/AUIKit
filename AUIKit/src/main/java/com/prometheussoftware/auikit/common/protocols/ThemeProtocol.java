@@ -25,6 +25,7 @@ public interface ThemeProtocol {
     default UIColor TextField_Background_Color() { return UIColor.white(1.0f); }
     default UIColor TextField_Placeholder_Color() { return UIColor.gray(1.0f); }
     default UIColor TextField_Text_Color() { return UIColor.black(1.0f); }
+    default UIColor Text_Dark_Color() { return UIColor.black(1.0f); }
 
     //accessory
     default UIColor Accessory_Disabled_Color() { return UIColor.white(1.0f); }

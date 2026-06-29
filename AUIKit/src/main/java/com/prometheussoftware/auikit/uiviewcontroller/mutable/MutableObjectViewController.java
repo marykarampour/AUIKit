@@ -1,19 +1,27 @@
 package com.prometheussoftware.auikit.uiviewcontroller.mutable;
 
+import android.text.SpannableStringBuilder;
+import android.view.Gravity;
+
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
+import com.prometheussoftware.auikit.classes.LabelAttributes;
 import com.prometheussoftware.auikit.classes.UIColor;
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Dimensions;
+import com.prometheussoftware.auikit.genericviews.UICheckbox;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
+import com.prometheussoftware.auikit.model.mutable.FieldModel;
 import com.prometheussoftware.auikit.model.mutable.MutableProtocol;
 import com.prometheussoftware.auikit.model.mutable.MutableUpdateObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
 import com.prometheussoftware.auikit.uiview.UIScrollview;
 import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 import com.prometheussoftware.auikit.tableview.BaseTableViewCell;
 import com.prometheussoftware.auikit.uiviewcontroller.ItemsListProtocol;
@@ -22,17 +30,21 @@ import com.prometheussoftware.auikit.uiviewcontroller.ViewControllerTransition;
 import com.prometheussoftware.auikit.utility.ObjectUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class MutableObjectViewController <ObjectType extends BaseModel & MutableProtocol.Field, UpdateObjectType extends BaseModel & MutableProtocol.Field> extends UIViewController implements MutableProtocol.ViewController<ObjectType, UpdateObjectType, MutableUpdateObject<ObjectType, UpdateObjectType>>, ViewControllerTransition, ItemsListProtocol.VC, ItemsListProtocol.EditingListVC, ItemsListProtocol.VCTransitionDelegate, ItemsListProtocol.UpdateDelegate, ViewControllerTransition.Delegate, UITableViewProtocol.TableViewData {
+public abstract class MutableObjectViewController <ObjectType extends BaseModel & MutableProtocol.Field, UpdateObjectType extends BaseModel & MutableProtocol.Field> extends UIViewController implements MutableProtocol.ViewController<ObjectType, UpdateObjectType, MutableUpdateObject<ObjectType, UpdateObjectType>>, ViewControllerTransition, ItemsListProtocol.VC, ItemsListProtocol.EditingListVC, ItemsListProtocol.VCTransitionDelegate, ItemsListProtocol.UpdateDelegate, ViewControllerTransition.Delegate, UITableViewProtocol.TableViewData, ItemsListProtocol.SelectionActionHandler {
 
     private UIScrollview scrollview;
     protected HashMap<Integer, Set> selectedSets = new HashMap<>();
     private boolean isEditable;
+    private IndexPath selectedIndexPath;
+    private ItemsListProtocol.SelectionActionHandler selectedActionHandler;
+    private ItemsListProtocol.UpdateDelegate updateDelegate;
+    public boolean allowsMultipleSelection;
 
     public MutableObjectViewController() {
         super();
@@ -43,7 +55,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     public void viewDidLoad() {
         super.viewDidLoad();
         scrollview = new UIScrollview();
-        scrollview.setBackgroundColor(UIColor.yellow(1.0f));
         view().addSubview(scrollview);
         constraintViews();
     }
@@ -70,20 +81,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     @Override
     public void didSetObject(MutableUpdateObject<ObjectType, UpdateObjectType> obj) {
         resetSelectedSets();
-    }
-
-    protected void resetSelectedSets() {
-        selectedSets = new HashMap<>();
-    }
-
-    @Override
-    public void setObject(MutableUpdateObject<ObjectType, UpdateObjectType> obj) {
-        didSetMutableObject(obj);
-    }
-
-    @Override
-    public MutableUpdateObject<ObjectType, UpdateObjectType> object() {
-        return null;
     }
 
     /** @brief Call in setObject after setting the object. */
@@ -142,8 +139,14 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public void setUpdatedObject(UpdateObjectType updatedObject) {
-        MutableUpdateObject object = (MutableUpdateObject) ObjectUtility.objectWithParams(updatedObject.getClass());
-        setObject(object);
+        FieldModel object = (FieldModel) ObjectUtility.objectWithParams(updatedObject.getClass());
+        MutableUpdateObject obj = (MutableUpdateObject) ObjectUtility.objectWithParams(classForObject(), new ObjectUtility.Params(object.getClass(), object));
+        setObject(obj);
+    }
+
+    @Override
+    public Object returnedInSelectObject() {
+        return selectedSets;
     }
 
     @Override
@@ -191,7 +194,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public String titleForSection(int section) {
-        return "";
+        return object().UpdatedObject.titleForSectionType(section);
     }
 
     @Override
@@ -206,16 +209,16 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public String valueForSection(int section) {
-        return "";
+        return object().UpdatedObject.stringValueForSectionType(section);
     }
 
     @Override
-    public AttributedString attributedValueForSection(int section) {
+    public SpannableStringBuilder attributedValueForSection(int section) {
         return null;
     }
 
     @Override
-    public AttributedString attributedSubvalueForSection(int section) {
+    public SpannableStringBuilder attributedSubvalueForSection(int section) {
         return null;
     }
 
@@ -377,18 +380,14 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public int heightForStandardSelectionCell() {
-        return 0;
-    }
-
-    @Override
     public int heightForSingleCellRowAtIndexPath(IndexPath indexPath) {
         return 0;
     }
 
     @Override
     public int attributedHeightForRowAtIndexPath(IndexPath indexPath) {
-        return 0;
+        LabelAttributes attrs = labelAttributesForSection(indexPath.section);
+        return adjustHeight(attrs.heightForWidth(view().getFrame().width()));
     }
 
     @Override
@@ -506,7 +505,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         return set.contains(object);
     }
 
-    private Set selectedSetsInListOfType(int type) {
+    protected Set selectedSetsInListOfType (int type) {
         return selectedSets.get(type);
     }
 
@@ -551,6 +550,85 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         handleTransitionToViewControllerForListItemAtIndexPath(VC, item, indexPath);
     }
 
+    protected boolean shouldSelectItemsInListOfType (int type) {
+        int max = maxMultipleSelectionForListOfType(type);
+        return !allowsMultipleSelection || max == 1 || selectedSetsInListOfType(type).size() < max;
+    }
+
+    protected void setSelectedObject (ViewContentProtocol.Placeholder obj) {
+        setSelectedObject(obj, false);
+    }
+
+    protected void setSelectedObject (ViewContentProtocol.Placeholder obj, boolean reload) {
+        if (obj == null) return;
+
+        IndexPath indexPath = indexPathForItem(obj);
+        int type = listTypeForListInSection(indexPath.section);
+
+        if (!canSelectItemsInListOfType(type)) return;
+
+        Set set = selectedSetsInListOfType(type);
+        Set selectedObjects = new HashSet<>(set);
+
+        if (selectedObjects.isEmpty())
+            selectedObjects = new HashSet<>();//TODO: was null
+        if (!allowsMultipleSelection || maxMultipleSelectionForListOfType(type) == 1)
+            selectedObjects.clear();
+        if (shouldSelectItemsInListOfType(type))
+            selectedObjects.add(obj);
+
+        setSelectedObjectsWithSetInListOfType(selectedObjects, type, reload);
+    }
+    private void setDeselectedObject(ViewContentProtocol.Placeholder item) {
+        setDeselectedObject(item, true);
+    }
+
+    private void setDeselectedObject(ViewContentProtocol.Placeholder obj, boolean reload) {
+        if (obj == null) return;
+
+        IndexPath indexPath = indexPathForItem(obj);
+        int type = listTypeForListInSection(indexPath.section);
+        Set set = selectedSetsInListOfType(type);
+        Set selectedObjects = new HashSet<>(set);
+
+        selectedObjects.remove(obj);
+        setSelectedObjectsWithSetInListOfType(selectedObjects, type, reload);
+    }
+
+
+    protected void resetSelectedSets() {
+        this.selectedSets = new HashMap<>();
+    }
+
+    protected void resetSelectedSetsReload() {
+        resetSelectedSets();
+        reload();
+    }
+
+    protected void resetSelectedSetsInListOfType (int type) {
+        setSelectedObjectsWithSetInListOfType(new HashSet(), type, true);
+    }
+
+    protected void setAllSelectedSetsInListOfType (int type) {
+        List arr = listItemsForListOfType(type);
+        setSelectedObjectsWithSetInListOfType(new HashSet<>(arr), type, true);
+    }
+
+    protected void setSelectedObjectsWithSetInListOfType (Set selectedObjects, int type) {
+        setSelectedObjectsWithSetInListOfType(selectedObjects, type, true);
+    }
+
+    protected void setSelectedObjectsWithSetInListOfType (Set selectedObjects, int type, boolean reload) {
+        if (!canSelectItemsInListOfType(type)) return;
+
+        if (selectedObjects == null)
+            selectedSets.remove(type);
+        else
+            selectedSets.put(type, selectedObjects);
+        if (reload) reload();
+    }
+
+
     //region table view
 
     @Override
@@ -560,8 +638,168 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public UIView cellForRowAtIndexPath(IndexPath indexPath) {
-        return singleCellForRowAtIndexPath(indexPath);
+
+        int section = indexPath.section;
+        MutableProtocol.FIELD_TYPE type = typeForSection(section);
+        boolean isEditable = canEditSection(section);
+
+        switch (type) {
+            case SELECTION:
+            case LABEL: {
+                BaseTableViewCell cell = new BaseTableViewCell();
+                cell.setSelectionStyle(UITableViewCell.SELECTION_STYLE.NONE);
+                cell.setAccessoryType(hasAccessoryForSection(section) ? UITableViewCell.ACCESSORY_TYPE.DISCLOSURE_INDICATOR : UITableViewCell.ACCESSORY_TYPE.NONE);
+
+                LabelAttributes attrs = labelAttributesForSection(section);
+                attrs.setAttributedTitlesForLabel(cell.getTitleLabel(), null);
+                cell.getContentView().setBackgroundColor(UIColor.red(1.0f));
+                return cell;
+            }
+
+            case CHECKBOX: {
+                return radioButtonCellInSection(section, isEditable, false);
+            }
+
+            default: {
+                UIView cell = singleCellForRowAtIndexPath(indexPath);
+                cell.setUserInteractionEnabled(userInteractionEnabledForSingleCellAtIndexPath(indexPath));
+                return cell;
+            }
+        }
     }
+
+    protected UICheckbox radioButtonCellInSection(int section, boolean enabled, boolean singleLine) {
+        UIEdgeInsets insets = radioButtonCellInsetsForSection(section);
+        UICheckbox cell = (UICheckbox) ObjectUtility.objectWithParams(radioButtonCellClassForSection(section), new ObjectUtility.Params(insets.getClass(), insets));
+
+        cell.getTitleLabel().setFont(App.theme().Medium_Bold_Font());
+        cell.getTitleLabel().setText(titleForSection(section));
+        cell.getTitleLabel().getView().setGravity(Gravity.CENTER_VERTICAL);
+        cell.checkView().setOn(boolValueForSection(section));
+        cell.checkView().setEnabled(enabled);
+        cell.checkView().setUserInteractionEnabled(false);
+        if (!singleLine) cell.setMultiline();
+
+        return cell;
+    }
+
+    private LabelAttributes labelAttributesForSection(int section) {
+        return LabelAttributes.init(
+        titleForSection(section),
+        subtitleForSection(section),
+        valueForSection(section),
+        subvalueForSection(section),
+        placeholderTitleForSection(section),
+        attributedValueForSection(section),
+        attributedSubvalueForSection(section),
+        labelDelimiterForSection(section),
+        sublabelDelimiterForSection(section));
+    }
+
+    @Override
+    public void setMultiSelectEnabled(boolean multiSelectEnabled) {
+        this.allowsMultipleSelection = multiSelectEnabled;
+    }
+
+    @Override
+    public void didSelectRowAtIndexPath(IndexPath indexPath) {
+        MutableProtocol.FIELD_TYPE type = typeForSection(indexPath.section);
+        int section = indexPath.section;
+
+        switch (type) {
+            case CHECKBOX:
+            case CHECKBOX_BUTTON:
+            case CHECKBOX_COMMENT: {
+                if (canEditSection(section)) return;
+                switchBoolValueAtIndexPath(indexPath);
+            }
+            break;
+
+            case LABEL:
+            case SELECTION:
+            case SINGLE_CELL: {
+                handleSelectionAtIndexPath(indexPath);
+            }
+            break;
+
+            case LIST: {
+                this.selectedIndexPath = indexPath;
+                ViewContentProtocol.Placeholder item = listItemAtIndexPath(indexPath);
+                handleDidSelectListItemAtIndexPath(item, indexPath);
+            }
+            break;
+
+            default:
+                break;
+        }
+    }
+
+    private void handleDidSelectListItemAtIndexPath(ViewContentProtocol.Placeholder item, IndexPath indexPath) {
+        boolean selected = isSelectedRowAtIndexPath(indexPath);
+        int section = indexPath.section;
+
+        if (selectedActionHandler(section) == ItemsListProtocol.LIST_ITEM_SELECTED_ACTION.TRANSITION_TO_DETAIL) {
+            UIViewController VC = transitioningViewControllerForItemAtIndexPath(item, indexPath).VC();
+            if (VC != null)
+                handleTransitionForViewController(VC, this, item, indexPath);
+            else
+                dispatchUpdateDelegateToSetSelected(!selected, item);
+        }
+        else if (selectedActionHandler(section) == ItemsListProtocol.LIST_ITEM_SELECTED_ACTION.SELECT ||
+                selectedActionHandler(section) == ItemsListProtocol.LIST_ITEM_SELECTED_ACTION.SHOW_DETAIL) {
+            if (selected) {
+                setDeselectedObject(item, false);
+            }
+            else {
+                int type = listTypeForListInSection(section);
+                if (shouldSelectItemsInListOfType(type)) {
+                    setSelectedObject(item, false);
+                    didSelectListItemAtIndexPath(item, indexPath);
+                }
+            }
+
+            dispatchUpdateDelegateToSetSelected(!selected, item);
+            reload();
+
+            if (selectedActionHandler(section) == ItemsListProtocol.LIST_ITEM_SELECTED_ACTION.SELECT &&
+                    !allowsMultipleSelection)
+                dispathTransitionDelegateToReturnWithObject(returnedInSelectObject());
+        }
+        else {
+            setSelectedObject(item, false);
+            didSelectListItemAtIndexPath(item, indexPath);
+            dispatchUpdateDelegateToSetSelected(!selected, item);
+            reload();
+        }
+    }
+
+    private void dispatchUpdateDelegateToSetSelected(boolean selected, ViewContentProtocol.Placeholder item) {
+        if (updateDelegate != null) {
+            updateDelegate.itemsListVCDidSetSelectedAtIndexPath(this, selected, item, indexPathForItem(item));
+        }
+    }
+
+    private void setDidSelectRowAtIndexPath(UIView cell, IndexPath indexPath) {
+        if (!(cell instanceof UIControlProtocol)) return;
+
+        UIControlProtocol control = (UIControlProtocol)cell;
+        control.addTarget(this, (UITargetDelegate.TouchUp) sender -> {
+            didSelectRowAtIndexPath(indexPath);
+        });
+    }
+
+    public ItemsListProtocol.SelectionActionHandler getSelectedActionHandler() {
+        return selectedActionHandler;
+    }
+
+    public void setSelectedActionHandler(ItemsListProtocol.SelectionActionHandler selectedActionHandler) {
+        this.selectedActionHandler = selectedActionHandler;
+    }
+
+    private boolean isEmailOrPhoneSectionType(int section) {
+        return object().UpdatedObject.isEmailSectionType(section) || object().UpdatedObject.isPhoneSectionType(section);
+    }
+
 
     //endregion
 
@@ -578,17 +816,24 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
             if (isHeaderSection(i)) {
                 UIView section = viewForHeaderInSection(i);
                 views.add(section);
+
                 content.addSubview(section);
                 content.constraintHeightForView(section, heightForHeaderInSection(i));
                 content.constraintWidthForView(section, width);
             }
             for (int j = 0; j < numberOfRowsInSection(i); j++) {
+
                 IndexPath indexPath = new IndexPath(i, j);
+                int height = heightForRowAtIndexPath(indexPath);
                 UIView cell = cellForRowAtIndexPath(indexPath);
                 views.add(cell);
+
                 content.addSubview(cell);
-                content.constraintHeightForView(cell, heightForRowAtIndexPath(indexPath));
+                content.constraintHeightForView(cell, height);
                 content.constraintWidthForView(cell, width);
+
+                if (canSelectSection(i) || isEmailOrPhoneSectionType(i))
+                    setDidSelectRowAtIndexPath(cell, indexPath);
             }
         }
 

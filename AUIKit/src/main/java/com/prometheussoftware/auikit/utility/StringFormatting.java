@@ -1,5 +1,6 @@
 package com.prometheussoftware.auikit.utility;
 
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -16,8 +17,8 @@ public class StringFormatting {
 
     public static SpannableStringBuilder singleTextAttributes(String text, UIColor color, UIFont font) {
 
-        ArrayList<Attributes> attrs = new ArrayList();
-        attrs.add(new Attributes(StringUtility.nonNull(text), color, font));
+        ArrayList<StringAttributes> attrs = new ArrayList();
+        attrs.add(new StringAttributes(StringUtility.nonNull(text), font, color));
         return attributedText(attrs, "");
     }
 
@@ -38,10 +39,10 @@ public class StringFormatting {
 
     /** @apiNote Use setAllCaps(false) on buttons for API 23 or lower before setting
      *  text using this method otherwise the font and color are not going to work */
-    public static SpannableStringBuilder attributedText(ArrayList<Attributes> attrs, String delimiter) {
+    public static SpannableStringBuilder attributedText(ArrayList<StringAttributes> attrs, String delimiter) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
 
-        for (Attributes attr : attrs) {
+        for (StringAttributes attr : attrs) {
             if (!StringUtility.isNotEmpty(attr.text)) continue;
 
             SpannableString text1 = new SpannableString(attr.text);
@@ -56,32 +57,56 @@ public class StringFormatting {
 
     public static SpannableStringBuilder attributedTitleSubtitle (String title, UIColor titleColor, UIFont titleFont, String subtitle, UIColor subtitleColor, UIFont subtitleFont, String delimiter) {
 
-        ArrayList<StringFormatting.Attributes> attrs = new ArrayList<>();
-        attrs.add(new StringFormatting.Attributes(
+        ArrayList<StringFormatting.StringAttributes> attrs = new ArrayList<>();
+        attrs.add(new StringAttributes(
                 title,
-                titleColor,
-                titleFont));
-        attrs.add(new StringFormatting.Attributes(
+                titleFont,
+                titleColor));
+        attrs.add(new StringAttributes(
                 subtitle,
-                subtitleColor,
-                subtitleFont));
+                subtitleFont,
+                subtitleColor));
 
         return StringFormatting.attributedText(attrs, delimiter);
     }
 
-
     //region subclasses
 
-    public static class Attributes {
 
-        public String text;
-        public UIFont font;
-        public UIColor color;
+    public static class StringAttributes {
 
-        public Attributes(String text, UIColor color, UIFont font) {
+        String text;
+        UIFont font;
+        UIColor color;
+        int lineSpacing;
+        Layout.Alignment alignment;
+
+        public StringAttributes (UIFont font, UIColor color) {
+            this(null, font, color);
+        }
+
+        public StringAttributes (String text, UIFont font, UIColor color) {
             this.text = text;
-            this.color = color;
             this.font = font;
+            this.color = color;
+        }
+
+        public StringAttributes (String text, UIFont font, UIColor color, int lineSpacing) {
+            this.text = text;
+            this.font = font;
+            this.color = color;
+            this.lineSpacing = lineSpacing;
+        }
+
+        public StringAttributes (String text, UIFont font, UIColor color, Layout.Alignment alignment) {
+            this.text = text;
+            this.font = font;
+            this.color = color;
+            this.alignment = alignment;
+        }
+
+        public boolean isValid() {
+            return 0 < this.text.length() && this.font != null && this.color != null;
         }
     }
 

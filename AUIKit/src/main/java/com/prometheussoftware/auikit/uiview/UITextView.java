@@ -315,7 +315,7 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         if (delegate != null) {
             boolean hasMethod = delegate.implementsTextViewDidChangeCharactersInRange();
             if (hasMethod) {
-                return delegate.textViewShouldChangeCharactersInRange(self, currentChange.range, currentChange.text.toString());
+                return delegate.textViewShouldChangeCharactersInRange(self, currentChange.range, StringUtility.nonNull(currentChange.text));
             }
         }
         return canAddToCharCount();
