@@ -2,6 +2,7 @@ package com.prometheussoftware.auikit.utility;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.view.View;
 import android.widget.Toast;
 
 import com.prometheussoftware.auikit.common.Constants;
@@ -125,6 +126,17 @@ public class UIAlert {
                 new AlertDialog.Builder(MainApplication.getWindow(), styleResId)
                         .setMessage(title)
                         .setCancelable(false)
+                        .setPositiveButton(Constants.OK_STR(), listener)
+                        .setNegativeButton(Constants.Cancel_STR(), (DialogInterface d, int w) -> {})
+                        .show());
+    }
+
+    public static void OKCancelAlert(String title, View view, DialogInterface.OnClickListener listener) {
+        MainApplication.getWindow().runOnUiThread(() ->
+                new AlertDialog.Builder(MainApplication.getWindow())
+                        .setMessage(title)
+                        .setCancelable(false)
+                        .setView(view)
                         .setPositiveButton(Constants.OK_STR(), listener)
                         .setNegativeButton(Constants.Cancel_STR(), (DialogInterface d, int w) -> {})
                         .show());

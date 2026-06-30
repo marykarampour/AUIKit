@@ -4,30 +4,29 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.prometheussoftware.auikit.BuildConfig;
+import com.prometheussoftware.auikit.common.Constants;
 
 public class DEBUGLOG {
-
-    private final static boolean isDebug = BuildConfig.DEBUG;
 
     public DEBUGLOG () { }
 
     public static void s (String str) {
-        if (!isDebug) return;
+        if (!Constants.IS_DEBUG) return;
         Log.d("static -> ", str);
     }
 
     public static void s (String tag, String str) {
-        if (!isDebug) return;
+        if (!Constants.IS_DEBUG) return;
         Log.d(tag, str);
     }
 
     public static void s (Class T, String str) {
-        if (!isDebug) return;
+        if (!Constants.IS_DEBUG) return;
         Log.d(T.getSimpleName(), str);
     }
 
     public static void s (Object obj, String str) {
-        if (!isDebug) return;
+        if (!Constants.IS_DEBUG) return;
         Log.d(ObjectUtility.logTag(obj), str);
     }
 
@@ -40,12 +39,12 @@ public class DEBUGLOG {
     }
 
     public static void s (Exception e) {
-        if (!isDebug) return;
+        if (!Constants.IS_DEBUG) return;
         Log.d("Exception -> ", e.getStackTrace().toString());
     }
 
     public static void s (Exception e, Object obj) {
-        if (!isDebug) return;
+        if (!Constants.IS_DEBUG) return;
         Log.d("Exception -> " + e.getStackTrace().toString(), " object -> " + new Gson().toJson(obj));
     }
 }

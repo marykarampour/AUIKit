@@ -292,6 +292,10 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
         }
     }
 
+    public void endEditing() {
+        setFocused(false);
+    }
+
     //region helpers
 
     public void hideKeyboard () {
@@ -453,13 +457,13 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
             return true;
         }
         // became first responder
-        void textViewDidBeginEditing (UITextView textView);
+        default void textViewDidBeginEditing (UITextView textView) {}
         // return YES to allow editing to stop and to resign first responder status. NO to disallow the editing session to end
         default boolean TextViewShouldEndEditing (UITextView textView) {
             return true;
         }
         // may be called if forced even if shouldEndEditing returns NO (e.g. view removed from window) or endEditing:YES called
-        void textViewDidEndEditing (UITextView textView);
+        default void textViewDidEndEditing (UITextView textView) {}
         // return NO to not change text
         default boolean textViewShouldChangeCharactersInRange (UITextView textView, Range range, String replacementString) {
             if (textView != null && textView.delegate != null && textView.delegate.implementsTextViewDidChangeCharactersInRange()) {
