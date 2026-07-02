@@ -681,10 +681,14 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintHorizontally(views, interItemMargin, 0, 0, equalWidths, ConstraintSet.START | ConstraintSet.END);
     }
 
-    /** @param parentConstraints Specifies constraints on parent's edges, pass 0 for none, ConstraintSet.TOP or ConstraintSet.BOTTOM or both, other values are ignored
-     @param horizontalMargin Use CONSTRAINT_NO_PADDING to not constraint horizontally to the parent, it will center horizontally.
-     @param verticalMargin The margin between the first item and the top of parent, and the last item and the bottom of parent. */
     public void constraintVertically (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights, int parentConstraints) {
+        constraintVertically(views, interItemMargin, horizontalMargin, verticalMargin, equalHeights, parentConstraints, ConstraintSet.START | ConstraintSet.END);
+    }
+
+        /** @param parentConstraints Specifies constraints on parent's edges, pass 0 for none, ConstraintSet.TOP or ConstraintSet.BOTTOM or both, other values are ignored
+         @param horizontalMargin Use CONSTRAINT_NO_PADDING to not constraint horizontally to the parent, it will center horizontally.
+         @param verticalMargin The margin between the first item and the top of parent, and the last item and the bottom of parent. */
+    public void constraintVertically (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights, int parentConstraints, int horizontalConstraints) {
 
         ArrayList<UIView> totalViews = new ArrayList<>();
 
@@ -706,12 +710,19 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         }
 
         for (UIView view : totalViews) {
-
             int index = totalViews.indexOf(view);
 
             if (horizontalMargin != CONSTRAINT_NO_PADDING) {
-                constraintForView(ConstraintSet.START, view, horizontalMargin);
-                constraintForView(ConstraintSet.END, view, horizontalMargin);
+                if (((horizontalConstraints & ConstraintSet.START) == ConstraintSet.START) && ((horizontalConstraints & ConstraintSet.END) == ConstraintSet.END)) {
+                    constraintForView(ConstraintSet.START, view, horizontalMargin);
+                    constraintForView(ConstraintSet.END, view, horizontalMargin);
+                }
+                else if ((horizontalConstraints & ConstraintSet.END) == ConstraintSet.END) {
+                    constraintForView(ConstraintSet.END, view, horizontalMargin);
+                }
+                else if ((horizontalConstraints & ConstraintSet.START) == ConstraintSet.START) {
+                    constraintForView(ConstraintSet.START, view, horizontalMargin);
+                }
             }
             else {
                 constraintCenterXForView(view);

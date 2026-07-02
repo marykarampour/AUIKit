@@ -30,7 +30,7 @@ public class UITabBarButton extends UIButton {
     @Override
     public void constraintLayout() {
         constraintHeightForView(getImageView(), App.constants().Tab_Bar_Icon_Height());
-        constraintVertically(ArrayUtility.arrayOf(getImageView(), getTitleLabel()), Dimensions.Int_1(), Dimensions.Int_2(), Dimensions.Int_4(), false, ConstraintSet.TOP | ConstraintSet.BOTTOM);
+        constraintVertically(ArrayUtility.arrayOf(getImageView(), getTitleLabel()), Dimensions.Int_1(), Dimensions.Int_2(), Dimensions.Int_2(), false, ConstraintSet.TOP | ConstraintSet.BOTTOM);
         applyConstraints();
     }
 }

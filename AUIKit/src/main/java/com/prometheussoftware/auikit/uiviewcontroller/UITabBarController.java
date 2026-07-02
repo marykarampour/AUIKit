@@ -125,8 +125,6 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
 
         tabBar = new UITabBar();
         footerView.addSubview(tabBar);
-        footerView.constraintSidesForView(tabBar);
-        footerView.applyConstraints();
         tabBar.setDelegate(this);
         tabBar.setItems(tabBarItems());
     }
@@ -162,6 +160,8 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
     @Override
     protected void constraintViews() {
         super.constraintViews();
+        footerView.constraintSidesForView(tabBar);
+        footerView.applyConstraints();
     }
 
     @Override public void createChildVC() {
