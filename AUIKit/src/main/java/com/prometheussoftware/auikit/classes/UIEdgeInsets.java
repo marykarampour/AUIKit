@@ -4,10 +4,6 @@ import com.prometheussoftware.auikit.model.BaseModel;
 
 public class UIEdgeInsets extends BaseModel {
 
-    static {
-        BaseModel.Register(UIEdgeInsets.class);
-    }
-
     public int top;
     public int left;
     public int bottom;
@@ -25,13 +21,6 @@ public class UIEdgeInsets extends BaseModel {
         this.left = inset;
         this.bottom = inset;
         this.right = inset;
-    }
-
-    public UIEdgeInsets(UIEdgeInsets insets) {
-        this.top = insets.top;
-        this.left = insets.left;
-        this.bottom = insets.bottom;
-        this.right = insets.right;
     }
 
     public UIEdgeInsets() {
