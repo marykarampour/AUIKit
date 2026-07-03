@@ -11,6 +11,9 @@ import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
 import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
@@ -51,6 +54,7 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
         ViewUtility.setViewID(view);
         setRootViewController(createRootViewController());
         setContentView(view);
+        installSafeAreaInsetsHandler();
         addOverlay(AppSpinner.spinner().view());
     }
 
@@ -271,6 +275,15 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
 
     public UIViewController getVisibleViewController() {
         return visibleViewController;
+    }
+
+    private void installSafeAreaInsetsHandler() {
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            view.setPadding(0, 0, 0, navigationBars.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
+        ViewCompat.requestApplyInsets(view);
     }
 
     //endregion
