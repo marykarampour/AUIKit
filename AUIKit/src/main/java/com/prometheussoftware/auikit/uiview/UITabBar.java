@@ -42,8 +42,6 @@ public class UITabBar extends UIView {
 
     private UIImageView backgroundImageView;
 
-    private UIEdgeInsets safeAreaInsets = new UIEdgeInsets();
-
     public UITabBar() {
         super();
         init();
@@ -191,12 +189,4 @@ public class UITabBar extends UIView {
         shadowImageView.setImage(shadowImage);
     }
 
-    public void setSafeAreaInsets(UIEdgeInsets safeAreaInsets) {
-        if (safeAreaInsets == null) safeAreaInsets = new UIEdgeInsets();
-        if (this.safeAreaInsets.equals(safeAreaInsets)) return;
-
-        this.safeAreaInsets = new UIEdgeInsets(safeAreaInsets);
-        if (isLoaded())
-            constraintLayout();
-    }
 }

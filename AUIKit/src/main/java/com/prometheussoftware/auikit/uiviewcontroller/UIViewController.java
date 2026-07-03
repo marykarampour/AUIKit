@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
-import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.BaseWindow;
 import com.prometheussoftware.auikit.common.Constants;
@@ -53,8 +52,6 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     private String title;
 
     private UITabBarItem tabBarItem;
-
-    private UIEdgeInsets safeAreaInsets = new UIEdgeInsets();
 
     public UIViewController() {
         createDefaultNavigationBar();
@@ -260,7 +257,6 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
         childController.removeFromParentViewController();
         childController.setParentViewController(this);
-        childController.setSafeAreaInsets(safeAreaInsets);
         childViewControllers.add(childController);
     }
 
@@ -277,7 +273,6 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
         childController.removeFromParentViewController();
         childController.setParentViewController(this);
-        childController.setSafeAreaInsets(safeAreaInsets);
         ArrayUtility.safeReplace(childViewControllers, index, childController);
     }
 
@@ -394,23 +389,6 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
             return (UINavigationController) this;
         }
         return null;
-    }
-
-    public UIEdgeInsets safeAreaInsets() {
-        return new UIEdgeInsets(safeAreaInsets);
-    }
-
-    public void setSafeAreaInsets(UIEdgeInsets safeAreaInsets) {
-        if (safeAreaInsets == null)
-            safeAreaInsets = new UIEdgeInsets();
-        if (this.safeAreaInsets.equals(safeAreaInsets))
-            return;
-
-        this.safeAreaInsets = new UIEdgeInsets(safeAreaInsets);
-        for (UIViewController vc : childViewControllers) {
-            vc.setSafeAreaInsets(this.safeAreaInsets);
-        }
-        viewSafeAreaInsetsDidChange();
     }
 
     @Override public void pushViewController(UIViewController viewController, boolean animated) {
