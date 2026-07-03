@@ -125,9 +125,6 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     @Override public void viewDidDisappear(boolean animated) {
     }
 
-    protected void viewSafeAreaInsetsDidChange() {
-    }
-
     //endregion
 
     //region load/unload and view life cycle
