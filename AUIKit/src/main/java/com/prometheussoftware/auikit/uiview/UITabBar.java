@@ -42,6 +42,8 @@ public class UITabBar extends UIView {
 
     private UIImageView backgroundImageView;
 
+    private UIEdgeInsets safeAreaInsets = new UIEdgeInsets();
+
     public UITabBar() {
         super();
         init();
@@ -83,10 +85,13 @@ public class UITabBar extends UIView {
     public void constraintLayout() {
         super.constraintLayout();
 
-        UIEdgeInsets contentInsets = new UIEdgeInsets(contentPadding(), 0, 0, 0);
+        UIEdgeInsets backgroundInsets = new UIEdgeInsets(contentPadding(), 0, 0, 0);
 
-        constraintSidesForView(backgroundImageView, contentInsets);
-        constraintSidesForView(contentView, contentInsets);
+        constraintSidesForView(backgroundImageView, backgroundInsets);
+        constraintForView(ConstraintSet.TOP, contentView, contentPadding());
+        constraintForView(ConstraintSet.START, contentView);
+        constraintForView(ConstraintSet.END, contentView);
+        constraintHeightForView(contentView, App.constants().Tab_Bar_Height() - contentPadding());
 
         constraintForView(ConstraintSet.TOP, shadowImageView);
         constraintForView(ConstraintSet.END, shadowImageView);
@@ -184,5 +189,14 @@ public class UITabBar extends UIView {
 
     public void setShadowImage(UIImage shadowImage) {
         shadowImageView.setImage(shadowImage);
+    }
+
+    public void setSafeAreaInsets(UIEdgeInsets safeAreaInsets) {
+        if (safeAreaInsets == null) safeAreaInsets = new UIEdgeInsets();
+        if (this.safeAreaInsets.equals(safeAreaInsets)) return;
+
+        this.safeAreaInsets = new UIEdgeInsets(safeAreaInsets);
+        if (isLoaded())
+            constraintLayout();
     }
 }

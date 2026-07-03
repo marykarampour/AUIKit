@@ -39,6 +39,7 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
             Navigation.Node<UIViewController> node = new Navigation.Node<>();
             node.setNodeObject(vc);
             navigationStack.getNodes().add(node);
+            vc.setSafeAreaInsets(safeAreaInsets());
         }
     }
 
@@ -72,6 +73,7 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
                 !animated ? Navigation.TRANSITION_ANIMATION.NONE : Navigation.TRANSITION_ANIMATION.FADE;
 
         node.getNodeObject().setAnimated(animated);
+        node.getNodeObject().setSafeAreaInsets(safeAreaInsets());
         contentView.setCurrentContentView(node.getNodeObject().view(), () -> {
             selectedViewController = node;
             selectedIndex = navigationStack.getNodes().indexOf(node);
@@ -116,7 +118,7 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
 
     @Override
     public int footerHeight() {
-        return App.constants().Tab_Bar_Height();
+        return App.constants().Tab_Bar_Height() + safeAreaInsets().bottom;
     }
 
     @Override
@@ -127,6 +129,7 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
         footerView.addSubview(tabBar);
         tabBar.setDelegate(this);
         tabBar.setItems(tabBarItems());
+        tabBar.setSafeAreaInsets(safeAreaInsets());
     }
 
     private ArrayList<UITabBarItem> tabBarItems() {
@@ -177,6 +180,14 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
 
     public UITabBar getTabBar() {
         return tabBar;
+    }
+
+    @Override
+    protected void viewSafeAreaInsetsDidChange() {
+        if (tabBar != null)
+            tabBar.setSafeAreaInsets(safeAreaInsets());
+        if (getView() == null) return;
+        constraintViews();
     }
 
     //endregion

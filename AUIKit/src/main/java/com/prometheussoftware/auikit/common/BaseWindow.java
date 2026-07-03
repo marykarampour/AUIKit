@@ -11,8 +11,12 @@ import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiviewcontroller.Navigation;
@@ -30,6 +34,7 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
 
     private V rootViewController;
     private UIViewController visibleViewController;
+    private UIEdgeInsets safeAreaInsets = new UIEdgeInsets();
 
     /** Root view, all view controller views are added to this view */
     private UITransitioningContainerView view;
@@ -51,6 +56,7 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
         ViewUtility.setViewID(view);
         setRootViewController(createRootViewController());
         setContentView(view);
+        installSafeAreaInsetsHandler();
         addOverlay(AppSpinner.spinner().view());
     }
 
@@ -162,6 +168,8 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
 
     private void setVisibleViewController(UIViewController viewController) {
         this.visibleViewController = viewController;
+        if (viewController != null)
+            viewController.setSafeAreaInsets(safeAreaInsets);
     }
 
     public void presentVisibleViewController(
@@ -271,6 +279,22 @@ public class BaseWindow <V extends UIViewController> extends BaseActivity {
 
     public UIViewController getVisibleViewController() {
         return visibleViewController;
+    }
+
+    private void installSafeAreaInsetsHandler() {
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            setSafeAreaInsets(new UIEdgeInsets(systemBars.top, systemBars.left, systemBars.bottom, systemBars.right));
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(view);
+    }
+
+    private void setSafeAreaInsets(UIEdgeInsets safeAreaInsets) {
+        this.safeAreaInsets = safeAreaInsets;
+        UIViewController visibleViewController = getVisibleViewController();
+        if (visibleViewController != null)
+            visibleViewController.setSafeAreaInsets(safeAreaInsets);
     }
 
     //endregion
