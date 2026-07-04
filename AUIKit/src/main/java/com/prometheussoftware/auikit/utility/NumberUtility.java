@@ -14,10 +14,16 @@ public class NumberUtility {
 
     public static String stringValueWithStyle (Number number, STYLE style, int digits) {
         switch (style) {
-            case DECIMAL:
-            case CURRENCY: {
+            case DECIMAL: {
                 NumberFormat format = DecimalFormat.getInstance();
+                format.setMinimumFractionDigits(digits);
                 format.setMaximumFractionDigits(digits);
+                format.setRoundingMode(RoundingMode.DOWN);
+                return format.format(number);
+            }
+            case CURRENCY: {
+                NumberFormat format = NumberFormat.getCurrencyInstance();
+                format.setMinimumFractionDigits(digits);
                 format.setMaximumFractionDigits(digits);
                 format.setRoundingMode(RoundingMode.DOWN);
                 return format.format(number);
