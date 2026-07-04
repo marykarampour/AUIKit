@@ -33,7 +33,7 @@ public interface ThemeProtocol {
     default UIColor Accessory_Deselected_Color() { return UIColor.white(1.0f); }
 
     //tableview
-    default UIColor Tableview_Separator_Color() { return UIColor.build(0.7f, 0.6f, 0.7f, 1.0f); }
+    default UIColor Tableview_Separator_Color() { return UIColor.color(0.7f, 0.6f, 0.7f, 1.0f); }
 
     //fonts
     default UIFont Small_Regular_Font() { return UIFont.systemFont(14, UIFont.STYLE.REGULAR); }

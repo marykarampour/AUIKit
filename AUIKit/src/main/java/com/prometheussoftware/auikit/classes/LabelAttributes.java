@@ -5,14 +5,14 @@ import static android.view.View.TEXT_ALIGNMENT_TEXT_START;
 
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.AlignmentSpan;
 
 import com.prometheussoftware.auikit.common.App;
-import com.prometheussoftware.auikit.common.AppTheme;
 import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.utility.StringFormatting;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -265,8 +265,8 @@ public class LabelAttributes {
 //            SpannableStringBuilder attrs = StringFormatting.attributedTitleSubtitle(this)
             super.setAttributedTitlesForLabel(label, sublabel);
             if (sublabel != null) {
+                attrSubvalue.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), 0, attrSubvalue.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sublabel.setText(attrSubvalue);
-                sublabel.setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
             }
         }
     }
@@ -296,8 +296,8 @@ public class LabelAttributes {
         @Override
         public void setAttributedTitlesForLabel(UILabel label, UILabel sublabel) {
             if (label != null) {
+                attrValue.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), 0, attrValue.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 label.setText(attrValue);
-                label.setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
             }
         }
     }
@@ -340,8 +340,8 @@ public class LabelAttributes {
 //            SpannableStringBuilder attrs = StringFormatting.attributedTitleSubtitle(this)
             super.setAttributedTitlesForLabel(label, sublabel);
             if (sublabel != null) {
+                attrSubvalue.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), 0, attrSubvalue.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sublabel.setText(attrSubvalue);
-                sublabel.setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
             }
         }
     }

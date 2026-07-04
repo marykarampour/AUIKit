@@ -16,11 +16,11 @@ public class UIColor extends BaseModel {
         hex = colorWithAlpha(colorID, alpha);
     }
 
-    public static UIColor build(int colorID, float alpha) {
+    public static UIColor color(int colorID, float alpha) {
         return new UIColor(colorID, alpha);
     }
 
-    public static UIColor build(int colorID) {
+    public static UIColor color(int colorID) {
         return new UIColor(colorID, 1.0f);
     }
 
@@ -29,7 +29,7 @@ public class UIColor extends BaseModel {
      * @param green Green color component 0-255
      * @param blue Blue color component 0-255
      * @param alpha Between 0.0-1.0 is transparency */
-    public static UIColor build(int red, int green, int blue, float alpha) {
+    public static UIColor color(int red, int green, int blue, float alpha) {
         int color = Color.argb((int) (alpha*255), red, green, blue);
         return new UIColor(color, 1.0f);
     }
@@ -39,7 +39,7 @@ public class UIColor extends BaseModel {
      * @param green Green color component 0.0-1.0
      * @param blue Blue color component 0.0-1.0
      * @param alpha Between 0.0-1.0 is transparency */
-    public static UIColor build(float red, float green, float blue, float alpha) {
+    public static UIColor color(float red, float green, float blue, float alpha) {
         int color = Color.argb((int) (alpha*255), (int) (red*255), (int) (green*255), (int) (blue*255));
         return new UIColor(color, 1.0f);
     }
@@ -56,13 +56,13 @@ public class UIColor extends BaseModel {
     }
 
     /** Creates a color from a hex string */
-    public static UIColor build(String hex) {
+    public static UIColor color(String hex) {
         int color = Color.parseColor(hex);
         return new UIColor(color, 1.0f);
     }
 
     /** Creates a color with transparency from a hex string */
-    public static UIColor build(String hex, float alpha) {
+    public static UIColor color(String hex, float alpha) {
         int color = Color.parseColor(hex);
         return new UIColor(color, alpha);
     }
@@ -90,43 +90,43 @@ public class UIColor extends BaseModel {
     //region pure colors
 
     public static UIColor black(float alpha) {
-        return UIColor.build(Color.BLACK, alpha);
+        return UIColor.color(Color.BLACK, alpha);
     }
 
     public static UIColor white(float alpha) {
-        return UIColor.build(Color.WHITE, alpha);
+        return UIColor.color(Color.WHITE, alpha);
     }
 
     public static UIColor green(float alpha) {
-        return UIColor.build(Color.GREEN, alpha);
+        return UIColor.color(Color.GREEN, alpha);
     }
 
     public static UIColor gray(float alpha) {
-        return UIColor.build(Color.GRAY, alpha);
+        return UIColor.color(Color.GRAY, alpha);
     }
 
     public static UIColor red(float alpha) {
-        return UIColor.build(Color.RED, alpha);
+        return UIColor.color(Color.RED, alpha);
     }
 
     public static UIColor blue(float alpha) {
-        return UIColor.build(Color.BLUE, alpha);
+        return UIColor.color(Color.BLUE, alpha);
     }
 
     public static UIColor yellow(float alpha) {
-        return UIColor.build(Color.YELLOW, alpha);
+        return UIColor.color(Color.YELLOW, alpha);
     }
 
     public static UIColor magenta(float alpha) {
-        return UIColor.build(Color.MAGENTA, alpha);
+        return UIColor.color(Color.MAGENTA, alpha);
     }
 
     public static UIColor cyan(float alpha) {
-        return UIColor.build(Color.CYAN, alpha);
+        return UIColor.color(Color.CYAN, alpha);
     }
 
     public static UIColor clear() {
-        return UIColor.build(Color.TRANSPARENT, 0.0f);
+        return UIColor.color(Color.TRANSPARENT, 0.0f);
     }
 
     //endregion

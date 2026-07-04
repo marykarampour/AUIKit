@@ -292,7 +292,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     }
 
     public void setTintColor(int tintColor) {
-        setTintColor(UIColor.build(tintColor));
+        setTintColor(UIColor.color(tintColor));
     }
 
     public UIColor getTintColor() {
@@ -320,7 +320,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
                 viewBackgroundColor = UIColor.clear();
             }
             else {
-                viewBackgroundColor = UIColor.build(color);
+                viewBackgroundColor = UIColor.color(color);
             }
         }
     }

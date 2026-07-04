@@ -5,7 +5,7 @@ import android.view.Gravity;
 
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.classes.LabelAttributes;
-import com.prometheussoftware.auikit.classes.UIColor;
+
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
@@ -652,7 +652,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
                 LabelAttributes attrs = labelAttributesForSection(section);
                 attrs.setAttributedTitlesForLabel(cell.getTitleLabel(), null);
-                cell.getContentView().setBackgroundColor(UIColor.red(1.0f));
+
                 return cell;
             }
 
