@@ -17,16 +17,18 @@ import com.prometheussoftware.auikit.genericviews.UIAccessoryView;
 import com.prometheussoftware.auikit.genericviews.UIMultiViewLabel;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.model.IndexPath;
+import com.prometheussoftware.auikit.uiview.UIButton;
 import com.prometheussoftware.auikit.uiview.UIControl;
-import com.prometheussoftware.auikit.uiview.UIImageView;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
+import com.prometheussoftware.auikit.uiview.protocols.UIEditingAccessoryProtocol;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 
-public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIView> extends UIMultiViewLabel <UIImageView, A, UIView> implements UIControlProtocol {
+public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIView> extends UIMultiViewLabel <UIButton, A, UIView> implements UIControlProtocol, UIEditingAccessoryProtocol {
 
     private ACCESSORY_TYPE accessoryType;
     private SELECTION_STYLE selectionStyle;
+    private EDITING_STYLE editingStyle;
 
     /** Use only in case of static cells */
     public IndexPath indexPath;
@@ -93,7 +95,7 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
     }
 
     private void addInteractionLayer() {
-        setTopView(interactionLayer, true, false);
+        setTopView(interactionLayer, false, false);
     }
 
     @Override
@@ -106,14 +108,24 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
 
     @Override
     public void createLeftView() {
-        leftView = new UIImageView();
-        leftView.view().setAdjustViewBounds(true);
+        leftView = new UIButton();
+        leftView.getImageView().view().setAdjustViewBounds(true);
         leftView.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
     @Override
     public void addTarget(Object ID, UITargetDelegate target) {
         if (interactionLayer != null) interactionLayer.addTarget(ID, target);
+    }
+
+    @Override
+    public void addAccessoryTarget(Object ID, UITargetDelegate target) {
+        if (rightView != null) rightView.addTarget(ID, target);
+    }
+
+    @Override
+    public void addEditingTarget(Object ID, UITargetDelegate target) {
+        if (leftView != null) leftView.addTarget(ID, target);
     }
 
     //region sizes
@@ -222,7 +234,7 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         return rightView;
     }
 
-    public UIImageView getImageView() {
+    public UIButton getImageView() {
         return leftView;
     }
 
@@ -232,6 +244,14 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
 
     public void setSelectionStyle(SELECTION_STYLE selectionStyle) {
         this.selectionStyle = selectionStyle;
+    }
+
+    public EDITING_STYLE getEditingStyle() {
+        return editingStyle;
+    }
+
+    public void setEditingStyle(EDITING_STYLE editingStyle) {
+        this.editingStyle = editingStyle;
     }
 
     public S getSeparator() {

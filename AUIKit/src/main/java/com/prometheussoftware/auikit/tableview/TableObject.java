@@ -9,6 +9,7 @@ import com.prometheussoftware.auikit.model.Pair;
 import com.prometheussoftware.auikit.model.PairArray;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TableObject {
 
@@ -88,7 +89,7 @@ public class TableObject {
             }
         }
 
-        public void setSelected (ArrayList<T> selected) {
+        public void setSelected (List<T> selected) {
             if (items == null || items.getArray() == null) return;
             for (Pair<CellInfo, T> obj : items.getArray()) {
                 obj.getFirst().selected = selected.contains(obj.getSecond());

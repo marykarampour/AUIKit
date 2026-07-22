@@ -19,6 +19,7 @@ import com.prometheussoftware.auikit.utility.ViewUtility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class UIView extends ConstraintLayout implements UIViewProtocol {
 
@@ -330,9 +331,9 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     //region utility
 
     /** Only returns subvews of type UIView */
-    public ArrayList<UIView> subUIViews() {
+    public List<UIView> subUIViews() {
 
-        ArrayList<UIView> views = new ArrayList<>();
+        List<UIView> views = new ArrayList<>();
 
         for (int i = 0; i < getChildCount(); i++) {
 
@@ -345,9 +346,9 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     }
 
     /** Returns all subviews */
-    public ArrayList<View> subViews() {
+    public List<View> subViews() {
 
-        ArrayList<View> views = new ArrayList<>();
+        List<View> views = new ArrayList<>();
 
         for (int i = 0; i < getChildCount(); i++) {
 
@@ -370,7 +371,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         removeView(view);
     }
 
-    public <T extends UIView> void removeSubviews(ArrayList<T> views) {
+    public <T extends UIView> void removeSubviews(List<T> views) {
 
         if (views == null || views.size() == 0) return;
 
@@ -388,11 +389,11 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         parent.removeSubview(this);
     }
 
-    public <T extends UIView> void addSubviews(ArrayList<T> views) {
+    public <T extends UIView> void addSubviews(List<T> views) {
 
         if (views == null || views.size() == 0) return;
 
-        ArrayList<UIView> subviews = subUIViews();
+        List<UIView> subviews = subUIViews();
 
         for (UIView view : views) {
             if (!subviews.contains(view)) {
@@ -467,7 +468,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintSet.clear(view.getId());
     }
 
-    public void clearConstraints(ArrayList<? extends UIView> views) {
+    public void clearConstraints(List<? extends UIView> views) {
         for (UIView view : views) {
             clearConstraints(view);
         }
@@ -526,7 +527,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintSet.centerHorizontally(view.getId(), ConstraintSet.PARENT_ID, ConstraintSet.LEFT, padding, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, -padding, 0.5f);
     }
 
-    public void constraintCenterXForViews (ArrayList <? extends UIView> views) {
+    public void constraintCenterXForViews (List <? extends UIView> views) {
         if (views == null || views.size() == 0) return;
         for (UIView view : views) {
             constraintCenterXForView(view);
@@ -543,7 +544,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintSet.centerVertically(view.getId(), ConstraintSet.PARENT_ID, ConstraintSet.TOP, padding, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, -padding, 0.5f);
     }
 
-    public void constraintCenterYForViews (ArrayList <? extends UIView> views) {
+    public void constraintCenterYForViews (List <? extends UIView> views) {
         if (views == null || views.size() == 0) return;
         for (UIView view : views) {
             constraintCenterYForView(view);
@@ -576,16 +577,16 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintSet.constrainWidth(view.getId(), size.getWidth());
     }
 
-    public void constraintSizeForViews (ArrayList<? extends UIView> views, Size size) {
+    public void constraintSizeForViews (List<? extends UIView> views, Size size) {
         if (views == null || views.size() == 0) return;
         for (UIView view : views) {
             constraintSizeForView(view, size);
         }
     }
 
-    public void constraintHorizontally (ArrayList<? extends UIView> views, int style, int margin) {
+    public void constraintHorizontally (List<? extends UIView> views, int style, int margin) {
 
-        ArrayList<UIView> totalViews = new ArrayList<>();
+        List<UIView> totalViews = new ArrayList<>();
 
         for (UIView view : views) {
             if (view != null && view.getParent() == this) {
@@ -612,17 +613,17 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
                 IDs, null, style);
     }
 
-    public void constraintHorizontally (ArrayList<? extends UIView> views, int style) {
+    public void constraintHorizontally (List<? extends UIView> views, int style) {
         constraintHorizontally(views, style, 0);
     }
 
-    public void constraintVertically (ArrayList<? extends UIView> views, int style) {
+    public void constraintVertically (List<? extends UIView> views, int style) {
         constraintVertically(views, style, 0);
     }
 
-    public void constraintVertically (ArrayList<? extends UIView> views, int style, int margin) {
+    public void constraintVertically (List<? extends UIView> views, int style, int margin) {
 
-        ArrayList<UIView> totalViews = new ArrayList<>();
+        List<UIView> totalViews = new ArrayList<>();
 
         for (UIView view : views) {
             if (view != null && view.getParent() == this) {
@@ -649,48 +650,48 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
                 IDs, null, style);
     }
 
-    public void constraintVertically (ArrayList<? extends UIView> views, int interItemMargin, boolean equalHeights) {
+    public void constraintVertically (List<? extends UIView> views, int interItemMargin, boolean equalHeights) {
         constraintVertically(views, interItemMargin, CONSTRAINT_NO_PADDING, CONSTRAINT_NO_PADDING, equalHeights, 0);
     }
 
-    public void constraintHorizontally (ArrayList<? extends UIView> views, int interItemMargin, boolean equalHeights) {
+    public void constraintHorizontally (List<? extends UIView> views, int interItemMargin, boolean equalHeights) {
         constraintHorizontally(views, interItemMargin, CONSTRAINT_NO_PADDING, CONSTRAINT_NO_PADDING, equalHeights, 0);
     }
 
-    public void constraintVertically (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin) {
+    public void constraintVertically (List<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin) {
         constraintVertically(views, interItemMargin, horizontalMargin, verticalMargin, false, ConstraintSet.TOP | ConstraintSet.BOTTOM);
     }
 
-    public void constraintHorizontally (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin) {
+    public void constraintHorizontally (List<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin) {
         constraintHorizontally(views, interItemMargin, horizontalMargin, verticalMargin, false, ConstraintSet.START | ConstraintSet.END);
     }
 
-    public void constraintVertically (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights) {
+    public void constraintVertically (List<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights) {
         constraintVertically(views, interItemMargin, horizontalMargin, verticalMargin, equalHeights, ConstraintSet.TOP | ConstraintSet.BOTTOM);
     }
 
-    public void constraintHorizontally (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalWidths) {
+    public void constraintHorizontally (List<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalWidths) {
         constraintHorizontally(views, interItemMargin, horizontalMargin, verticalMargin, equalWidths, ConstraintSet.START | ConstraintSet.END);
     }
 
-    public void constraintVerticallyAllSides (ArrayList<? extends UIView> views, int interItemMargin, boolean equalHeights) {
+    public void constraintVerticallyAllSides (List<? extends UIView> views, int interItemMargin, boolean equalHeights) {
         constraintVertically(views, interItemMargin, 0, 0, equalHeights, ConstraintSet.TOP | ConstraintSet.BOTTOM);
     }
 
-    public void constraintHorizontallyAllSides (ArrayList<? extends UIView> views, int interItemMargin, boolean equalWidths) {
+    public void constraintHorizontallyAllSides (List<? extends UIView> views, int interItemMargin, boolean equalWidths) {
         constraintHorizontally(views, interItemMargin, 0, 0, equalWidths, ConstraintSet.START | ConstraintSet.END);
     }
 
-    public void constraintVertically (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights, int parentConstraints) {
+    public void constraintVertically (List<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights, int parentConstraints) {
         constraintVertically(views, interItemMargin, horizontalMargin, verticalMargin, equalHeights, parentConstraints, ConstraintSet.START | ConstraintSet.END);
     }
 
         /** @param parentConstraints Specifies constraints on parent's edges, pass 0 for none, ConstraintSet.TOP or ConstraintSet.BOTTOM or both, other values are ignored
          @param horizontalMargin Use CONSTRAINT_NO_PADDING to not constraint horizontally to the parent, it will center horizontally.
          @param verticalMargin The margin between the first item and the top of parent, and the last item and the bottom of parent. */
-    public void constraintVertically (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights, int parentConstraints, int horizontalConstraints) {
+    public void constraintVertically (List<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights, int parentConstraints, int horizontalConstraints) {
 
-        ArrayList<UIView> totalViews = new ArrayList<>();
+        List<UIView> totalViews = new ArrayList<>();
 
         for (UIView view : views) {
             if (view != null && view.getParent() == this) {
@@ -743,9 +744,9 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     /** @param parentConstraints Specifies constraints on parent's edges, pass 0 for none, ConstraintSet.START or ConstraintSet.END or both, other values are ignored
      @param verticalMargin Use CONSTRAINT_NO_PADDING to not constraint vertically to the parent, it will center vertically.
      @param horizontalMargin The margin between the first item and the start of parent, and the last item and the end of parent. */
-    public void constraintHorizontally (ArrayList<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalWidths, int parentConstraints) {
+    public void constraintHorizontally (List<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalWidths, int parentConstraints) {
 
-        ArrayList<UIView> totalViews = new ArrayList<>();
+        List<UIView> totalViews = new ArrayList<>();
 
         for (UIView view : views) {
             if (view != null && view.getParent() == this) {

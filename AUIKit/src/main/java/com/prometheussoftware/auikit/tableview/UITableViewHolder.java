@@ -51,6 +51,18 @@ public class UITableViewHolder <V extends UIView> extends RecyclerView.ViewHolde
                     delegate.didSelectRowAtIndexPath(item, indexPath);
                 }
             });
+            if (view.getImageView() != null && view.getEditingStyle() != UITableViewCell.EDITING_STYLE.NONE) {
+                view.getImageView().setTarget(b -> {
+                    if (delegate != null) {
+                        delegate.tableViewCommitEditingStyleForRowAtIndexPath(view.getEditingStyle(), indexPath);
+                    }
+                });
+                view.getImageView().setKeyTarget((sender, keyCode) -> {
+                    if (delegate != null && keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+                        delegate.tableViewCommitEditingStyleForRowAtIndexPath(view.getEditingStyle(), indexPath);
+                    }
+                });
+            }
         }
     }
 

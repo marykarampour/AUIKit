@@ -3,7 +3,6 @@ package com.prometheussoftware.auikit.utility;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.prometheussoftware.auikit.BuildConfig;
 import com.prometheussoftware.auikit.common.Constants;
 
 public class DEBUGLOG {

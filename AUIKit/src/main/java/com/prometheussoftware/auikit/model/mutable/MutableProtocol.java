@@ -8,6 +8,7 @@ import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.genericviews.UICheckbox;
+import com.prometheussoftware.auikit.model.ArrayPropertyProtocol;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.ModelProtocol;
@@ -18,17 +19,23 @@ import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.ItemsListProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 import com.prometheussoftware.auikit.utility.DateUtility;
+import com.prometheussoftware.auikit.utility.MapUtility;
+import com.prometheussoftware.auikit.utility.NumberUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public interface MutableProtocol {
 
-    public enum FIELD_TYPE {
+    enum FIELD_TYPE {
         /** @brief Use for date cells */
         BLANK,
         /** @brief Same as SELECTION without the ability to select or indicator */
@@ -52,97 +59,294 @@ public interface MutableProtocol {
         LIST
     }
 
-    public interface SaveCallback<E extends Error> {
+    interface SaveCallback<E extends Error> {
         void onSuccess(Integer ID);
         void onFailure(E error);
     }
 
-    public interface UpdateCallback<E extends Error> {
+    interface UpdateCallback<E extends Error> {
         void onSuccess(boolean result);
         void onFailure(E error);
     }
 
-    public interface Field extends UITextView.TextViewDelegate, Serializable, Cloneable {
+    interface Field extends UITextView.TextViewDelegate, Serializable, Cloneable {
 
         /** @brief keys are field types and values are property names */
-        Map<Integer, String> propertyEnumDictionary();
+        default Map<Integer, String> propertyEnumDictionary() {
+            return Collections.emptyMap();
+        }
+
         /** @brief keys are field types and values are section types */
-        Map<Integer, Integer> sectionEnumDictionary();
+        default Map<Integer, Integer> sectionEnumDictionary() {
+            ArrayList<Integer> keys = new ArrayList<>(propertyEnumDictionary().keySet());
+            return MapUtility.mapWithObjectForKeys(keys, keys);
+        }
+
         /** @brief keys are section types and values are section titles */
-        Map<Integer, String> titleEnumDictionary();
-        boolean hasValueForObjectType(int type);
-        boolean hasValueForSectionType(int section);
-        boolean boolValueForObjectType(int type);
-        boolean boolValueForSectionType(int section);
-        Date dateValueForObjectType(int type);
-        Date dateValueForSectionType(int section);
-        DateUtility.FORMAT dateFormatForObjectType(int type);
-        DateUtility.FORMAT dateFormatForSectionType(int section);
-        StringUtility.TYPE textTypeForObjectType(int type);
-        boolean shouldValidateWhenEditingObjectType(int type);
-        Number numberValueForObjectType(int type);
-        Number numberValueForSectionType(int section);
+        default Map<Integer, String> titleEnumDictionary() {
+            return propertyEnumDictionary();
+        }
+
+        default boolean hasValueForObjectType(int type) {
+            return valueForObjectType(type) != null;
+        }
+
+        default boolean hasValueForSectionType(int section) {
+            if (isEditableSectionType(section)) return true;
+
+            Set<Integer> types = objectTypesForSectionType(section);
+            for (Integer type : types) {
+                if (hasValueForObjectType(type)) return true;
+            }
+            return false;
+        }
+
+        default boolean boolValueForObjectType(int type) {
+            Object obj = valueForObjectType(type);
+            if (obj instanceof Boolean) return (Boolean)obj;
+            return obj != null;
+        }
+
+        default boolean boolValueForSectionType(int section) {
+            Set<Integer> types = objectTypesForSectionType(section);
+            for (Integer type : types) {
+                Object obj = valueForObjectType(type);
+                if (obj instanceof Boolean) return (Boolean)obj;
+            }
+            return valuesForSectionType(section).size() != 0;
+        }
+
+        default Date dateValueForObjectType(int type) {
+            Object obj = valueForObjectType(type);
+            if (obj instanceof Date) return (Date)obj;
+            return null;
+        }
+
+        default Date dateValueForSectionType(int section) {
+            Set<Integer> types = objectTypesForSectionType(section);
+            for (Integer type : types) {
+                Object obj = valueForObjectType(type);
+                if (obj instanceof Date) return (Date)obj;
+            }
+            return null;
+        }
+
+        default DateUtility.FORMAT dateFormatForObjectType(int type) {
+            return DateUtility.FORMAT.DAY_TIME_STYLE;
+        }
+
+        default DateUtility.FORMAT dateFormatForSectionType(int section) {
+            return DateUtility.FORMAT.DAY_TIME_STYLE;
+        }
+
+        default StringUtility.TYPE textTypeForObjectType(int type) {
+            return StringUtility.TYPE.NONE;
+        }
+
+        default boolean shouldValidateWhenEditingObjectType(int type) {
+            return false;
+        }
+
+        default Number numberValueForObjectType(int type) {
+            Object obj = valueForObjectType(type);
+            if (obj instanceof Number) return (Number)obj;
+            return null;
+        }
+
+        default Number numberValueForSectionType(int section) {
+            Set<Integer> types = objectTypesForSectionType(section);
+            for (Integer type : types) {
+                Object obj = valueForObjectType(type);
+                if (obj instanceof Number) return (Number)obj;
+            }
+            return null;
+        }
+
         Object valueForObjectType(int type);
-        Set valuesForSectionType(int section);
-        String titleForObjectType(int type);
-        String titleForSectionType(int section);
-        Set<Integer> typesForSection(int section);
-        String stringValueForObjectType(int type);
-        String stringValueForSectionType(int section);
-        Set objectTypesForSectionType(int section);
-        String badgeValueForSectionType(int section);
+
+        default Set valuesForSectionType(int section) {
+            Set arr = new HashSet();
+            Set<Integer> types = objectTypesForSectionType(section);
+            for (Integer type : types) {
+                Object obj = valueForObjectType(type);
+                if (obj != null) arr.add(obj);
+            }
+            return arr;
+        }
+
+        default String titleForObjectType(int type) {
+            String key = propertyEnumDictionary().get(type);
+            return StringUtility.splitStringForUppercaseComponents(StringUtility.capitalizeFirstChar(key), true);
+        }
+
+        default String titleForSectionType(int section) {
+            String key = titleEnumDictionary().get(section);
+            return StringUtility.splitStringForUppercaseComponents(StringUtility.capitalizeFirstChar(key), true);
+        }
+
+        default Set<Integer> typesForSection(int section) {
+            return MapUtility.allKeysForObject(sectionEnumDictionary(), section);
+        }
+
+        default NumberUtility.STYLE numberStyleForObjectType (int type) {
+            StringUtility.TYPE textType = textTypeForObjectType(type);
+            switch (textType) {
+                case FLOAT:
+                case FLOAT_POSITIVE:
+                    return NumberUtility.STYLE.DECIMAL;
+                default:
+                    return NumberUtility.STYLE.NONE;
+            }
+        }
+
+        default String stringValueForObjectType(int type) {
+            Object object = valueForObjectType(type);
+
+            if (object == null) return null;
+            if (object instanceof String) return (String)object;
+            if (object instanceof Date)
+                return localDateStringWithDateForObjectType((Date)object, type);
+            if (object instanceof Number)
+                return NumberUtility.stringValueWithStyle((Number)object, numberStyleForObjectType(type), floatingDigits());
+            return object.toString();
+        }
+
+        default String stringValueForSectionType(int section) {
+
+            Set values = valuesForSectionType(section);
+            Optional str = values.stream().filter(o -> o instanceof String).findAny();
+
+            if (str.isPresent()) return str.toString();
+
+            Set<Integer> types = objectTypesForSectionType(section);
+            for (Integer type : types) {
+                String obj = stringValueForObjectType(type);
+                if (obj != null) return obj;
+            }
+
+            str = values.stream().findAny();
+            if (str.isPresent()) return str.toString();
+            return "";
+        }
+
+        default Set objectTypesForSectionType(int section) {
+            return MapUtility.allKeysForObject(sectionEnumDictionary(), section);
+        }
+
+        default String badgeValueForSectionType(int section) {
+            return "";
+        }
+
         /** @brief Default is 2. */
-        int floatingDigits();
+        default int floatingDigits() {
+            return 2;
+        }
+
         /** @brief Uses the same format as dates being formatted by this class. */
-        String localDateStringWithDate(Date date);
+        default String localDateStringWithDate(Date date) {
+            return DateUtility.dateStringWithFormat(date, DateUtility.FORMAT.DAY_TIME_STYLE.getName());
+        }
+
         /** @brief Uses the same format as dates being formatted by this class for object type. */
-        String localDateStringWithDateForObjectType(Date date, int type);
-        String localDateStringForObjectType(int type);
+        default String localDateStringWithDateForObjectType(Date date, int type) {
+            return DateUtility.dateStringWithFormat(date, dateFormatForObjectType(type).getName());
+        }
+
+        default String localDateStringForObjectType(int type) {
+            Object object = valueForObjectType(type);
+            if (object instanceof Date)
+                return localDateStringWithDateForObjectType((Date)object, type);
+            return "";
+        }
+
         void setValueForObjectType(Object value, int type);
         void setValueForSectionType(Object value, int section);
         void switchBoolValueForObjectType(int type);
-        void switchBoolValueForSectionType(int section);
-        boolean isLongValueForObjectType(int type);
-        boolean isLongValueForSectionType(int section);
-        boolean isEditableSectionType(int section);
-        boolean isCommentSectionType(int section);
-        boolean isUppercaseStringObjectType(int type);
-        boolean isEmailSectionType(int section);
-        boolean isPhoneSectionType(int section);
-        String missingValueErrorMessage();
-        String missingObjectErrorMessage();
+
+        default void switchBoolValueForSectionType(int section) {
+            Set<Integer> types = objectTypesForSectionType(section);
+
+            for (Integer type : types) {
+                switchBoolValueForObjectType(type);
+            }
+        }
+
+        default boolean isLongValueForObjectType(int type) {
+            return App.constants().MaxValue1CellCharacterCount() <= stringValueForObjectType(type).length();
+        }
+
+        default boolean isLongValueForSectionType(int section) {
+            Set<Integer> types = objectTypesForSectionType(section);
+
+            for (Integer type : types) {
+                if (isLongValueForObjectType(type))
+                    return true;
+            }
+            return false;
+        }
+
+        default boolean isEditableSectionType(int section) { return true; }
+        default boolean isCommentSectionType(int section) { return false; }
+        default boolean isUppercaseStringObjectType(int type) { return false; }
+        default boolean isEmailSectionType(int section) { return false; }
+        default boolean isPhoneSectionType(int section) { return false; }
+
+        default String missingValueErrorMessage() {
+            return "";
+        }
+        default String missingObjectErrorMessage() {
+            return "";
+        }
+
         /** @brief Set to implement custom updates when a value is updated. Useful in cases custom
          * calculations require a view update. */
         default void setUpdateDelegate(Delegate obj) {}
         default Delegate UpdateDelegate() { return null; }
 
-
         /** @brief Returns an array for a property that conforms to protocol MKUArrayPropertyProtocol. */
-        default <O extends ViewContentProtocol.Placeholder> List<O> arrayForObjectType (int type) { return null; }
+        default <O extends ViewContentProtocol.Placeholder> List<O> arrayForObjectType (int type) {
+            Object obj = valueForObjectType(type);
+
+            if (obj instanceof ArrayPropertyProtocol)
+                return ((ArrayPropertyProtocol) obj).array();
+            if (obj instanceof List)
+                return (List<O>) obj;
+            return null;
+        }
+
         /** @brief Returns an array for a section corresponding to a property that conforms to protocol MKUArrayPropertyProtocol. */
-        default <O extends ViewContentProtocol.Placeholder> List<O> arrayForSectionType (int type) { return null; }
+        default <O extends ViewContentProtocol.Placeholder> List<O> arrayForSectionType (int section) {
+            List value;
+
+            for (int i : typesForSection(section)) {
+                value = arrayForObjectType(i);
+                if (value != null)
+                    return value;
+            }
+            return null;
+        }
     }
 
-    public interface Mutable {
+    interface Mutable {
         String nameForOriginalObject();
         String nameForUpdatedObject();
         Class defaultClassForUpdatedObject();
         Class defaultClassForOriginalObject();
     }
 
-    public interface Update extends Mutable {
+    interface Update extends Mutable {
         boolean isLongValueForSectionType(int section);
         boolean isEditableSectionType(int section);
         boolean hasValueForSectionType(int section);
         boolean isCommentSectionType(int section);
     }
 
-    public interface Delegate<O extends FieldModel> {
+    interface Delegate<O extends FieldModel> {
         default void objectDidUpdateObjectType(O obj, Integer type) {}
         default void objectDidUpdateObjectType(O obj, Integer type, UITextField textField, boolean endEditing, IndexPath indexPath) {}
     }
 
-    public interface ViewController <ObjectType extends BaseModel & MutableProtocol.Field, UpdateObjectType extends BaseModel & MutableProtocol.Field, O extends MutableUpdateObject<ObjectType, UpdateObjectType>> extends Delegate, ModelProtocol.Object<O>, ItemsListProtocol.ListVC {
+    interface ViewController <ObjectType extends BaseModel & Field, UpdateObjectType extends BaseModel & Field, O extends MutableUpdateObject<ObjectType, UpdateObjectType>> extends Delegate, ModelProtocol.Object<O>, ItemsListProtocol.ListVC {
 
         /**
          * @note Default checks:
@@ -186,7 +390,7 @@ public interface MutableProtocol {
          * @brief This is called in reset, setObject and setUpdatedObject methods, use this to update any single cells like segments, or other needed updates,
          * default does nothing. Call super if you have date cells, it will automatically set the values in date cells.
          */
-        default void didResetUpdateObject(UpdateObjectType object) {}
+        default <T extends UpdateObjectType> void didResetUpdateObject(T object) {}
         /**
          * @brief Called every time object is set. Use this as a replacement for overriding setObject which is implemented in category UIViewController (MKUMutableObjectVC)
          * and should not be overriden.
@@ -205,7 +409,7 @@ public interface MutableProtocol {
          @note Default completion is nil. Set to perform other actions. */
         public UpdateCallback performSaveOrUpdateObjectCompletionHandler();
         /** @brief It calls setObject */
-        public void setUpdatedObject (UpdateObjectType updatedObject);
+        <T extends UpdateObjectType> void setUpdatedObject (T updatedObject);
 
         /** @brief Set initial isEditable state. Called in initBase. */
         default void initIsEditable() {}
@@ -220,7 +424,7 @@ public interface MutableProtocol {
         One of valueForSection or subvalueForSection should be non-empty to add as label.
         Return nil for placeholderTitleForSection in case of label, and not nil in case of types. */
         default boolean hasTypesForSection (int section) { return false; }
-        default boolean hasValueForSection (int section) { return false; }
+        default boolean hasValueForSection (int section) { return true; }
         /** @brief Return if you want the disclosure indicator be present.
         Default checks if canSelectSection or hasTypesForSection and canTransitionToPresentingSelectionVCInSection
         return YES. */
@@ -291,7 +495,7 @@ public interface MutableProtocol {
         default UITargetDelegate.TouchUp actionForFieldButtonAtIndexPath (IndexPath indexPath) { return null; }
     }
 
-    public interface TransitionDelegate {
+    interface TransitionDelegate {
 
         /** @brief Handles transitions, called in presentSelectionVC atIndexPath.
 

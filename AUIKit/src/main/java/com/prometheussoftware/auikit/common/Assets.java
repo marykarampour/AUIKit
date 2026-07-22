@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 
 import androidx.core.content.ContextCompat;
 
+import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.common.protocols.AssetsProtocol;
 
@@ -94,6 +95,16 @@ public class Assets implements AssetsProtocol {
 
     public static UIImage Shadow_Gradient_Down_Image() {
         return imageFromID(AssetIDs.Shadow_Gradient_Down_ID());
+    }
+
+    @Override
+    public UIImage Plus_Circle_Fill_Image() {
+        return imageFromID(AssetIDs.Plus_Circle_Fill_Icon(), UIColor.color("#30D158").get());
+    }
+
+    @Override
+    public UIImage Minus_Circle_Fill_Image() {
+        return imageFromID(AssetIDs.Minus_Circle_Fill_Icon(), UIColor.color("#FF3B30").get());
     }
 
     //endregion

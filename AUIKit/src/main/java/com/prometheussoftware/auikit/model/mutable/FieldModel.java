@@ -1,46 +1,18 @@
 package com.prometheussoftware.auikit.model.mutable;
 
-import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.model.ArrayPropertyProtocol;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Range;
 import com.prometheussoftware.auikit.uiview.UITextField;
 import com.prometheussoftware.auikit.uiview.UITextView;
-import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
-import com.prometheussoftware.auikit.utility.DateUtility;
-import com.prometheussoftware.auikit.utility.MapUtility;
-import com.prometheussoftware.auikit.utility.NumberUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
-public class FieldModel extends BaseModel implements MutableProtocol.Field {
+public class FieldModel extends BaseModel implements MutableProtocol.Field, ArrayPropertyProtocol {
 
     MutableProtocol.Delegate updateDelegate;
-
-    @Override
-    public <O extends ViewContentProtocol.Placeholder> List<O> arrayForObjectType(int type) { return null; }
-
-    @Override
-    public <O extends ViewContentProtocol.Placeholder> List<O> arrayForSectionType (int type) { return null; }
-
-    NumberUtility.STYLE numberStyleForObjectType (int type) {
-        StringUtility.TYPE textType = textTypeForObjectType(type);
-        switch (textType) {
-            case FLOAT:
-            case FLOAT_POSITIVE:
-                return NumberUtility.STYLE.DECIMAL;
-            default:
-                return NumberUtility.STYLE.NONE;
-        }
-    }
 
     String textForObjectType (String text , int type) {
         return isUppercaseStringObjectType(type) ? text.toUpperCase() : text;
@@ -48,207 +20,11 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
 
     //Field
     @Override
-    public Map<Integer, String> propertyEnumDictionary() {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public Map<Integer, Integer> sectionEnumDictionary() {
-        ArrayList<Integer> keys = new ArrayList<>(propertyEnumDictionary().keySet());
-        return MapUtility.mapWithObjectForKeys(keys, keys);
-    }
-
-    @Override
-    public Map<Integer, String> titleEnumDictionary() {
-        return propertyEnumDictionary();
-    }
-
-    @Override
-    public boolean hasValueForObjectType(int type) {
-        return valueForObjectType(type) != null;
-    }
-
-    @Override
-    public boolean hasValueForSectionType(int section) {
-        if (isEditableSectionType(section)) return true;
-
-        Set<Integer> types = objectTypesForSectionType(section);
-        for (Integer type : types) {
-            if (hasValueForObjectType(type)) return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean boolValueForObjectType(int type) {
-        Object obj = valueForObjectType(type);
-        if (obj instanceof Boolean) return (Boolean)obj;
-        return obj != null;
-    }
-
-    @Override
-    public boolean boolValueForSectionType(int section) {
-        Set<Integer> types = objectTypesForSectionType(section);
-        for (Integer type : types) {
-            Object obj = valueForObjectType(type);
-            if (obj instanceof Boolean) return (Boolean)obj;
-        }
-        return valuesForSectionType(section).size() != 0;
-    }
-
-    @Override
-    public Date dateValueForObjectType(int type) {
-        Object obj = valueForObjectType(type);
-        if (obj instanceof Date) return (Date)obj;
-        return null;
-    }
-
-    @Override
-    public Date dateValueForSectionType(int section) {
-        Set<Integer> types = objectTypesForSectionType(section);
-        for (Integer type : types) {
-            Object obj = valueForObjectType(type);
-            if (obj instanceof Date) return (Date)obj;
-        }
-        return null;
-    }
-
-    @Override
-    public DateUtility.FORMAT dateFormatForObjectType(int type) {
-        return DateUtility.FORMAT.DAY_TIME_STYLE;
-    }
-
-    @Override
-    public DateUtility.FORMAT dateFormatForSectionType(int section) {
-        return DateUtility.FORMAT.DAY_TIME_STYLE;
-    }
-
-    @Override
-    public StringUtility.TYPE textTypeForObjectType(int type) {
-        return StringUtility.TYPE.NONE;
-    }
-
-    @Override
-    public boolean shouldValidateWhenEditingObjectType(int type) {
-        return false;
-    }
-
-    @Override
-    public Number numberValueForObjectType(int type) {
-        Object obj = valueForObjectType(type);
-        if (obj instanceof Number) return (Number)obj;
-        return null;
-    }
-
-    @Override
-    public Number numberValueForSectionType(int section) {
-        Set<Integer> types = objectTypesForSectionType(section);
-        for (Integer type : types) {
-            Object obj = valueForObjectType(type);
-            if (obj instanceof Number) return (Number)obj;
-        }
-        return null;
-    }
-
-    @Override
     public Object valueForObjectType(int type) {
         String key = propertyEnumDictionary().get(type);
         if (!BaseModel.hasGetter(getClass(), key, true))
             return null;
         return valueForKey(key);
-    }
-
-    @Override
-    public Set valuesForSectionType(int section) {
-        Set arr = new HashSet();
-        Set<Integer> types = objectTypesForSectionType(section);
-        for (Integer type : types) {
-            Object obj = valueForObjectType(type);
-            if (obj != null) arr.add(obj);
-        }
-        return arr;
-    }
-
-    @Override
-    public String titleForObjectType(int type) {
-        String key = propertyEnumDictionary().get(type);
-        return StringUtility.splitStringForUppercaseComponents(StringUtility.capitalizeFirstChar(key), true);
-    }
-
-    @Override
-    public String titleForSectionType(int section) {
-        String key = titleEnumDictionary().get(section);
-        return StringUtility.splitStringForUppercaseComponents(StringUtility.capitalizeFirstChar(key), true);
-    }
-
-    @Override
-    public Set<Integer> typesForSection(int section) {
-        return MapUtility.allKeysForObject(sectionEnumDictionary(), section);
-    }
-
-    @Override
-    public String stringValueForObjectType(int type) {
-        Object object = valueForObjectType(type);
-
-        if (object == null) return null;
-        if (object instanceof String) return (String)object;
-        if (object instanceof Date)
-            return localDateStringWithDateForObjectType((Date)object, type);
-        if (object instanceof Number)
-            return NumberUtility.stringValueWithStyle((Number)object, numberStyleForObjectType(type), floatingDigits());
-        return object.toString();
-    }
-
-    @Override
-    public String stringValueForSectionType(int section) {
-
-        Set values = valuesForSectionType(section);
-        Optional str = values.stream().filter(o -> o instanceof String).findAny();
-
-        if (str.isPresent()) return str.toString();
-
-        Set<Integer> types = objectTypesForSectionType(section);
-        for (Integer type : types) {
-            String obj = stringValueForObjectType(type);
-            if (obj != null) return obj;
-        }
-
-        str = values.stream().findAny();
-        if (str.isPresent()) return str.toString();
-        return "";
-    }
-
-    @Override
-    public Set objectTypesForSectionType(int section) {
-        return MapUtility.allKeysForObject(sectionEnumDictionary(), section);
-    }
-
-    @Override
-    public String badgeValueForSectionType(int section) {
-        return "";
-    }
-
-    @Override
-    public int floatingDigits() {
-        return 2;
-    }
-
-    @Override
-    public String localDateStringWithDate(Date date) {
-        return DateUtility.dateStringWithFormat(date, DateUtility.FORMAT.DAY_TIME_STYLE.getName());
-    }
-
-    @Override
-    public String localDateStringWithDateForObjectType(Date date, int type) {
-        return DateUtility.dateStringWithFormat(date, dateFormatForObjectType(type).getName());
-    }
-
-    @Override
-    public String localDateStringForObjectType(int type) {
-        Object object = valueForObjectType(type);
-        if (object instanceof Date)
-            return localDateStringWithDateForObjectType((Date)object, type);
-        return "";
     }
 
     @Override
@@ -279,66 +55,6 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field {
 
         if (value instanceof Boolean)
             setValueForKey(!(Boolean) value, key);
-    }
-
-    @Override
-    public void switchBoolValueForSectionType(int section) {
-        Set<Integer> types = objectTypesForSectionType(section);
-
-        for (Integer type : types) {
-            switchBoolValueForObjectType(type);
-        }
-    }
-
-    @Override
-    public boolean isLongValueForObjectType(int type) {
-        return App.constants().MaxValue1CellCharacterCount() <= stringValueForObjectType(type).length();
-    }
-
-    @Override
-    public boolean isLongValueForSectionType(int section) {
-        Set<Integer> types = objectTypesForSectionType(section);
-
-        for (Integer type : types) {
-            if (isLongValueForObjectType(type))
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isEditableSectionType(int section) {
-        return true;
-    }
-
-    @Override
-    public boolean isCommentSectionType(int section) {
-        return false;
-    }
-
-    @Override
-    public boolean isUppercaseStringObjectType(int type) {
-        return false;
-    }
-
-    @Override
-    public boolean isEmailSectionType(int section) {
-        return false;
-    }
-
-    @Override
-    public boolean isPhoneSectionType(int section) {
-        return false;
-    }
-
-    @Override
-    public String missingValueErrorMessage() {
-        return "";
-    }
-
-    @Override
-    public String missingObjectErrorMessage() {
-        return "";
     }
 
     @Override

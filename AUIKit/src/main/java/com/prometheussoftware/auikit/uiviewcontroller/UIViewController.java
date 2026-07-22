@@ -53,6 +53,8 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
     private UITabBarItem tabBarItem;
 
+    private boolean editing;
+
     public UIViewController() {
         createDefaultNavigationBar();
     }
@@ -482,6 +484,10 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
     public String getTitle() {
         return title;
     }
+
+    public boolean isEditing() { return this.editing; }
+
+    public void setEditing(boolean editing) { this.editing = editing; }
 
     private void createDefaultNavigationBar() {
         navigationBar = new UINavigationBar();

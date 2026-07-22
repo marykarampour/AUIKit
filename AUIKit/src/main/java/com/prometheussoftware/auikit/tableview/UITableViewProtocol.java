@@ -7,6 +7,7 @@ import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
+import com.prometheussoftware.auikit.uiview.protocols.UIEditingAccessoryProtocol;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public interface UITableViewProtocol {
         default <V extends UITableViewHolder> V viewHolderForViewType(ViewGroup parent, int viewType) { return null; };
     }
 
-    interface TableViewData <V extends UIView & UIControlProtocol> {
+    interface TableViewData <V extends UIView & UIControlProtocol & UIEditingAccessoryProtocol> {
 
         default int numberOfRowsInSection(UITableView tableView, int section) {
             return 0;
@@ -87,17 +88,15 @@ public interface UITableViewProtocol {
             return new UILabel();
         }
 
-        default void didSelectRowAtIndexPath(UITableView tableView, IndexPath indexPath) {
-        }
+        default void didSelectRowAtIndexPath(UITableView tableView, IndexPath indexPath) {}
 
-        default void didDeselectRowAtIndexPath(UITableView tableView, IndexPath indexPath) {
-        }
+        default void didDeselectRowAtIndexPath(UITableView tableView, IndexPath indexPath) {}
 
-        default void didSelectSectionAtIndex(UITableView tableView, int section) {
-        }
+        default void didSelectSectionAtIndex(UITableView tableView, int section) {}
 
-        default void didDeselectSectionAtIndex(UITableView tableView, int section) {
-        }
+        default void didDeselectSectionAtIndex(UITableView tableView, int section) {}
+
+        default void tableViewCommitEditingStyleForRowAtIndexPath (UITableView tableView, UITableViewCell.EDITING_STYLE editingStyle, IndexPath indexPath) {}
 
         //Single table view
 
@@ -137,23 +136,27 @@ public interface UITableViewProtocol {
             return new UILabel();
         }
 
-        default void didSelectRowAtIndexPath(IndexPath indexPath) {
-        }
+        default void didSelectRowAtIndexPath(IndexPath indexPath) {}
 
-        default void didSelectRowAtIndexPath(Object item, IndexPath indexPath) {
-        }
+        default void didSelectRowAtIndexPath(Object item, IndexPath indexPath) {}
 
-        default void didDeselectRowAtIndexPath(Object item, IndexPath indexPath) {
-        }
+        default void didDeselectRowAtIndexPath(Object item, IndexPath indexPath) {}
 
-        default void didSelectSectionAtIndex(TableObject.Section item, int section) {
-        }
+        default void didSelectSectionAtIndex(TableObject.Section item, int section) {}
 
-        default void didDeselectSectionAtIndex(TableObject.Section item, int section) {
-        }
+        default void didDeselectSectionAtIndex(TableObject.Section item, int section) {}
 
-        default void didSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {
-        }
+        default void didSelectSectionAtIndex(TableObject.Section item, int section, boolean selected) {}
+
+        default boolean tableViewCanEditRowAtIndexPath (UITableView tableView, IndexPath indexPath) { return false; }
+
+        default boolean tableViewCanEditRowAtIndexPath (IndexPath indexPath) { return false; }
+
+        default UITableViewCell.EDITING_STYLE tableViewEditingStyleForRowAtIndexPath (UITableView tableView, IndexPath indexPath) { return UITableViewCell.EDITING_STYLE.NONE; }
+
+        default UITableViewCell.EDITING_STYLE tableViewEditingStyleForRowAtIndexPath (IndexPath indexPath) { return UITableViewCell.EDITING_STYLE.NONE; }
+
+        default void tableViewCommitEditingStyleForRowAtIndexPath (UITableViewCell.EDITING_STYLE editingStyle, IndexPath indexPath) {}
 
         default <V extends UIView> void customizeHeaderViewForViewType(V header, int viewType) {}
 

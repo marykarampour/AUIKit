@@ -3,17 +3,18 @@ package com.prometheussoftware.auikit.tableview.search;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
-import com.prometheussoftware.auikit.tableview.BaseCellDataSource;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.tableview.UITableViewController;
 import com.prometheussoftware.auikit.uiview.protocols.UISearchDelegate;
+import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class SearchTableViewController<T extends BaseModel & BaseCellDataSource, D extends SearchTableViewDataController<T>> extends UITableViewController<D, SearchTableViewContentController<T, D>> implements UISearchDelegate {
+public abstract class SearchTableViewController<T extends BaseModel & ViewContentProtocol.Placeholder, D extends SearchTableViewDataController<T>> extends UITableViewController<D, SearchTableViewContentController<T, D>> implements UISearchDelegate {
 
     private ArrayList<T> items;
     private ArrayList<T> searchItems;
@@ -99,7 +100,7 @@ public abstract class SearchTableViewController<T extends BaseModel & BaseCellDa
     private TableObject.RowData rowData (T selectedItem) {
 
         TableObject.RowData data = new TableObject.RowData(getSearchItems(), cellClass());
-        ArrayList<T> selected = ArrayUtility.arrayOf(selectedItem);
+        List<T> selected = ArrayUtility.arrayOf(selectedItem);
         data.setSelected(selected);
         return data;
     }

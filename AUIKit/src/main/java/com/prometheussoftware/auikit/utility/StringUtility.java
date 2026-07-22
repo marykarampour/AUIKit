@@ -11,6 +11,7 @@ import com.prometheussoftware.auikit.model.Range;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -163,7 +164,7 @@ public class StringUtility {
 
     public static String splitStringForUppercaseComponents (String string, boolean excludeSingleChars) {
         String[] components = string.split("(?=\\p{Upper})");
-        ArrayList<String> derivedComponents;
+        List<String> derivedComponents;
 
         if (excludeSingleChars) {
             ArrayList<String> excludedSingleCharComponents = new ArrayList();
@@ -321,7 +322,7 @@ public class StringUtility {
         return isNotEmpty(text) ? Long.parseLong(text.replaceAll("[\\D]","")) : 0;
     }
 
-    public static ArrayList<String> safeSplit (String string, String regex) {
+    public static List<String> safeSplit (String string, String regex) {
         if (isNotEmpty(string)) return ArrayUtility.arrayList(string.split(regex));
         return new ArrayList<>();
     }

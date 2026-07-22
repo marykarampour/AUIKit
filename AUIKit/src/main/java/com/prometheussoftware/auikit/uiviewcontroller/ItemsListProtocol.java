@@ -1,11 +1,14 @@
 package com.prometheussoftware.auikit.uiviewcontroller;
 
+import com.prometheussoftware.auikit.callback.ObjectCallback;
 import com.prometheussoftware.auikit.callback.SuccessErrorCallback;
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
+import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.tableview.BaseTableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
+import com.prometheussoftware.auikit.utility.ObjectUtility;
 
 import java.text.AttributedString;
 import java.util.ArrayList;
@@ -47,11 +50,11 @@ public interface ItemsListProtocol {
         tableView: commitEditingStyle: forRowAtIndexPath for UITableViewCellEditingStyleInsert.
         Corresponds to selectedActionHandler of type MKU_LIST_ITEM_SELECTED_ACTION_SELECT and MKU_LIST_ITEM_SELECTED_ACTION_SHOW_DETAIL */
         default void didSelectListItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
-        default List<ViewContentProtocol.Placeholder> listItemsForListOfType (int type) { return new ArrayList<>(); }
-        default List<ViewContentProtocol.Placeholder> listItemsForListInSection (int section) { return new ArrayList<>(); }
+        default <T extends ViewContentProtocol.Placeholder> List<T> listItemsForListOfType (int type) { return new ArrayList<>(); }
+        default <T extends ViewContentProtocol.Placeholder> List<T> listItemsForListInSection (int section) { return new ArrayList<>(); }
         default boolean canSelectItemsInListOfType (int type) { return false; }
         default int listTypeForListInSection (int section) { return section; }
-        default ViewContentProtocol.Placeholder listItemAtIndexPath (IndexPath indexPath) { return null; }
+        default <T extends ViewContentProtocol.Placeholder> T listItemAtIndexPath (IndexPath indexPath) { return null; }
 
         /** @brief Retun view controller to be pushed when an item is selected. It will be called in
         willAddItemToListOfType (int)type withCompletion as well. Return nil to do custom actions. */
@@ -65,7 +68,7 @@ public interface ItemsListProtocol {
         default VCTransitionDelegate transitionVCDelegate() { return null; }
         default void setTransitionVCDelegate() {}
 
-        default boolean dispatchTransitionVCDelegateToTransitionToViewController (UIViewController VC, UIViewController sourceVC, ViewContentProtocol.Placeholder item, IndexPath indexPath) {
+        default <T extends ViewContentProtocol.Placeholder> boolean dispatchTransitionVCDelegateToTransitionToViewController (UIViewController VC, UIViewController sourceVC, T item, IndexPath indexPath) {
             if (transitionVCDelegate() != null) {
                 transitionVCDelegate().handleTransitionToViewControllerForListItemAtIndexPath(VC, sourceVC, item, indexPath);
                 return true;
@@ -83,7 +86,7 @@ public interface ItemsListProtocol {
     }
 
     interface ListVC {
-        default ViewControllerCallback createPresentingSelectionVCForItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) {
+        default <T extends ViewContentProtocol.Placeholder> ViewControllerCallback createPresentingSelectionVCForItemAtIndexPath (T item, IndexPath indexPath) {
             return () -> { return null; };
         }
     }
@@ -96,24 +99,27 @@ public interface ItemsListProtocol {
         default int maxMultipleSelectionForListOfType (int type) { return 1; }
         /** @brief Return YES if self.editing should be always YES. The navbar will not have the edit button in this case. Default is NO. */
         default boolean canEditListsByDefault() { return false; }
-        default String titleForAddCellInListOfType (int type) { return ""; }
+        default String titleForAddCellInListOfType (int type) { return App.constants().Add_New_Item_STR(); }
         default int heightForNonEditingListRowAtIndexPath (IndexPath indexPath) { return 0; }
 
         /** @brief Peform any actions required to delete this item. In the completion, this ittem will be removed from the list. */
-        default void willDeleteItemForRowAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath, SuccessErrorCallback completion) {}
+        default <T extends ViewContentProtocol.Placeholder> void willDeleteItemForRowAtIndexPath (T item, IndexPath indexPath, SuccessErrorCallback completion) {}
 
         /** @brief Peform any actions required after deleting this item such as updating navbar. */
-        default void didDeleteItemForRowAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
+        default <T extends ViewContentProtocol.Placeholder> void didDeleteItemForRowAtIndexPath (T item, IndexPath indexPath) {}
 
         /** @brief Peform any actions required to construct this item. In the completion, this ittem will be add to the list. */
-        default void willAddItemToListOfType (int type, ViewContentProtocol.Callback completion) {}
+        default <T extends ViewContentProtocol.Placeholder> void willAddItemToListOfType (int type, ObjectCallback<T> callback) {
+            T item = newItemInListOfType(type);
+            callback.returns(item);
+        }
 
         /** @brief Peform any actions required after adding this item such as updating navbar. */
-        default void didAddItemForRowAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
+        default <T extends ViewContentProtocol.Placeholder> void didAddItemToListOfType (T item, int type) {}
 
         /** @brief If YES, the item is added on spot, if NO, presentTransitioningViewControllerWithItem is called to handle adding the new item.
         Default returns NO. */
-        default boolean shouldAddItemToListOfType(ViewContentProtocol.Placeholder item, int type) { return false; }
+        default <T extends ViewContentProtocol.Placeholder> boolean shouldAddItemToListOfType(T item, int type) { return false; }
 
         /** @brief Called after insert or delete actions are performed. Use to update other elements such as navbar. */
         default void didFinishCommitEditingStyleForRowAtIndexPath (UITableViewCell.EDITING_STYLE editingStyle, IndexPath indexPath) {}
@@ -121,10 +127,12 @@ public interface ItemsListProtocol {
         /** By default when viewController: didReturnWithResultType: object: is triggered, the object is either added or replaced if existing, or
         the object is of a different type than that of items which results in failure, in any case this method is called to handle the update's result.
         @param update YES if update succeeds and NO if it fails. */
-        default void didUpdateItemAtIndexPath (boolean update, ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
+        default <T extends ViewContentProtocol.Placeholder> void didUpdateItemAtIndexPath (boolean update, T item, IndexPath indexPath) {}
 
         /** @brief Return a new item to be used in willAddItemToListOfType:(NSUInteger)type withCompletion. Default uses  itemsClass to initialize it. */
-        default ViewContentProtocol.Placeholder newItemInListOfType (int type) { return null; }
+        default <T extends ViewContentProtocol.Placeholder> T newItemInListOfType (int type) {
+            return (T) ObjectUtility.objectWithParams(itemsClassInListOfType(type));
+        }
 
         default Class itemsClassInListOfType (int type) { return null; }
 
@@ -133,17 +141,26 @@ public interface ItemsListProtocol {
         /** @brief The object which will be retunred to transitionDelegate when Close button is pressed, e.g., items. */
         default Object returnedInCloseObject() { return null; }
 
-        default void itemDidMoveFromIndexToIndexInListOfType (ViewContentProtocol.Placeholder item1, int index1, int index2,  int type) {}
+        default <T extends ViewContentProtocol.Placeholder> void itemDidMoveFromIndexToIndexInListOfType (T item1, int index1, int index2,  int type) {}
+
+        default ItemsListProtocol.SelectionActionHandler selectedActionHandler() {
+            return new SelectionActionHandler() {
+                @Override
+                public LIST_ITEM_SELECTED_ACTION action(int section) {
+                    return LIST_ITEM_SELECTED_ACTION.NONE;
+                }
+            };
+        }
     }
 
     interface UpdateDelegate {
-        default <V extends UIViewController & EditingListVC & VC> void itemsListVCDidUpdateItemsInSection (V VC, List<ViewContentProtocol.Placeholder> items, int section) {}
+        default <V extends UIViewController & EditingListVC & VC> void itemsListVCDidUpdateItemsInListOfType(V VC, List<ViewContentProtocol.Placeholder> items, int type) {}
         default <V extends UIViewController & EditingListVC & VC> void itemsListVCDidUpdateItemAtIndexPath (V VC, ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
         default <V extends UIViewController & EditingListVC & VC> void itemsListVCDidSetSelectedAtIndexPath (V VC, boolean selected, ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
     }
 
     interface SelectionActionHandler {
-        default LIST_ITEM_SELECTED_ACTION selectedActionHandler(int type) { return LIST_ITEM_SELECTED_ACTION.NONE; }
+        default LIST_ITEM_SELECTED_ACTION action(int section) { return LIST_ITEM_SELECTED_ACTION.NONE; }
     }
 
     enum LIST_ITEM_SELECTED_ACTION {

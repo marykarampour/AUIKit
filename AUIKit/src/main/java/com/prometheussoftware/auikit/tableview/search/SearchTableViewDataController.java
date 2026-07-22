@@ -8,15 +8,15 @@ import androidx.annotation.Nullable;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Pair;
-import com.prometheussoftware.auikit.tableview.BaseCellDataSource;
 import com.prometheussoftware.auikit.tableview.TableObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewDataController;
 import com.prometheussoftware.auikit.tableview.UITableViewHolder;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
 import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 
-public abstract class SearchTableViewDataController <T extends BaseModel & BaseCellDataSource> extends UITableViewDataController {
+public abstract class SearchTableViewDataController <T extends BaseModel & ViewContentProtocol.Placeholder> extends UITableViewDataController {
 
     public SearchTableViewDataController() {
         super();
@@ -33,9 +33,9 @@ public abstract class SearchTableViewDataController <T extends BaseModel & BaseC
             super.bindDataForRow(item, indexPath, delegate);
 
             if (item instanceof Pair) {
-                Pair<TableObject.CellInfo, BaseCellDataSource> obj = (Pair<TableObject.CellInfo, BaseCellDataSource>)item;
+                Pair<TableObject.CellInfo, ViewContentProtocol.Placeholder> obj = (Pair<TableObject.CellInfo, ViewContentProtocol.Placeholder>)item;
                 SpannableStringBuilder title = obj.getSecond().attributedTitle();
-                view.getTitleLabel().setText(title != null ? title : obj.getSecond().plainTitle());
+                view.getTitleLabel().setText(title != null ? title : obj.getSecond().title());
                 view.setHeight(0 < obj.getFirst().minHeight ? obj.getFirst().minHeight : delegate.heightForRowAtIndexPath(item, indexPath));
                 view.setAccessoryType(obj.getFirst().selected ? UITableViewCell.ACCESSORY_TYPE.CHECKMARK : UITableViewCell.ACCESSORY_TYPE.NONE);
             }

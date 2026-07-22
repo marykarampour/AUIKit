@@ -9,6 +9,7 @@ import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public final class UITargetManager {
 
@@ -145,7 +146,7 @@ public final class UITargetManager {
      * com.prometheussoftware.auikit.tableview.-$$Lambda$UITableViewHolder$Cell */
     private String identifierForTarget (UITargetDelegate target) {
 
-        ArrayList components = ArrayUtility.arrayList(target.getClass().toString().split("\\$"));
+        List components = ArrayUtility.arrayList(target.getClass().toString().split("\\$"));
         if (1 < components.size()) {
             components.remove(components.size()-1);
             return components.toString();

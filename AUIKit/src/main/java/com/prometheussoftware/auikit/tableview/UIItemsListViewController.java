@@ -16,7 +16,7 @@ import com.prometheussoftware.auikit.uiviewcontroller.ItemsListProtocol;
 
 import java.util.ArrayList;
 
-public class UIItemsListViewController<T extends BaseModel & BaseCellDataSource, C extends BaseTableViewCell> extends UITableViewController implements ItemsListProtocol.VC, ItemsListProtocol.ListVC {
+public class UIItemsListViewController<T extends BaseModel & ViewContentProtocol.Placeholder, C extends BaseTableViewCell> extends UITableViewController implements ItemsListProtocol.VC, ItemsListProtocol.ListVC {
 
     private ArrayList<T> items = new ArrayList<>();
 
@@ -124,7 +124,7 @@ public class UIItemsListViewController<T extends BaseModel & BaseCellDataSource,
         return createPresentingSelectionVCForItemAtIndexPath(item, indexPath);
     }
 
-    public class DataController <T extends BaseModel & BaseCellDataSource> extends UITableViewDataController {
+    public class DataController <T extends BaseModel & ViewContentProtocol.Placeholder> extends UITableViewDataController {
 
         @Override
         public <V extends UITableViewHolder, C extends UITableViewCell> V viewHolderForCell(C cell) {
@@ -147,9 +147,9 @@ public class UIItemsListViewController<T extends BaseModel & BaseCellDataSource,
                 super.bindDataForRow(item, indexPath, delegate);
 
                 if (item instanceof Pair) {
-                    Pair<TableObject.CellInfo, BaseCellDataSource> obj = (Pair<TableObject.CellInfo, BaseCellDataSource>)item;
+                    Pair<TableObject.CellInfo, ViewContentProtocol.Placeholder> obj = (Pair<TableObject.CellInfo, ViewContentProtocol.Placeholder>)item;
                     SpannableStringBuilder title = obj.getSecond().attributedTitle();
-                    view.getTitleLabel().setText(title != null ? title : obj.getSecond().plainTitle());
+                    view.getTitleLabel().setText(title != null ? title : obj.getSecond().title());
                     view.setHeight(0 < obj.getFirst().minHeight ? obj.getFirst().minHeight : delegate.heightForRowAtIndexPath(item, indexPath));
                 }
             }

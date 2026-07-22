@@ -59,4 +59,8 @@ public class AssetIDs {
     public static int Pixel_ID() {
         return R.drawable.pixel;
     }
+
+    public static int Plus_Circle_Fill_Icon() { return R.drawable.plus_circle_fill; }
+
+    public static int Minus_Circle_Fill_Icon() { return R.drawable.minus_circle_fill; }
 }
