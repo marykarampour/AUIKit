@@ -112,5 +112,4 @@ public abstract class UICheckbox <L extends UIView, R extends UIView> extends UI
             rightView.setEnabled(true);
         }
     }
-
 }

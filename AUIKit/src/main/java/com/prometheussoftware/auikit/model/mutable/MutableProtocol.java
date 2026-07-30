@@ -304,26 +304,25 @@ public interface MutableProtocol {
         default Delegate UpdateDelegate() { return null; }
 
         /** @brief Returns an array for a property that conforms to protocol MKUArrayPropertyProtocol. */
-        default <O extends ViewContentProtocol.Placeholder> List<O> arrayForObjectType (int type) {
+        default <O extends ViewContentProtocol.Placeholder> ArrayList<O> arrayForObjectType (int type) {
             Object obj = valueForObjectType(type);
 
             if (obj instanceof ArrayPropertyProtocol)
                 return ((ArrayPropertyProtocol) obj).array();
             if (obj instanceof List)
-                return (List<O>) obj;
-            return null;
+                return (ArrayList<O>) obj;
+            return new ArrayList();
         }
 
         /** @brief Returns an array for a section corresponding to a property that conforms to protocol MKUArrayPropertyProtocol. */
-        default <O extends ViewContentProtocol.Placeholder> List<O> arrayForSectionType (int section) {
-            List value;
+        default <O extends ViewContentProtocol.Placeholder> ArrayList<O> arrayForSectionType (int section) {
 
             for (int i : typesForSection(section)) {
-                value = arrayForObjectType(i);
+                ArrayList value = arrayForObjectType(i);
                 if (value != null)
                     return value;
             }
-            return null;
+            return new ArrayList();
         }
     }
 

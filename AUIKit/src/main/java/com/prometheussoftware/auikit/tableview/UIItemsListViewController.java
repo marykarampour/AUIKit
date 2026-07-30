@@ -149,7 +149,7 @@ public class UIItemsListViewController<T extends BaseModel & ViewContentProtocol
                 if (item instanceof Pair) {
                     Pair<TableObject.CellInfo, ViewContentProtocol.Placeholder> obj = (Pair<TableObject.CellInfo, ViewContentProtocol.Placeholder>)item;
                     SpannableStringBuilder title = obj.getSecond().attributedTitle();
-                    view.getTitleLabel().setText(title != null ? title : obj.getSecond().title());
+                    view.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(title != null ? title : obj.getSecond().title());
                     view.setHeight(0 < obj.getFirst().minHeight ? obj.getFirst().minHeight : delegate.heightForRowAtIndexPath(item, indexPath));
                 }
             }

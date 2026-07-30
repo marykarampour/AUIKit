@@ -72,9 +72,9 @@ public abstract class CollapsingSectionsMenuViewController extends CollapsingTab
                 if (item instanceof Pair) {
                     MenuObject.Item obj = (MenuObject.Item) ((Pair) item).getSecond();
 
-                    view.getTitleLabel().setTextColor(obj.textColor);
-                    view.getTitleLabel().setText(obj.title);
-                    view.getTitleLabel().setFont(obj.font);
+                    view.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setTextColor(obj.textColor);
+                    view.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(obj.title);
+                    view.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setFont(obj.font);
                     view.setHeight(obj.hidden ? 0 : delegate.heightForRowAtIndexPath(item, indexPath));
                     view.setAccessoryType(UITableViewCell.ACCESSORY_TYPE.DISCLOSURE_INDICATOR);
                 }
@@ -94,9 +94,9 @@ public abstract class CollapsingSectionsMenuViewController extends CollapsingTab
                 if (item instanceof MenuObject.Section) {
                     MenuObject.Section obj = (MenuObject.Section) item;
 
-                    view.getTitleLabel().setTextColor(obj.object.textColor);
-                    view.getTitleLabel().setText(obj.object.title);
-                    view.getTitleLabel().setFont(obj.object.font);
+                    view.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setTextColor(obj.object.textColor);
+                    view.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(obj.object.title);
+                    view.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setFont(obj.object.font);
                     view.getContentView().setBackgroundColor(obj.object.backgroundColor);
                     view.setHeight(obj.estimatedHeight());
                     view.checkView().setOn(obj.isExpanded);

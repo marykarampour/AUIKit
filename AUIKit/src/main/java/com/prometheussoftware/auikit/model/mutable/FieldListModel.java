@@ -1,6 +1,7 @@
 package com.prometheussoftware.auikit.model.mutable;
 
 import com.prometheussoftware.auikit.model.ArrayPropertyProtocol;
+import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 
 import java.util.HashMap;
@@ -17,6 +18,10 @@ public class FieldListModel <ObjectTypeA extends ViewContentProtocol.Placeholder
     public ObjectTypeB itemsB;
     public ObjectTypeC itemsC;
     public ObjectTypeD itemsD;
+
+    static {
+        BaseModel.Register(FieldListModel.class);
+    }
 
     /** @brief The array that itemsA returns. */
     public List<ObjectTypeA> arrayA() {

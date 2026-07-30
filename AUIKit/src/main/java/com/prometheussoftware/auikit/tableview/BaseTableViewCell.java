@@ -15,12 +15,20 @@ public class BaseTableViewCell extends UITableViewCell {
         init();
     }
 
+    public BaseTableViewCell(STYLE style) {
+        super(style);
+        init();
+    }
+
     @Override
     public void initView() {
         super.initView();
 
-        getTitleLabel().setTextColor(App.theme().Black_Blue_Color());
-        getTitleLabel().setFont(App.theme().Medium_Regular_Font());
+        getLabel(LABEL_TYPE.TEXT.intValue()).setTextColor(App.theme().Black_Blue_Color());
+        getLabel(LABEL_TYPE.TEXT.intValue()).setFont(App.theme().Medium_Bold_Font());
+        getLabel(LABEL_TYPE.DETAIL_TEXT.intValue()).setTextColor(App.theme().Black_Silver_Color());
+        getLabel(LABEL_TYPE.DETAIL_TEXT.intValue()).setFont(App.theme().Medium_Regular_Font());
+
         contentView.setBackgroundColor(UIColor.white(1.0f));
     }
 

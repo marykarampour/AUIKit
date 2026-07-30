@@ -1,5 +1,7 @@
 package com.prometheussoftware.auikit.uiviewcontroller;
 
+import android.text.SpannableStringBuilder;
+
 import com.prometheussoftware.auikit.callback.ObjectCallback;
 import com.prometheussoftware.auikit.callback.SuccessErrorCallback;
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
@@ -8,9 +10,9 @@ import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.tableview.BaseTableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
+import com.prometheussoftware.auikit.utility.ArrayUtility;
 import com.prometheussoftware.auikit.utility.ObjectUtility;
 
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,38 +25,105 @@ public interface ItemsListProtocol {
 
     interface VC {
         /** @brief Default uses textLabelAtIndexPath and detailTextLabelAtIndexPath and  attributedTextLabelAtIndexPath and attributedDetailTextLabelAtIndexPath. */
-        default void setTextForRowAtIndexPath (IndexPath indexPath, BaseTableViewCell cell) {}
+        default <T extends ViewContentProtocol.Placeholder> void setTextForListItemAtIndexPath (T item, IndexPath indexPath, BaseTableViewCell cell) {
+            SpannableStringBuilder attrTitle = attributedTextLabelForListItemAtIndexPath(item, indexPath);
+            SpannableStringBuilder attrSubtitle = attributedDetailTextLabelForListItemAtIndexPath(item, indexPath);
+
+            if (attrTitle != null) {
+                cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(attrTitle);
+            }
+            else {
+                cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(textLabelAtIndexPath(indexPath));
+            }
+
+            if (attrSubtitle != null) {
+                cell.getLabel(UITableViewCell.LABEL_TYPE.DETAIL_TEXT.intValue()).setText(attrSubtitle);
+            }
+            else {
+                cell.getLabel(UITableViewCell.LABEL_TYPE.DETAIL_TEXT.intValue()).setText(detailTextLabelAtIndexPath(indexPath));
+            }
+        }
+
         /** @brief Default sets accessoryType and selectionStyle. */
-        default void setStyleForRowAtIndexPath (IndexPath indexPath, BaseTableViewCell cell) {}
-        default UITableViewCell.STYLE cellStyleForSubtitleRowAtIndexPath (IndexPath indexPath) { return UITableViewCell.STYLE.DEFAULT; }
-        default UITableViewCell.ACCESSORY_TYPE accessoryTypeForRowAtIndexPath (IndexPath indexPath) { return UITableViewCell.ACCESSORY_TYPE.NONE; }
+        default <T extends ViewContentProtocol.Placeholder> void setStyleForListItemAtIndexPath (T item, IndexPath indexPath, BaseTableViewCell cell) {
+
+            int sectionType = sectionTypeForIndexPath(indexPath);
+            UITableViewCell.ACCESSORY_TYPE type = accessoryTypeForListItemAtIndexPath(item, indexPath);
+
+            cell.setSelectionStyle(selectionStyleForListOfType(sectionType));
+            cell.setAccessoryType(type);
+        }
+
+        default <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForListItemAtIndexPath(T item, IndexPath indexPath) {
+
+            int sectionType = sectionTypeForIndexPath(indexPath);
+
+            if (!allowsMultipleSelection()) {
+                return isSelectedRowAtIndexPath(indexPath) ? accessoryTypeForSelectedListItemInListOfType(item, sectionType) : accessoryTypeForSingleDeselectedListItemInListOfType(item, sectionType);
+            }
+            else {
+                return isSelectedRowAtIndexPath(indexPath) ? accessoryTypeForSelectedListItemInListOfType(item, sectionType) :  accessoryTypeForDeselectedListItemInListOfType(item, sectionType);
+            }
+        }
+
+        default boolean allowsMultipleSelection() { return false; }
+        default int sectionTypeForIndexPath(IndexPath indexPath) { return listTypeForListInSection(indexPath.section); }
+
         /** @brief Default is UITableViewCellAccessoryCheckmark. */
-        default UITableViewCell.ACCESSORY_TYPE accessoryTypeForSelectedRowForListOfType (int type) { return UITableViewCell.ACCESSORY_TYPE.NONE; }
+        default <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForSelectedListItemInListOfType (T item, int type) {
+            return UITableViewCell.ACCESSORY_TYPE.NONE; }
         /** @brief Default is UITableViewCellAccessoryNone. */
-        default UITableViewCell.ACCESSORY_TYPE accessoryTypeForDeselectedRowForListOfType (int type) { return UITableViewCell.ACCESSORY_TYPE.NONE; }
+        default <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForDeselectedListItemInListOfType(T item, int sectionType) { return UITableViewCell.ACCESSORY_TYPE.NONE; }
         /** @brief Default is UITableViewCellAccessoryDisclosureIndicator. */
-        default UITableViewCell.ACCESSORY_TYPE accessoryTypeForSingleDeselectedRowForListOfType (int type) { return UITableViewCell.ACCESSORY_TYPE.NONE; }
+        default <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForSingleDeselectedListItemInListOfType (T item, int type) { return UITableViewCell.ACCESSORY_TYPE.NONE; }
+
         /** @brief If allowsMultipleSelection it is defaulted to UITableViewCellSelectionStyleNone else UITableViewCellSelectionStyleDefault. */
-        default UITableViewCell.SELECTION_STYLE selectionStyleForListOfType (int type)  { return UITableViewCell.SELECTION_STYLE.NONE; }
+        default UITableViewCell.SELECTION_STYLE selectionStyleForListOfType (int type)  {
+            if (!allowsMultipleSelection())
+                return UITableViewCell.SELECTION_STYLE.DEFAULT;
+            return UITableViewCell.SELECTION_STYLE.NONE;
+        }
 
         /** @brief Default returns YES. */
         default boolean canSelectSection (int section) { return true; }
         default String noItemAvailableTitleForListOfType (int type) { return ""; }
-        default String textLabelAtIndexPath (IndexPath indexPath) { return ""; }
-        default String detailTextLabelAtIndexPath (IndexPath indexPath) { return ""; }
-        default AttributedString attributedTextLabelAtIndexPath (IndexPath indexPath) { return null; }
-        default AttributedString attributedDetailTextLabelAtIndexPath (IndexPath indexPath) { return null; }
+        default <T extends ViewContentProtocol.Placeholder> String textLabelAtIndexPath (IndexPath indexPath) { return listItemAtIndexPath(indexPath).title(); }
+        default <T extends ViewContentProtocol.Placeholder> String detailTextLabelAtIndexPath (IndexPath indexPath) { return listItemAtIndexPath(indexPath).subtitle(); }
+        default <T extends ViewContentProtocol.Placeholder> SpannableStringBuilder attributedTextLabelForListItemAtIndexPath (T item, IndexPath indexPath) {
+            if (item == null) return null;
+            return item.attributedTitle();
+        }
+        default <T extends ViewContentProtocol.Placeholder> SpannableStringBuilder attributedDetailTextLabelForListItemAtIndexPath (T item, IndexPath indexPath) {
+            if (item == null) return null;
+            return item.attributedSubtitle();
+        }
         default boolean isSelectedRowAtIndexPath (IndexPath indexPath) { return false; }
-        default <C extends BaseTableViewCell> C cellForListItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) { return (C) new BaseTableViewCell(); }
+        default <T extends ViewContentProtocol.Placeholder, C extends BaseTableViewCell> C cellForListItemAtIndexPath (T item, IndexPath indexPath) {
+            UITableViewCell.STYLE style = cellStyleForSubtitleListItemAtIndexPath(item, indexPath);
+            BaseTableViewCell cell = new BaseTableViewCell(style);
+            setTextForListItemAtIndexPath(item, indexPath, cell);
+            setStyleForListItemAtIndexPath(item, indexPath, cell);
+            return (C) cell;
+        }
+
+        default <T extends ViewContentProtocol.Placeholder> UITableViewCell.STYLE cellStyleForSubtitleListItemAtIndexPath(T item, IndexPath indexPath) { return UITableViewCell.STYLE.SUBTITLE; }
+
         /** @brief Called in tableView: didSelectRowAtIndexPath or methods called by it when a section is of type list or
         tableView: commitEditingStyle: forRowAtIndexPath for UITableViewCellEditingStyleInsert.
         Corresponds to selectedActionHandler of type MKU_LIST_ITEM_SELECTED_ACTION_SELECT and MKU_LIST_ITEM_SELECTED_ACTION_SHOW_DETAIL */
         default void didSelectListItemAtIndexPath (ViewContentProtocol.Placeholder item, IndexPath indexPath) {}
         default <T extends ViewContentProtocol.Placeholder> List<T> listItemsForListOfType (int type) { return new ArrayList<>(); }
-        default <T extends ViewContentProtocol.Placeholder> List<T> listItemsForListInSection (int section) { return new ArrayList<>(); }
+        default <T extends ViewContentProtocol.Placeholder> List<T> listItemsForListInSection (int section) { return listItemsForListOfType(listTypeForListInSection(section)); }
         default boolean canSelectItemsInListOfType (int type) { return false; }
         default int listTypeForListInSection (int section) { return section; }
-        default <T extends ViewContentProtocol.Placeholder> T listItemAtIndexPath (IndexPath indexPath) { return null; }
+        default int listSectionForListType (int type) { return type; }
+        default <T extends ViewContentProtocol.Placeholder> T listItemAtIndexPath (IndexPath indexPath) {
+            int section = indexPath.section;
+            int type = sectionTypeForIndexPath(indexPath);
+            T item = ArrayUtility.safeGet(listItemsForListOfType(type), indexPath.row);
+            if (item != null) return item;
+            return ArrayUtility.safeGet(listItemsForListInSection(section), indexPath.row);
+        }
 
         /** @brief Retun view controller to be pushed when an item is selected. It will be called in
         willAddItemToListOfType (int)type withCompletion as well. Return nil to do custom actions. */

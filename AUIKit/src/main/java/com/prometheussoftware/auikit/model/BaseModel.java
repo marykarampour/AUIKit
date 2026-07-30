@@ -1,6 +1,7 @@
 package com.prometheussoftware.auikit.model;
 
 import com.google.gson.Gson;
+import com.prometheussoftware.auikit.utility.ArrayUtility;
 import com.prometheussoftware.auikit.utility.DEBUGLOG;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
@@ -9,8 +10,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class BaseModel implements Serializable, Cloneable {
@@ -23,7 +27,7 @@ public class BaseModel implements Serializable, Cloneable {
         private boolean usingAncestors;
         private Class base = BaseModel.class;
         private Class self;
-        private HashMap<String, Class> propertyTypeNames;
+        private HashMap<String, ArrayList<String>> propertyTypeNames = new HashMap();
 
         public Class getBase() {
             return base;
@@ -33,7 +37,7 @@ public class BaseModel implements Serializable, Cloneable {
             return self;
         }
 
-        public HashMap<String, Class> getPropertyTypeNames() {
+        public HashMap<String, ArrayList<String>> getPropertyTypeNames() {
             return propertyTypeNames;
         }
 
@@ -82,11 +86,11 @@ public class BaseModel implements Serializable, Cloneable {
         return reflect != null ? reflect.getPropertyTypeNames().keySet() : null;
     }
 
-    public static HashMap<String, Class> initializePropertyTypeNames (Reflect object) {
+    public static HashMap<String, ArrayList<String>> initializePropertyTypeNames (Reflect object) {
         if (object.self == null) return null;
         if (object.usingAncestors) {
 
-            HashMap<String, Class> map =  new HashMap<>();
+            HashMap<String, ArrayList<String>> map =  new HashMap<>();
             Class currentClass = object.self;
 
             while (currentClass != object.base && currentClass != Object.class) {
@@ -100,14 +104,54 @@ public class BaseModel implements Serializable, Cloneable {
         }
     }
 
-    public static HashMap<String, Class> attributePropertyNamesOfClass (Class objectClass) {
+    public static HashMap<String, ArrayList<String>> attributePropertyNamesOfClass (Class objectClass) {
 
-        HashMap<String, Class> map =  new HashMap<>();
+        HashMap<String, ArrayList<String>> map =  new HashMap<>();
+
         for (Field field : objectClass.getDeclaredFields()) {
             if ((field.getModifiers() & Modifier.FINAL) == Modifier.FINAL) continue;
-            map.put(field.getName(), field.getType());
+
+            ArrayList<String> arr = new ArrayList();
+            List<String> excluding = unusedAttributes();
+
+            Type type = field.getGenericType();
+            ArrayUtility.addUniqueObject(arr, type.toString(), excluding);
+
+            for (Type t : type.getClass().getInterfaces()) {
+                String str = t.toString().replace("interface ", "");
+                ArrayUtility.addUniqueObject(arr, str, excluding);
+            }
+
+            for (Type t : type.getClass().getClasses()) {
+                String str = t.toString().replace("class ", "");
+                ArrayUtility.addUniqueObject(arr, str, excluding);
+            }
+
+            if (type instanceof TypeVariable) {
+                TypeVariable tv = (TypeVariable) type;
+                for (Type t : tv.getBounds()) {
+                    String str = t.toString().replace("interface ", "");
+                    str = str.replace("class ", "");
+                    ArrayUtility.addUniqueObject(arr, str, excluding);
+                }
+            }
+
+            map.put(field.getName(), arr);
         }
         return map;
+    }
+
+    private static List<String> unusedAttributes() {
+        ArrayList<String> arr = new ArrayList();
+        arr.add("java.io.Serializable");
+        arr.add("java.lang.reflect.GenericDeclaration");
+        arr.add("java.lang.reflect.Type");
+        arr.add("java.lang.reflect.AnnotatedElement");
+        arr.add("java.lang.invoke.TypeDescriptor$OfField");
+        arr.add("java.lang.constant.Constable");
+        arr.add("java.lang.reflect.ParameterizedType");
+        arr.add("java.lang.reflect.TypeVariable");
+        return arr;
     }
 
     @Override
@@ -226,9 +270,23 @@ public class BaseModel implements Serializable, Cloneable {
         }
     }
 
-    public static Class classOfPropertyForObjectClass (String name, Class objectClass) {
+    public static List<Class> classOfPropertyForObjectClass (String name, Class objectClass) {
+        Reflect reflect = BaseModel.Registrar.get(objectClass);
         Field field = fieldOrDeclared(objectClass, name);
-        return field != null ? field.getType() : null;
+        ArrayList arr = new ArrayList();
+
+        if (field != null) ArrayUtility.addUniqueObject(arr, field.getType());
+        if (reflect == null) return arr;
+
+        for (String obj : reflect.getPropertyTypeNames().get(name)) {
+            try {
+                Class cls = Class.forName(obj);
+                ArrayUtility.addUniqueObject(arr, cls);
+            } catch (ClassNotFoundException e) {
+                DEBUGLOG.s(e);
+            }
+        }
+        return arr;
     }
 
     /** This method only works for public fields of a class and its ancestors */

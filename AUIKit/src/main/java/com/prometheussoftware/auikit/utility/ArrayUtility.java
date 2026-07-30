@@ -153,11 +153,30 @@ public class ArrayUtility {
     }
 
     /** @brief If object is already in the array, nothing will happen.
+     * @param excludingArray anObject will not be added to otherArray if it is in excludingArray.
+     * @return A BOOL indicating if the object was added to the array. */
+    public static <T> boolean addUniqueObject (List<T> otherArray, T anObject, List<T> excludingArray) {
+        if (excludingArray.contains(anObject)) return false;
+        return addUniqueObject(otherArray, anObject);
+    }
+
+    /** @brief If object is already in the array, nothing will happen.
     @return Objects that failed to be added to the array. */
     public static <T> List<T> addUniqueObjectsFromArray (List<T> array, List<T> otherArray) {
         List<T> existing = new ArrayList<>();
         for (T obj : otherArray) {
             if (!addUniqueObject(array, obj))
+                existing.add(obj);
+        }
+        return existing;
+    }
+
+    /** @brief If object is already in the array, nothing will happen.
+     @return Objects that failed to be added to the array. */
+    public static <T> List<T> addUniqueObjectsFromArray (List<T> array, List<T> otherArray, List<T> excludingArray) {
+        List<T> existing = new ArrayList<>();
+        for (T obj : otherArray) {
+            if (!addUniqueObject(array, obj, excludingArray))
                 existing.add(obj);
         }
         return existing;

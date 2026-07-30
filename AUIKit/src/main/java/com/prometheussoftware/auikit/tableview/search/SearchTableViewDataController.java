@@ -35,7 +35,7 @@ public abstract class SearchTableViewDataController <T extends BaseModel & ViewC
             if (item instanceof Pair) {
                 Pair<TableObject.CellInfo, ViewContentProtocol.Placeholder> obj = (Pair<TableObject.CellInfo, ViewContentProtocol.Placeholder>)item;
                 SpannableStringBuilder title = obj.getSecond().attributedTitle();
-                view.getTitleLabel().setText(title != null ? title : obj.getSecond().title());
+                view.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(title != null ? title : obj.getSecond().title());
                 view.setHeight(0 < obj.getFirst().minHeight ? obj.getFirst().minHeight : delegate.heightForRowAtIndexPath(item, indexPath));
                 view.setAccessoryType(obj.getFirst().selected ? UITableViewCell.ACCESSORY_TYPE.CHECKMARK : UITableViewCell.ACCESSORY_TYPE.NONE);
             }

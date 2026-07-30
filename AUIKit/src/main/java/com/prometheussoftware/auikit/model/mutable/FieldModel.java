@@ -8,30 +8,40 @@ import com.prometheussoftware.auikit.uiview.UITextField;
 import com.prometheussoftware.auikit.uiview.UITextView;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 public class FieldModel extends BaseModel implements MutableProtocol.Field, ArrayPropertyProtocol {
 
     MutableProtocol.Delegate updateDelegate;
 
+    static {
+        BaseModel.Register(FieldModel.class);
+    }
+
     String textForObjectType (String text , int type) {
         return isUppercaseStringObjectType(type) ? text.toUpperCase() : text;
     }
+
+    @Override
+    public ArrayList array() {
+        return null;
+    }
+
+    @Override
+    public void setArray(ArrayList array) {}
 
     //Field
     @Override
     public Object valueForObjectType(int type) {
         String key = propertyEnumDictionary().get(type);
-        if (!BaseModel.hasGetter(getClass(), key, true))
-            return null;
         return valueForKey(key);
     }
 
     @Override
     public void setValueForObjectType(Object value, int type) {
         String key = propertyEnumDictionary().get(type);
-        if (BaseModel.hasSetter(getClass(), key, true))
-            setValueForKeyForAllAccessLevels(value, key);
+        setValueForKeyForAllAccessLevels(value, key);
     }
 
     @Override
@@ -40,10 +50,15 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field, Arra
 
         for (Integer type : types) {
             String key = propertyEnumDictionary().get(type);
-            Class cls = BaseModel.classOfPropertyForObjectClass(key, getClass());
-            if (cls.isAssignableFrom(value.getClass())) {
-                setValueForObjectType(value, type);
-                return;
+            for (Class cls : BaseModel.classOfPropertyForObjectClass(key, getClass())) {
+                if (cls != null && cls.isAssignableFrom(value.getClass())) {
+                    setValueForObjectType(value, type);
+                    return;
+                }
+                else if (ArrayPropertyProtocol.class.isAssignableFrom(cls) && value instanceof ArrayList) {
+                    ArrayPropertyProtocol obj = (ArrayPropertyProtocol) valueForObjectType(type);
+                    obj.setArray((ArrayList) value);
+                }
             }
         }
     }
@@ -84,9 +99,7 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field, Arra
 
     //endregion
 
-
     //region Text
-
     void handleTextFieldUpdates (UITextField textField, String newText, boolean setTextField, boolean endEditing) {
 
         IndexPath indexPath = textField.getIndexPath();
@@ -97,10 +110,11 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field, Arra
         Integer type = indexPath.row;
         Object value = text;
         String name = propertyEnumDictionary().get(type);
-        Class cls = classOfPropertyForObjectClass(name, getClass());
 
-        if (Number.class.isAssignableFrom(cls))
-            value = StringUtility.numValue(text);
+        for (Class cls : classOfPropertyForObjectClass(name, getClass())) {
+            if (Number.class.isAssignableFrom(cls))
+                value = StringUtility.numValue(text);
+        }
 
         setValueForObjectType(value, type);
 

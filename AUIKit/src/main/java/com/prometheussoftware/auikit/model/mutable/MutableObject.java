@@ -30,16 +30,12 @@ public class MutableObject <O extends MutableProtocol.Field, U extends MutablePr
     }
 
     void setupWithObject (O object) {
-
         Object obj = object;//TODO: should be copy, but clone is broken BaseModel.copy(object);
 
         if (obj == null) {
             Class cls = getClassForOriginalObject();
-            if (!Cloneable.class.isAssignableFrom(cls))
-                cls = classOfPropertyForObjectClass("OriginalObject", getClass());
             obj = ObjectUtility.objectWithParams(cls);
         }
-
         setOriginalObject((O) obj);
     }
 

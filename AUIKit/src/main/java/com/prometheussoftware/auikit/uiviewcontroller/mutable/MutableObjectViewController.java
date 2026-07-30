@@ -451,46 +451,19 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public void setTextForRowAtIndexPath(IndexPath indexPath, BaseTableViewCell cell) {
-//        [self defaultSetTextForRowAtIndexPath:indexPath inCell:cell];
-    }
+    public <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForSelectedListItemInListOfType(T item, int type) {
 
-    @Override
-    public void setStyleForRowAtIndexPath(IndexPath indexPath, BaseTableViewCell cell) {
-//            [self defaultSetStyleForRowAtIndexPath:indexPath inCell:cell];
+        int section = listSectionForListType(type);
+        ItemsListProtocol.LIST_ITEM_SELECTED_ACTION action = selectedActionHandler.action(section);
+        switch (action) {
+            case TRANSITION_TO_DETAIL:
+                return UITableViewCell.ACCESSORY_TYPE.DISCLOSURE_INDICATOR;
+            case SELECT:
+                return UITableViewCell.ACCESSORY_TYPE.CHECKMARK;
+            default:
+                return UITableViewCell.ACCESSORY_TYPE.NONE;
+        }
     }
-
-    @Override
-    public UITableViewCell.STYLE cellStyleForSubtitleRowAtIndexPath(IndexPath indexPath) {
-        return UITableViewCell.STYLE.SUBTITLE;
-    }
-
-    @Override
-    public UITableViewCell.ACCESSORY_TYPE accessoryTypeForRowAtIndexPath(IndexPath indexPath) {
-        return UITableViewCell.ACCESSORY_TYPE.NONE;
-//            return [self defaultAccessoryTypeForRowAtIndexPath:indexPath];
-    }
-
-    @Override
-    public UITableViewCell.ACCESSORY_TYPE accessoryTypeForSelectedRowForListOfType(int type) {
-        return UITableViewCell.ACCESSORY_TYPE.NONE;
-    }
-
-    @Override
-    public UITableViewCell.ACCESSORY_TYPE accessoryTypeForDeselectedRowForListOfType(int type) {
-        return UITableViewCell.ACCESSORY_TYPE.NONE;
-    }
-
-    @Override
-    public UITableViewCell.ACCESSORY_TYPE accessoryTypeForSingleDeselectedRowForListOfType(int type) {
-        return UITableViewCell.ACCESSORY_TYPE.NONE;
-    }
-
-    @Override
-    public UITableViewCell.SELECTION_STYLE selectionStyleForListOfType(int type) {
-        return UITableViewCell.SELECTION_STYLE.NONE;
-    }
-
 
     public boolean isAddIndexPath (IndexPath indexPath) {
         if (typeForSection(indexPath.section) != MutableProtocol.FIELD_TYPE.LIST)
@@ -527,19 +500,15 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public <C extends BaseTableViewCell> C cellForListItemAtIndexPath(ViewContentProtocol.Placeholder item, IndexPath indexPath) {
-        return ItemsListProtocol.VC.super.cellForListItemAtIndexPath(item, indexPath);
-    }
-
-    @Override
     public void didSelectListItemAtIndexPath(ViewContentProtocol.Placeholder item, IndexPath indexPath) {
         ItemsListProtocol.VC.super.didSelectListItemAtIndexPath(item, indexPath);
     }
 
     public <T extends ViewContentProtocol.Placeholder> void setItemsForListOfType(List<T> items, int type) {
-        //TODO: Fix this
-        ArrayUtility.nonnullArrayList(listItemsForListOfType(type)).clear();
-        ArrayUtility.nonnullArrayList(listItemsForListOfType(type)).addAll(items);
+        ArrayList arr = listItemsForListOfType(type);
+        arr.clear();
+        ArrayUtility.addUniqueObjectsFromArray(arr, items);
+        object().UpdatedObject.setValueForSectionType(arr, type);
 
         HashMap<Integer, Set> selectedSets = this.selectedSets;
         resetSelectedSets();
@@ -559,10 +528,13 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     public <T extends ViewContentProtocol.Placeholder> List<T> addItemsToListOfType (List<T> items,int type) {
-        List existing = ArrayUtility.addOrReplaceUniqueObjectsFromArray(listItemsForListOfType(type), items);
         resetSelectedSets();
         List<IndexPath> addIndexPaths = new ArrayList<>();
         List<IndexPath> replaceIndexPaths = new ArrayList<>();
+
+        ArrayList arr = listItemsForListOfType(type);
+        List existing = ArrayUtility.addOrReplaceUniqueObjectsFromArray(arr, items);
+        object().UpdatedObject.setValueForSectionType(arr, type);
 
         for (T item : items) {
             IndexPath path = indexPathForItem(item);
@@ -574,8 +546,14 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
             }
         }
 
-        insertRowsAtIndexPaths(addIndexPaths);
-        reloadIndexPaths(replaceIndexPaths);
+        if (canAddItemToListOfType(type)) {
+            insertRowsAtIndexPaths(addIndexPaths);
+            reloadIndexPaths(replaceIndexPaths);
+        }
+        else {
+            reloadIndexPaths(addIndexPaths);
+        }
+
         didFinishUpdatesInListOfType(type);
 
         return existing;
@@ -583,6 +561,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     public <T extends ViewContentProtocol.Placeholder> void deleteItemsFromListOfType (List<T> items, int type) {
         List<IndexPath> indexPaths = new ArrayList<>();
+        boolean canAdd = canAddItemToListOfType(type);
 
         for (T item : items) {
             IndexPath path = indexPathForItem(item);
@@ -592,12 +571,19 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
         listItemsForListOfType(type).removeAll(items);
         resetSelectedSets();
-        removeRowsAtIndexPaths(indexPaths);
+        if (canAdd) {
+            removeRowsAtIndexPaths(indexPaths);
+        }
+        else {
+            reload();
+        }
         didFinishUpdatesInListOfType(type);
     }
 
     public void deleteAllItemsFromListOfType (int type) {
-        listItemsForListOfType(type).clear();
+        ArrayList arr = listItemsForListOfType(type);
+        arr.clear();
+        object().UpdatedObject.setValueForSectionType(arr, type);
         reload();
         didFinishUpdatesInListOfType(type);
     }
@@ -607,7 +593,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public <T extends ViewContentProtocol.Placeholder> List<T> listItemsForListOfType(int type) {
+    public <T extends ViewContentProtocol.Placeholder> ArrayList<T> listItemsForListOfType(int type) {
         return object().UpdatedObject.arrayForSectionType(type);
     }
 
@@ -619,11 +605,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     @Override
     public boolean canSelectItemsInListOfType(int type) {
         return ItemsListProtocol.VC.super.canSelectItemsInListOfType(type);
-    }
-
-    @Override
-    public ViewContentProtocol.Placeholder listItemAtIndexPath(IndexPath indexPath) {
-        return ItemsListProtocol.VC.super.listItemAtIndexPath(indexPath);
     }
 
     @Override
@@ -767,7 +748,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 cell.setAccessoryType(hasAccessoryForSection(section) ? UITableViewCell.ACCESSORY_TYPE.DISCLOSURE_INDICATOR : UITableViewCell.ACCESSORY_TYPE.NONE);
 
                 LabelAttributes attrs = labelAttributesForSection(section);
-                attrs.setAttributedTitlesForLabel(cell.getTitleLabel(), null);
+                attrs.setAttributedTitlesForLabel(cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()), cell.getLabel(UITableViewCell.LABEL_TYPE.DETAIL_TEXT.intValue()));
 
                 return cell;
             }
@@ -781,7 +762,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
                 if (isAddIndexPath(indexPath) && canAddItemToListOfType(listType)) {
                     BaseTableViewCell.Editing cell = new BaseTableViewCell.Editing();
-                    cell.getTitleLabel().setText(titleForAddCellInListOfType(listType));
+                    cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(titleForAddCellInListOfType(listType));
                     cell.setEditingStyle(UITableViewCell.EDITING_STYLE.INSERT);
                     return cell;
                 }
@@ -802,13 +783,13 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         UIEdgeInsets insets = radioButtonCellInsetsForSection(section);
         UICheckbox cell = (UICheckbox) ObjectUtility.objectWithParams(radioButtonCellClassForSection(section), new ObjectUtility.Params(insets.getClass(), insets));
 
-        cell.getTitleLabel().setFont(App.theme().Medium_Bold_Font());
-        cell.getTitleLabel().setText(titleForSection(section));
-        cell.getTitleLabel().getView().setGravity(Gravity.CENTER_VERTICAL);
+        cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setFont(App.theme().Medium_Bold_Font());
+        cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(titleForSection(section));
+        cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).getView().setGravity(Gravity.CENTER_VERTICAL);
         cell.checkView().setOn(boolValueForSection(section));
         cell.checkView().setEnabled(enabled);
         cell.checkView().setUserInteractionEnabled(false);
-        if (!singleLine) cell.setMultiline();
+        if (!singleLine) cell.setMultiline(UITableViewCell.LABEL_TYPE.TEXT.intValue());
 
         return cell;
     }
@@ -829,6 +810,11 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     @Override
     public void setMultiSelectEnabled(boolean multiSelectEnabled) {
         this.allowsMultipleSelection = multiSelectEnabled;
+    }
+
+    @Override
+    public boolean allowsMultipleSelection() {
+        return this.allowsMultipleSelection;
     }
 
     @Override
@@ -1019,6 +1005,14 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     private boolean isEmailOrPhoneSectionType(int section) {
         return object().UpdatedObject.isEmailSectionType(section) || object().UpdatedObject.isPhoneSectionType(section);
+    }
+
+    @Override
+    public int listSectionForListType(int type) {
+        for (int i=0; i<numberOfSectionsInTableView(); i++) {
+            if (listTypeForListInSection(i) == type) return i;
+        }
+        return type;
     }
 
     //endregion

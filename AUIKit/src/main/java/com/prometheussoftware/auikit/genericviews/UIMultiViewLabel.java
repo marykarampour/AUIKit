@@ -9,11 +9,13 @@ import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.uiview.UILabel;
+import com.prometheussoftware.auikit.uiview.UIStackedViews;
 import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.uiview.protocols.ViewCreation;
 
 public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIView> extends UIView {
 
-    private UILabel titleLabel;
+    private UIStackedViews.Vertical<UILabel> labels;
 
     /** An optional view at the back of all views
      * if added will cover the entire contentView */
@@ -38,23 +40,39 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
     public ALIGNMENT rightViewVerticalAlignment = UIView.ALIGNMENT.CENTER_Y;
     public ALIGNMENT leftViewVerticalAlignment = UIView.ALIGNMENT.CENTER_Y;
 
-
     static {
         Identifier.Register(UIMultiViewLabel.class);
     }
 
     public UIMultiViewLabel() {
+        this(1);
+    }
+
+    public UIMultiViewLabel(int count) {
         super();
+        this.insets = insets();
+        createContentView();
+        createLabels(count);
+    }
+
+    public UIMultiViewLabel(int count, L leftView, R rightView, UIEdgeInsets insets) {
+        super();
+        this.insets = insets;
+        this.leftView = leftView;
+        this.rightView = rightView;
+        createContentView();
+        createLabels(count);
     }
 
     public UIMultiViewLabel(UIEdgeInsets insets) {
-        super();
-        this.insets = insets;
+        this(1, null, null, insets);
     }
 
     public UIMultiViewLabel(C contentView) {
         super();
+        this.insets = insets();
         this.contentView = contentView;
+        createLabels(1);
     }
 
     /** @param backView is added on top and covers the entire view */
@@ -117,7 +135,6 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     @Override public void initView() {
         super.initView();
-        createTitleLabel();
         createContentView();
         createRightView();
         createLeftView();
@@ -126,7 +143,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
     @Override public void loadView() {
         super.loadView();
         addSubview(contentView);
-        contentView.addSubview(titleLabel);
+        contentView.addSubview(labels);
         contentView.addSubview(rightView);
         contentView.addSubview(leftView);
     }
@@ -140,7 +157,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
         constraintSidesForView(contentView);
 
-        if (leftView != null && rightView != null && titleLabel != null) {
+        if (leftView != null && rightView != null && labels != null) {
             constraintLeftRightLabel();
         }
         else if (leftView != null && rightView != null) {
@@ -164,10 +181,10 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         constraintVertical(leftView, leftViewVerticalAlignment);
 
         contentView.constraintForView(ConstraintSet.START, leftView, insets.left);
-        contentView.constraintForView(ConstraintSet.TOP, titleLabel, insets.top);
-        contentView.constraintForView(ConstraintSet.BOTTOM, titleLabel, insets.bottom);
-        contentView.constraintForView(ConstraintSet.END, titleLabel, insets.right);
-        contentView.constraintViews(titleLabel, ConstraintSet.START, leftView, ConstraintSet.END, leftPadding);
+        contentView.constraintForView(ConstraintSet.TOP, labels, insets.top);
+        contentView.constraintForView(ConstraintSet.BOTTOM, labels, insets.bottom);
+        contentView.constraintForView(ConstraintSet.END, labels, insets.right);
+        contentView.constraintViews(labels, ConstraintSet.START, leftView, ConstraintSet.END, leftPadding);
 
         contentView.applyConstraints();
     }
@@ -177,11 +194,11 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         contentView.constraintSizeForView(rightView, rightViewSize);
         constraintVertical(rightView, rightViewVerticalAlignment);
 
-        contentView.constraintForView(ConstraintSet.START, titleLabel, insets.left);
-        contentView.constraintForView(ConstraintSet.TOP, titleLabel, insets.top);
-        contentView.constraintForView(ConstraintSet.BOTTOM, titleLabel, insets.bottom);
+        contentView.constraintForView(ConstraintSet.START, labels, insets.left);
+        contentView.constraintForView(ConstraintSet.TOP, labels, insets.top);
+        contentView.constraintForView(ConstraintSet.BOTTOM, labels, insets.bottom);
         contentView.constraintForView(ConstraintSet.END, rightView, insets.right);
-        contentView.constraintViews(titleLabel, ConstraintSet.END, rightView, ConstraintSet.START, rightPadding);
+        contentView.constraintViews(labels, ConstraintSet.END, rightView, ConstraintSet.START, rightPadding);
 
         contentView.applyConstraints();
     }
@@ -195,12 +212,12 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         constraintVertical(rightView, rightViewVerticalAlignment);
 
         contentView.constraintForView(ConstraintSet.START, leftView, insets.left);
-        contentView.constraintForView(ConstraintSet.TOP, titleLabel, insets.top);
-        contentView.constraintForView(ConstraintSet.BOTTOM, titleLabel, insets.bottom);
+        contentView.constraintForView(ConstraintSet.TOP, labels, insets.top);
+        contentView.constraintForView(ConstraintSet.BOTTOM, labels, insets.bottom);
         contentView.constraintForView(ConstraintSet.END, rightView, insets.right);
 
-        contentView.constraintViews(titleLabel, ConstraintSet.START, leftView, ConstraintSet.END, leftPadding);
-        contentView.constraintViews(titleLabel, ConstraintSet.END, rightView, ConstraintSet.START, rightPadding);
+        contentView.constraintViews(labels, ConstraintSet.START, leftView, ConstraintSet.END, leftPadding);
+        contentView.constraintViews(labels, ConstraintSet.END, rightView, ConstraintSet.START, rightPadding);
 
         contentView.applyConstraints();
     }
@@ -246,7 +263,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
     }
     
     private void constraintLabel() {
-        constraintSidesForView(titleLabel, insets);
+        constraintSidesForView(labels, insets);
         contentView.applyConstraints();
     }
     
@@ -254,15 +271,22 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     //region views
 
-    public void createTitleLabel() {
-        titleLabel = new UILabel();
-        titleLabel.setTextColor(UIColor.black(1.0f));
-        titleLabel.getView().setGravity(Gravity.LEFT | Gravity.TOP);
+    public void createLabels(int count) {
+        labels = new UIStackedViews.Vertical(count, new ViewCreation<UILabel>() {
+            @Override
+            public UILabel view() {
+                UILabel label = new UILabel();
+                label.setTextColor(UIColor.black(1.0f));
+                label.getView().setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+                return label;
+            }
+        });
+
     }
 
-    public void createRightView() { }
+    public void createRightView() {}
 
-    public void createLeftView() { }
+    public void createLeftView() {}
 
     public void createContentView() {
         contentView = (C) new UIView();
@@ -294,8 +318,13 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         return leftView;
     }
 
-    public UILabel getTitleLabel() {
-        return titleLabel;
+    public UIStackedViews.Vertical<UILabel> getLabels() {
+        return labels;
+    }
+
+    public UILabel getLabel(int index) {
+        UILabel label = labels.viewAtIndex(index);
+        return label != null ? label : new UILabel();
     }
 
     public C getContentView() {
@@ -368,8 +397,8 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         }
     }
 
-    public void setMultiline() {
-        titleLabel.setNumberOfLines(Integer.MAX_VALUE);
+    public void setMultiline(int index) {
+        labels.viewAtIndex(index).setNumberOfLines(Integer.MAX_VALUE);
     }
 
     //endregion

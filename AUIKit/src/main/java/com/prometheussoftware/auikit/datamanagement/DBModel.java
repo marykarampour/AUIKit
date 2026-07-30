@@ -64,7 +64,7 @@ public class DBModel extends BaseModel implements DBModelProtocol {
         Reflect reflect = BaseModel.reflectForClass(this.getClass());
         if (reflect == null) return new PairArray();
 
-        HashMap<String, Class> properties = reflect.getPropertyTypeNames();
+        HashMap<String, ArrayList<String>> properties = reflect.getPropertyTypeNames();
 
         for (String name : properties.keySet()) {
 
@@ -79,11 +79,17 @@ public class DBModel extends BaseModel implements DBModelProtocol {
 
                 if (object != null) {
                     value = object.toString();
-                    Class objectType = properties.get(name);
 
-                    if (objectType == Date.class) {
-                        Date date = (Date)object;
-                        value = String.valueOf(date.getTime()*1000);
+                    for (String str : properties.get(name)) {
+                        try {
+                            Class objectType = Class.forName(str);
+                            if (objectType == Date.class) {
+                                Date date = (Date)object;
+                                value = String.valueOf(date.getTime()*1000);
+                                break;
+                            }
+                        }
+                        catch (ClassNotFoundException e) {}
                     }
                 }
 

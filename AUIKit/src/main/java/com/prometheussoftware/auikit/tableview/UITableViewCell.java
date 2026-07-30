@@ -24,11 +24,15 @@ import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.UIEditingAccessoryProtocol;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIView> extends UIMultiViewLabel <UIButton, A, UIView> implements UIControlProtocol, UIEditingAccessoryProtocol {
 
     private ACCESSORY_TYPE accessoryType;
     private SELECTION_STYLE selectionStyle;
     private EDITING_STYLE editingStyle;
+    private STYLE style;
 
     /** Use only in case of static cells */
     public IndexPath indexPath;
@@ -45,14 +49,20 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
 
     /** Call init() in constructor of subclass */
     public UITableViewCell() {
-        super();
+        this(STYLE.DEFAULT);
+    }
+
+    public UITableViewCell(STYLE style) {
+        super(style == STYLE.SUBTITLE ? LABEL_TYPE.COUNT.intValue() : 1);
         setEnabled(true);
         accessoryType = ACCESSORY_TYPE.NONE;
+        this.style = style;
     }
 
     private void baseSetup() {
         if (separatorHeight == 0) separatorHeight = separatorHeight();
-        getTitleLabel().setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        getLabel(LABEL_TYPE.TEXT.intValue()).setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        getLabel(LABEL_TYPE.DETAIL_TEXT.intValue()).setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
     }
 
     @Override
@@ -311,6 +321,14 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         setSizeForView(rightViewSize(), rightView);
     }
 
+    public STYLE getStyle() {
+        return style;
+    }
+
+    public void setStyle(STYLE style) {
+        this.style = style;
+    }
+
     public enum STYLE {
         DEFAULT,
         SUBTITLE
@@ -335,6 +353,34 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         NONE,
         DELETE,
         INSERT
+    }
+
+    public enum LABEL_TYPE {
+        TEXT(0),
+        DETAIL_TEXT(1),
+        COUNT(2);
+
+        LABEL_TYPE(int value) {
+            this.value = value;
+        }
+
+        private final int value;
+
+        public int intValue() {
+            return this.value;
+        }
+
+        private static final Map map = new HashMap<>();
+
+        static {
+            for (LABEL_TYPE type : LABEL_TYPE.values()) {
+                map.put(type.value, type);
+            }
+        }
+
+        public static LABEL_TYPE valueOf(int i) {
+            return (LABEL_TYPE) map.get(i);
+        }
     }
 
     //endregion
@@ -378,7 +424,8 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         public void initView() {
             super.initView();
 
-            getTitleLabel().setTextColor(UIColor.black(1.0f));
+            getLabel(LABEL_TYPE.TEXT.intValue()).setTextColor(UIColor.black(1.0f));
+            getLabel(LABEL_TYPE.DETAIL_TEXT.intValue()).setTextColor(UIColor.gray(1.0f));
             contentView.setBackgroundColor(UIColor.white(1.0f));
         }
 

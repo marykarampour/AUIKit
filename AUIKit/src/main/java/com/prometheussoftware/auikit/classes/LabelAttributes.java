@@ -30,8 +30,8 @@ public class LabelAttributes {
     protected String sublabelDelimiter;
 
     private TYPE type;
-
-    public void setAttributedTitlesForLabel (UILabel label,UILabel sublabel) {
+    //TODO: sublabel in subclasses like iOS
+    public void setAttributedTitlesForLabel (UILabel label, UILabel sublabel) {
         if (label != null) label.setText(null);
         if (sublabel != null) sublabel.setText(null);
     }

@@ -1,8 +1,9 @@
 package com.prometheussoftware.auikit.model;
 
-public interface ModelProtocol {
+import java.io.Serializable;
 
-    interface Object<O extends BaseModel> {
+public interface ModelProtocol {
+    interface Object<O extends Serializable> {
         default void didSetObject(O obj) {};
         void setObject (O obj);
         O object();

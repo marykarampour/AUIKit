@@ -8,7 +8,6 @@ import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.utility.StringFormatting;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -40,7 +39,7 @@ public interface ViewContentProtocol {
             builder.append(titleBuilder);
             return builder;
         };
-        default AttributedString attributedSubtitle() { return null; };
+        default SpannableStringBuilder attributedSubtitle() { return null; };
     }
 
     interface Placeholder extends TitleSubTitle {
