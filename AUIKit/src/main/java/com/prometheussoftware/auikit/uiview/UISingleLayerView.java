@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.card.MaterialCardView;
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
+import com.prometheussoftware.auikit.uiview.protocols.ViewCreation;
 import com.prometheussoftware.auikit.utility.ConstraintUtility;
 import com.prometheussoftware.auikit.utility.ViewUtility;
 
@@ -20,6 +21,7 @@ public class UISingleLayerView <U extends UIView> extends UIView {
      * add all subviews to this view */
     private U view;
     private int shadowSize;
+    private ViewCreation<U> handler;
 
     /** This is the layer to which this view is added
      * Use this to add corners and elevation
@@ -28,7 +30,18 @@ public class UISingleLayerView <U extends UIView> extends UIView {
     private MaterialCardView layer;
 
     public UISingleLayerView() {
+        this(new ViewCreation() {
+            @Override
+            public UIView view() {
+                return ViewCreation.super.view();
+            }
+        });
+        baseInit();
+    }
+
+    public UISingleLayerView(ViewCreation handler) {
         super();
+        this.handler = handler;
         baseInit();
     }
 
@@ -68,7 +81,7 @@ public class UISingleLayerView <U extends UIView> extends UIView {
     }
 
     protected void createView() {
-        setView((U)new UIView());
+        setView(handler.view());
     }
 
     public U getView() {
@@ -77,13 +90,15 @@ public class UISingleLayerView <U extends UIView> extends UIView {
 
     //region UIView
 
-    @Override public void initView() {
+    @Override
+    public void initView() {
         super.initView();
         createLayer();
         createView();
     }
 
-    @Override public void loadView() {
+    @Override
+    public void loadView() {
         super.loadView();
         ViewUtility.addViewWithID(layer, this);
     }
@@ -94,7 +109,8 @@ public class UISingleLayerView <U extends UIView> extends UIView {
         setCardLayerBackgroundColor(UIColor.clear());
     }
 
-    @Override public void constraintLayout() {
+    @Override
+    public void constraintLayout() {
         super.constraintLayout();
         ConstraintUtility.constraintSidesForView(constraintSet, layer, new UIEdgeInsets(shadowSize(), shadowSize(), shadowSize(), shadowSize()));
         applyConstraints();

@@ -23,13 +23,20 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
     }
 
     public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, ViewCreation<T> handler) {
-        this(count, interItemSpacing, horizontalMargin, verticalMargin, null, handler);
+        this(count, interItemSpacing, horizontalMargin, verticalMargin, 0, handler);
     }
 
     public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, Map<Integer, Integer> sizes, ViewCreation<T> handler) {
         super();
         initViewsWithCount(count, handler);
         constraintViews(sizes, interItemSpacing, horizontalMargin, verticalMargin);
+        applyConstraints();
+    }
+
+    public UIStackedViews(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, Integer size, ViewCreation<T> handler) {
+        super();
+        initViewsWithCount(count, handler);
+        constraintViews(size, interItemSpacing, horizontalMargin, verticalMargin);
         applyConstraints();
     }
 
@@ -93,8 +100,12 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
     }
 
     @Override
+    public void constraintViews(int size, int interItemSpacing, int horizontalMargin, int verticalMargin) {
+    }
+
+    @Override
     public void constraintViews(int interItemSpacing, int horizontalMargin, int verticalMargin) {
-        constraintViews(null, interItemSpacing, horizontalMargin, verticalMargin);
+        constraintViews(0, interItemSpacing, horizontalMargin, verticalMargin);
     }
 
     @Override
@@ -128,6 +139,10 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
             super(count, interItemSpacing, horizontalMargin, verticalMargin, sizes, handler);
         }
 
+        public Horizontal(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, int size, ViewCreation<T> handler) {
+            super(count, interItemSpacing, horizontalMargin, verticalMargin, size, handler);
+        }
+
         public Horizontal(int count, int padding, int interItemMargin, ViewCreation<T> handler) {
             super(count, padding, interItemMargin, handler);
         }
@@ -149,6 +164,17 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
                     if (index < contentViews().size() && width > 0) {
                         constraintWidthForView(contentViews().get(index), width);
                     }
+                }
+            }
+        }
+
+        @Override
+        public void constraintViews(int size, int interItemSpacing, int horizontalMargin, int verticalMargin) {
+            constraintHorizontally(contentViews(), interItemSpacing, horizontalMargin, verticalMargin, true);
+
+            if (0 < size) {
+                for (T view : contentViews()) {
+                    constraintWidthForView(view, size);
                 }
             }
         }
@@ -177,6 +203,10 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
             super(count, interItemSpacing, horizontalMargin, verticalMargin, sizes, handler);
         }
 
+        public Vertical(int count, int interItemSpacing, int horizontalMargin, int verticalMargin, int size, ViewCreation<T> handler) {
+            super(count, interItemSpacing, horizontalMargin, verticalMargin, size, handler);
+        }
+
         public Vertical(int count, int padding, int interItemMargin, ViewCreation<T> handler) {
             super(count, padding, interItemMargin, handler);
         }
@@ -198,6 +228,17 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
                     if (index < contentViews().size() && height > 0) {
                         constraintHeightForView(contentViews().get(index), height);
                     }
+                }
+            }
+        }
+
+        @Override
+        public void constraintViews(int size, int interItemSpacing, int horizontalMargin, int verticalMargin) {
+            constraintVertically(contentViews(), interItemSpacing, horizontalMargin, verticalMargin, true);
+
+            if (0 < size) {
+                for (T view : contentViews()) {
+                    constraintHeightForView(view, size);
                 }
             }
         }
