@@ -78,7 +78,7 @@ public interface ItemsListProtocol {
         }
 
         default <T extends ViewContentProtocol.Placeholder> UIImage accessoryCustomOffImageForListItemAtIndexPath(T item, IndexPath indexPath) {
-            return null;
+            return accessoryCustomOnImageForListItemAtIndexPath(item, indexPath);
         }
 
         default boolean allowsMultipleSelection() { return false; }
