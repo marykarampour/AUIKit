@@ -49,6 +49,14 @@ public class BaseTableViewCell extends UITableViewCell {
 
     public static class Editing extends BaseTableViewCell {
 
+        public Editing(STYLE style) {
+            super(style);
+        }
+
+        public Editing() {
+            super();
+        }
+
         @Override
         public void setEditingStyle(EDITING_STYLE editingStyle) {
             super.setEditingStyle(editingStyle);

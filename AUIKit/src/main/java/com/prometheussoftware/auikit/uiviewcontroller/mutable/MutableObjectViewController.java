@@ -763,7 +763,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 if (isAddIndexPath(indexPath) && canAddItemToListOfType(listType)) {
                     BaseTableViewCell.Editing cell = new BaseTableViewCell.Editing();
                     cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(titleForAddCellInListOfType(listType));
-                    cell.setEditingStyle(UITableViewCell.EDITING_STYLE.INSERT);
                     return cell;
                 }
 
@@ -911,8 +910,10 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         if (!(cell instanceof UIEditingAccessoryProtocol)) return;
 
         UIEditingAccessoryProtocol control = (UIEditingAccessoryProtocol)cell;
+        UITableViewCell.EDITING_STYLE style = tableViewEditingStyleForRowAtIndexPath(indexPath);
+        control.setEditingStyle(style);
         control.addEditingTarget(this, (UITargetDelegate.TouchUp) sender -> {
-            tableViewCommitEditingStyleForRowAtIndexPath(tableViewEditingStyleForRowAtIndexPath(indexPath), indexPath);
+            tableViewCommitEditingStyleForRowAtIndexPath(style, indexPath);
         });
     }
 
@@ -976,7 +977,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         willAddItemToListOfType(type, obj -> {
             if (obj == null || !shouldAddItemToListOfType(obj, type)) {
                 handleDidSelectListItemAtIndexPath(obj, indexPath);
-            } else {
+            }
+            else {
                 addItemToListOfType(obj, type);
                 didAddItemToListOfType(obj, type);
             }
@@ -1025,6 +1027,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         ArrayList views = new ArrayList();
         UIView content = scrollview.getContentView();
         content.clearAllConstraints();
+        content.removeAllSubviews();
 
         for (int i = 0; i < numberOfSectionsInTableView(); i++) {
 
@@ -1065,6 +1068,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
         content.constraintVerticallyAllSides(views, 0, false);
         content.applyConstraints();
+        content.requestLayout();
     }
 
     protected void constraintViews() {

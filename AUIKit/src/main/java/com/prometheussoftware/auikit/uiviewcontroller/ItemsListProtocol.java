@@ -100,7 +100,7 @@ public interface ItemsListProtocol {
         default boolean isSelectedRowAtIndexPath (IndexPath indexPath) { return false; }
         default <T extends ViewContentProtocol.Placeholder, C extends BaseTableViewCell> C cellForListItemAtIndexPath (T item, IndexPath indexPath) {
             UITableViewCell.STYLE style = cellStyleForSubtitleListItemAtIndexPath(item, indexPath);
-            BaseTableViewCell cell = new BaseTableViewCell(style);
+            BaseTableViewCell cell = new BaseTableViewCell.Editing(style);
             setTextForListItemAtIndexPath(item, indexPath, cell);
             setStyleForListItemAtIndexPath(item, indexPath, cell);
             return (C) cell;

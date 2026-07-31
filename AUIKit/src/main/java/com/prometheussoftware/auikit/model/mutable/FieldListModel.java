@@ -12,7 +12,11 @@ import java.util.Map;
  * For NSObject, override description and return the title to be presented in UI.
  * If conforming to MKUPlaceholderProtocol title  will be used.
  * @note If there is no items, it sets the footer to noItemAvailableTitleForListOfType: */
-public class FieldListModel <ObjectTypeA extends ViewContentProtocol.Placeholder & ArrayPropertyProtocol, ObjectTypeB extends ViewContentProtocol.Placeholder & ArrayPropertyProtocol, ObjectTypeC extends ViewContentProtocol.Placeholder & ArrayPropertyProtocol, ObjectTypeD extends ViewContentProtocol.Placeholder & ArrayPropertyProtocol> extends FieldModel {
+public class FieldListModel
+               <ObjectTypeA extends ViewContentProtocol.Placeholder & ArrayPropertyProtocol,
+                ObjectTypeB extends ViewContentProtocol.Placeholder & ArrayPropertyProtocol,
+                ObjectTypeC extends ViewContentProtocol.Placeholder & ArrayPropertyProtocol,
+                ObjectTypeD extends ViewContentProtocol.Placeholder & ArrayPropertyProtocol> extends FieldModel {
 
     public ObjectTypeA itemsA;
     public ObjectTypeB itemsB;

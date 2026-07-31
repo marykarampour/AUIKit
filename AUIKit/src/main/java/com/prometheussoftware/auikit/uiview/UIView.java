@@ -382,6 +382,10 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         }
     }
 
+    public <T extends UIView> void removeAllSubviews() {
+        removeSubviews(subUIViews());
+    }
+
     public void removeFromSuperview() {
 
         if (getParent() == null || !(getParent() instanceof UIView)) return;

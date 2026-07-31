@@ -260,6 +260,7 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         return editingStyle;
     }
 
+    @Override
     public void setEditingStyle(EDITING_STYLE editingStyle) {
         this.editingStyle = editingStyle;
     }
