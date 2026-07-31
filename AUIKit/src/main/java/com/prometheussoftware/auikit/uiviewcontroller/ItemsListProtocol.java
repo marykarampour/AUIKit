@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder;
 import com.prometheussoftware.auikit.callback.ObjectCallback;
 import com.prometheussoftware.auikit.callback.SuccessErrorCallback;
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
+import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.tableview.BaseTableViewCell;
@@ -48,9 +49,15 @@ public interface ItemsListProtocol {
         default <T extends ViewContentProtocol.Placeholder> void setStyleForListItemAtIndexPath (T item, IndexPath indexPath, BaseTableViewCell cell) {
 
             int sectionType = sectionTypeForIndexPath(indexPath);
+            cell.setSelectionStyle(selectionStyleForListOfType(sectionType));
+
             UITableViewCell.ACCESSORY_TYPE type = accessoryTypeForListItemAtIndexPath(item, indexPath);
 
-            cell.setSelectionStyle(selectionStyleForListOfType(sectionType));
+            if (type == UITableViewCell.ACCESSORY_TYPE.CUSTOM) {
+                cell.getRightView().setOnImage(accessoryCustomOnImageForListItemAtIndexPath(item, indexPath));
+                cell.getRightView().setOffImage(accessoryCustomOffImageForListItemAtIndexPath(item, indexPath));
+            }
+
             cell.setAccessoryType(type);
         }
 
@@ -64,6 +71,14 @@ public interface ItemsListProtocol {
             else {
                 return isSelectedRowAtIndexPath(indexPath) ? accessoryTypeForSelectedListItemInListOfType(item, sectionType) :  accessoryTypeForDeselectedListItemInListOfType(item, sectionType);
             }
+        }
+
+        default <T extends ViewContentProtocol.Placeholder> UIImage accessoryCustomOnImageForListItemAtIndexPath(T item, IndexPath indexPath) {
+            return null;
+        }
+
+        default <T extends ViewContentProtocol.Placeholder> UIImage accessoryCustomOffImageForListItemAtIndexPath(T item, IndexPath indexPath) {
+            return null;
         }
 
         default boolean allowsMultipleSelection() { return false; }

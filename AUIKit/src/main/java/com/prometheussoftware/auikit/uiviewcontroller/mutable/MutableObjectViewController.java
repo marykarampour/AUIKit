@@ -206,7 +206,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public boolean canTransitionToPresentingSelectionVCInSection(int section) {
-        return false;
+        return true;
     }
 
     @Override
@@ -842,8 +842,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 ViewContentProtocol.Placeholder item = listItemAtIndexPath(indexPath);
                 if (item != null)
                     handleDidSelectListItemAtIndexPath(item, indexPath);
-//                else
-
+                else
+                    performInsertToListOfTypeAtIndexPath(listTypeForListInSection(section), indexPath, null);
             }
             break;
 
@@ -891,6 +891,11 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         }
     }
 
+    @Override
+    public void didSelectAccessoryAtIndexPath(IndexPath indexPath) {
+        didSelectRowAtIndexPath(indexPath);
+    }
+
     private void dispatchUpdateDelegateToSetSelected(boolean selected, ViewContentProtocol.Placeholder item) {
         if (updateDelegate != null) {
             updateDelegate.itemsListVCDidSetSelectedAtIndexPath(this, selected, item, indexPathForItem(item));
@@ -922,7 +927,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
         UIEditingAccessoryProtocol control = (UIEditingAccessoryProtocol)cell;
         control.addAccessoryTarget(this, (UITargetDelegate.TouchUp) sender -> {
-            didSelectRowAtIndexPath(indexPath);
+            didSelectAccessoryAtIndexPath(indexPath);
         });
     }
 

@@ -111,8 +111,6 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
     @Override
     public void createRightView() {
         rightView = (A) UIAccessoryView.build(UIAccessoryView.TYPE.IMAGE);
-        rightView.setSelectedColor(App.theme().Bright_Blue_Color());
-        rightView.setDeselectedColor(App.theme().Bright_Blue_Color());
         rightView.setEnabled(true);
     }
 
@@ -273,6 +271,16 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         return contentView;
     }
 
+    @Override
+    public A getRightView() {
+        return super.getRightView();
+    }
+
+    @Override
+    public UIButton getLeftView() {
+        return super.getLeftView();
+    }
+
     public void setAccessoryType(ACCESSORY_TYPE accessoryType) {
         this.accessoryType = accessoryType;
         switch (accessoryType) {
@@ -312,6 +320,10 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
                 rightView.setOffImage(App.assets().Details_Disclosure_Image());
             }
             break;
+            case CUSTOM: {
+                rightView.setGone(false);
+            }
+            break;
             default: {
                 rightView.setGone(true);
             }
@@ -342,7 +354,8 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         DROPDOWN_INDICATOR_EXPANDED,
         DETAIL_DISCLOSURE_BUTTON,
         CHECKMARK,
-        DETAIL_BUTTON
+        DETAIL_BUTTON,
+        CUSTOM
     }
 
     public enum SELECTION_STYLE {

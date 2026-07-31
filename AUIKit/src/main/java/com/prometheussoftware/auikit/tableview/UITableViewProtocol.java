@@ -140,6 +140,10 @@ public interface UITableViewProtocol {
 
         default void didSelectRowAtIndexPath(Object item, IndexPath indexPath) {}
 
+        default void didSelectAccessoryAtIndexPath(IndexPath indexPath) {}
+
+        default void didSelectAccessoryAtIndexPath(Object item, IndexPath indexPath) {}
+
         default void didDeselectRowAtIndexPath(Object item, IndexPath indexPath) {}
 
         default void didSelectSectionAtIndex(TableObject.Section item, int section) {}
