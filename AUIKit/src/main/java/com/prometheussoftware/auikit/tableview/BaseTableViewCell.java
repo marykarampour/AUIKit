@@ -79,5 +79,15 @@ public class BaseTableViewCell extends UITableViewCell {
         public Size leftViewSize() {
             return Dimensions.size(Dimensions.Int_28());
         }
+
+        @Override
+        protected UIEdgeInsets insets() {
+            return new UIEdgeInsets(Dimensions.Int_4(), Dimensions.Int_16(), Dimensions.Int_4(), Dimensions.Int_8());
+        }
+
+        @Override
+        protected int leftPadding() {
+            return Dimensions.Int_16();
+        }
     }
 }

@@ -98,6 +98,10 @@ public class EditingListsViewController
         setItemsForListOfType(items, type);
     }
 
+    public <T extends ViewContentProtocol.Placeholder> void setItemsWithArray (ArrayPropertyProtocol<T> items, int type) {
+        setItemsForListOfType(items, type);
+    }
+
     private void updateHeader() {
         //no items title
     }

@@ -35,6 +35,7 @@ public class ObjectUtility {
     }
 
     public static Object objectWithParams(Class cls, Params... parameters) {
+        if (cls == null) return null;
 
         ArrayList<Class<?>> arrClass = new ArrayList<>();
         ArrayList<Object> arrObject = new ArrayList<>();

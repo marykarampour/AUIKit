@@ -184,7 +184,7 @@ public interface ItemsListProtocol {
         /** @brief Return YES if self.editing should be always YES. The navbar will not have the edit button in this case. Default is NO. */
         default boolean canEditListsByDefault() { return false; }
         default String titleForAddCellInListOfType (int type) { return App.constants().Add_New_Item_STR(); }
-        default int heightForNonEditingListRowAtIndexPath (IndexPath indexPath) { return 0; }
+        default int heightForNonEditingListRowAtIndexPath (IndexPath indexPath) { return App.constants().Default_Row_Height(); }
 
         /** @brief Peform any actions required to delete this item. In the completion, this ittem will be removed from the list. */
         default <T extends ViewContentProtocol.Placeholder> void willDeleteItemForRowAtIndexPath (T item, IndexPath indexPath, SuccessErrorCallback completion) {}

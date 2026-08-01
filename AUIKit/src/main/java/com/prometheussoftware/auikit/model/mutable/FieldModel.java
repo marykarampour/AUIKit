@@ -57,7 +57,7 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field, Arra
                 }
                 else if (ArrayPropertyProtocol.class.isAssignableFrom(cls) && value instanceof ArrayList) {
                     ArrayPropertyProtocol obj = (ArrayPropertyProtocol) valueForObjectType(type);
-                    obj.setArray((ArrayList) value);
+                    if (obj != null) obj.setArray((ArrayList) value);
                 }
             }
         }

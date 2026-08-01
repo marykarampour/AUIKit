@@ -14,6 +14,7 @@ import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.genericviews.UICheckbox;
+import com.prometheussoftware.auikit.model.ArrayPropertyProtocol;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.mutable.MutableProtocol;
@@ -509,7 +510,15 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         arr.clear();
         ArrayUtility.addUniqueObjectsFromArray(arr, items);
         object().UpdatedObject.setValueForSectionType(arr, type);
+        updateListOfType(type);
+    }
 
+    public <T extends ViewContentProtocol.Placeholder> void setItemsForListOfType(ArrayPropertyProtocol<T> items, int type) {
+        object().UpdatedObject.setValueForSectionType(items, type);
+        updateListOfType(type);
+    }
+
+    private void updateListOfType(int type) {
         HashMap<Integer, Set> selectedSets = this.selectedSets;
         resetSelectedSets();
         this.selectedSets = selectedSets;

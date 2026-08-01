@@ -16,7 +16,10 @@ public interface ViewContentProtocol {
     interface TitleSubTitle {
         default String title() { return null; };
         default String subtitle() { return null; };
-        default SpannableStringBuilder attributedTitle() {
+        default SpannableStringBuilder attributedTitle() { return null; };
+        default SpannableStringBuilder attributedSubtitle() { return null; };
+
+        default SpannableStringBuilder defaultAttributedTitle() {
 
             String title = title();
             String subtitle = subtitle();
@@ -39,7 +42,6 @@ public interface ViewContentProtocol {
             builder.append(titleBuilder);
             return builder;
         };
-        default SpannableStringBuilder attributedSubtitle() { return null; };
     }
 
     interface Placeholder extends TitleSubTitle {
