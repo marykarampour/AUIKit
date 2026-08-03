@@ -62,5 +62,7 @@ public class AssetIDs {
 
     public static int Plus_Circle_Fill_Icon() { return R.drawable.plus_circle_fill; }
 
+    public static int Plusminus_square_Name() { return R.drawable.plus_minus; }
+
     public static int Minus_Circle_Fill_Icon() { return R.drawable.minus_circle_fill; }
 }

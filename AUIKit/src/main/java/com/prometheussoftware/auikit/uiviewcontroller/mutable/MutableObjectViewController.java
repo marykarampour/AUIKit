@@ -9,7 +9,6 @@ import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.classes.LabelAttributes;
 
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
-import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Dimensions;
@@ -21,6 +20,7 @@ import com.prometheussoftware.auikit.model.mutable.MutableProtocol;
 import com.prometheussoftware.auikit.model.mutable.MutableUpdateObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
+import com.prometheussoftware.auikit.uiview.UIInputView;
 import com.prometheussoftware.auikit.uiview.UIScrollview;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
@@ -409,13 +409,27 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public UIImage buttonImageForFieldAtIndexPath(IndexPath indexPath) {
-        return null;
+    public UITargetDelegate.TouchUp actionForFieldButtonAtIndexPath(IndexPath indexPath) {
+        StringUtility.TYPE type = textTypeForFieldAtIndexPath(indexPath);
+        switch (type) {
+            case INT:
+            case FLOAT:
+                return sender -> {
+                    String value = valueForSection(indexPath.section);
+                    Number numb = StringUtility.plusMinus(value);
+                    if (StringUtility.isNotEmpty(numb)) {
+                        object().UpdatedObject.setValueForObjectType(numb, indexPath.row);
+                        reload();
+                    }
+                };
+            default:
+                return null;
+        }
     }
 
     @Override
-    public UITargetDelegate.TouchUp actionForFieldButtonAtIndexPath(IndexPath indexPath) {
-        return MutableProtocol.ViewController.super.actionForFieldButtonAtIndexPath(indexPath);
+    public StringUtility.TYPE textTypeForFieldAtIndexPath (IndexPath indexPath) {
+        return object().UpdatedObject.textTypeForObjectType(indexPath.row);
     }
 
     @Override
@@ -766,6 +780,24 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 return radioButtonCellInSection(section, isEditable, false);
             }
 
+            case FIELD: {
+                if (!isEditable) {
+                    return uneditableFieldCellForSectionWithStyle(section, UITableViewCell.STYLE.DEFAULT);
+                }
+
+                IndexPath path = new IndexPath(section, rowForFieldAtIndexInSection(UIView.COLUMN_TYPE.LEFT.intValue(), section));
+                UIInputView cell = new UIInputView(textTypeForFieldAtIndexPath(path), textWidthForFieldAtIndexPath(path), App.constants().TableCell_Content_HorizontalMargin(), App.constants().Vertical_Margin());
+
+                cell.getButton().setImage(buttonImageForFieldAtIndexPath(path));
+                cell.getTextField().setDelegate(object().UpdatedObject);
+                cell.getTextField().maxChars = 64;
+                cell.getTextField().setText(valueForSection(section));
+                cell.getLabel().setText(titleForSection(section));
+                cell.setIndexPath(path);
+                cell.getButton().setTarget(actionForFieldButtonAtIndexPath(path));
+                return cell;
+            }
+
             case LIST: {
                 int listType = listTypeForListInSection(section);
 
@@ -781,10 +813,19 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
             default: {
                 UIView cell = singleCellForRowAtIndexPath(indexPath);
-                cell.setUserInteractionEnabled(userInteractionEnabledForSingleCellAtIndexPath(indexPath));
+                if (cell != null) cell.setUserInteractionEnabled(userInteractionEnabledForSingleCellAtIndexPath(indexPath));
                 return cell;
             }
         }
+    }
+
+    private UIView uneditableFieldCellForSectionWithStyle(int section, UITableViewCell.STYLE style) {
+        BaseTableViewCell cell = new BaseTableViewCell(style);
+        cell.setSelectionStyle(UITableViewCell.SELECTION_STYLE.NONE);
+        cell.setAccessoryType(UITableViewCell.ACCESSORY_TYPE.NONE);
+        cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(titleForSection(section));
+        cell.getLabel(UITableViewCell.LABEL_TYPE.DETAIL_TEXT.intValue()).setText(valueForSection(section));
+        return cell;
     }
 
     protected UICheckbox radioButtonCellInSection(int section, boolean enabled, boolean singleLine) {

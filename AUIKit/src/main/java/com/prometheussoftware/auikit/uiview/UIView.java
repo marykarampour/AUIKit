@@ -20,6 +20,7 @@ import com.prometheussoftware.auikit.utility.ViewUtility;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UIView extends ConstraintLayout implements UIViewProtocol {
 
@@ -565,6 +566,20 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintSet.constrainWidth(view.getId(), width);
     }
 
+    public void constraintSameWidthAsHeightForView (UIView view) {
+        if (view == null || view.getParent() != this) return;
+        constraintWidthForView(view, 0);
+        constraintForView(ConstraintSet.TOP, view);
+        constraintForView(ConstraintSet.BOTTOM, view);
+    }
+
+    public void constraintSameHeightAsWidthForView (UIView view) {
+        if (view == null || view.getParent() != this) return;
+        constraintHeightForView(view, 0);
+        constraintForView(ConstraintSet.START, view);
+        constraintForView(ConstraintSet.END, view);
+    }
+
     public void constraintDefaultHeightForView (UIView view, int height) {
         if (view == null || view.getParent() != this) return;
         constraintSet.constrainDefaultHeight(view.getId(), height);
@@ -852,6 +867,31 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     public enum DIRECTION {
         VERTICAL,
         HORIZONTAL
+    }
+
+    public enum COLUMN_TYPE {
+        LEFT(0),
+        RIGHT(1),
+        COUNT(2);
+
+        COLUMN_TYPE(int value) {
+            this.value = value;
+        }
+
+        private final int value;
+        private static final Map map = new HashMap<>();
+
+        static {
+            for (COLUMN_TYPE type : COLUMN_TYPE.values()) {
+                map.put(type.value, type);
+            }
+        }
+
+        public int intValue() { return value; }
+
+        public static COLUMN_TYPE valueOf(int value) {
+            return (COLUMN_TYPE) map.get(value);
+        }
     }
 
     public enum ALIGNMENT {

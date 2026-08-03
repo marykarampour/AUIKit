@@ -4,8 +4,12 @@ import android.util.Size;
 import android.view.MotionEvent;
 
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
+import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.common.AssetIDs;
+import com.prometheussoftware.auikit.common.Assets;
 import com.prometheussoftware.auikit.common.Constants;
+import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.uiview.UIView;
 
@@ -43,12 +47,22 @@ public abstract class UICheckbox <L extends UIView, R extends UIView> extends UI
         super.init();
     }
 
-    @Override public void initView() {
+    @Override
+    public void initView() {
         super.initView();
         checkView().setTarget(v -> switchCheckbox(checkView(), checkView().getLastTouch()));
-        setRightViewSize(checkView().size());
-    }
 
+        setCheckViewSize(checkViewSize());
+        checkView().setPadding(Dimensions.Int_4(), Dimensions.Int_4(), Dimensions.Int_4(), Dimensions.Int_4());
+
+        int on = AssetIDs.Checkbox_On_ID();
+        int off = AssetIDs.Checkbox_Off_ID();
+        int color = App.theme().Accessory_Selected_Color().get();
+        UIImage onImage = Assets.imageFromID(on, color);
+        UIImage offImage = Assets.imageFromID(off, color);
+        checkView().setOnImage(onImage);
+        checkView().setOffImage(offImage);
+    }
 
     @Override public R getRightView() {
         return super.getRightView();
@@ -86,6 +100,16 @@ public abstract class UICheckbox <L extends UIView, R extends UIView> extends UI
             return leftView;
         }
 
+        @Override
+        public void setCheckViewSize(Size size) {
+            setLeftViewSize(size);
+        }
+
+        @Override
+        public Size checkViewSize() {
+            return leftViewSize();
+        }
+
         @Override public void createLeftView() {
             leftView = UIAccessoryView.build(UIAccessoryView.TYPE.IMAGE);
             leftView.setEnabled(true);
@@ -105,6 +129,16 @@ public abstract class UICheckbox <L extends UIView, R extends UIView> extends UI
         @Override
         public UIAccessoryView checkView() {
             return rightView;
+        }
+
+        @Override
+        public void setCheckViewSize(Size size) {
+            setRightViewSize(size);
+        }
+
+        @Override
+        public Size checkViewSize() {
+            return rightViewSize();
         }
 
         @Override public void createRightView() {

@@ -7,6 +7,8 @@ import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.common.AssetIDs;
+import com.prometheussoftware.auikit.common.Assets;
 import com.prometheussoftware.auikit.genericviews.UICheckbox;
 import com.prometheussoftware.auikit.model.ArrayPropertyProtocol;
 import com.prometheussoftware.auikit.model.BaseModel;
@@ -272,7 +274,7 @@ public interface MutableProtocol {
         }
 
         default boolean isLongValueForObjectType(int type) {
-            return App.constants().MaxValue1CellCharacterCount() <= stringValueForObjectType(type).length();
+            return App.constants().Max_Value1Cell_Character_Count() <= stringValueForObjectType(type).length();
         }
 
         default boolean isLongValueForSectionType(int section) {
@@ -490,7 +492,29 @@ public interface MutableProtocol {
         default int heightForStandardSelectionCell() { return App.constants().Extended_Row_Height(); }
         int heightForSingleCellRowAtIndexPath (IndexPath indexPath);
         int attributedHeightForRowAtIndexPath (IndexPath indexPath);
-        UIImage buttonImageForFieldAtIndexPath (IndexPath indexPath);
+        StringUtility.TYPE textTypeForFieldAtIndexPath (IndexPath indexPath);
+        default int textWidthForFieldAtIndexPath (IndexPath indexPath) {
+            StringUtility.TYPE type = textTypeForFieldAtIndexPath(indexPath);
+            switch (type) {
+                case INT:
+                case FLOAT:
+                case INT_POSITIVE:
+                case FLOAT_POSITIVE:
+                    return App.constants().NumericInput_TextField_Width();
+                default:
+                    return App.constants().Input_TextField_Width();
+            }
+        }
+        default UIImage buttonImageForFieldAtIndexPath (IndexPath indexPath) {
+            StringUtility.TYPE type = textTypeForFieldAtIndexPath(indexPath);
+            switch (type) {
+                case INT:
+                case FLOAT:
+                    return Assets.imageFromID(AssetIDs.Plusminus_square_Name());
+                default:
+                    return null;
+            }
+        }
         default UITargetDelegate.TouchUp actionForFieldButtonAtIndexPath (IndexPath indexPath) { return null; }
     }
 

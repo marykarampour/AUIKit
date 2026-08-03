@@ -132,7 +132,7 @@ public abstract class CollapsingSectionsMenuViewController extends CollapsingTab
             checkView().setOnImage(App.assets().Down_Chevron_Image());
             checkView().setOffImage(App.assets().Right_Chevron_Image());
             checkView().setPadding(Dimensions.Int_4(), Dimensions.Int_4(), Dimensions.Int_4(), Dimensions.Int_4());
-            setRightViewSize(Dimensions.size(Dimensions.Int_32()));
+            setCheckViewSize(Dimensions.size(Dimensions.Int_32()));
         }
 
         @Override

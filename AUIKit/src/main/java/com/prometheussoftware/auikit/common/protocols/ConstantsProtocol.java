@@ -15,7 +15,6 @@ public interface ConstantsProtocol {
     String Version_Name_STR();
     long Version_Code_STR();
 
-
     //spinner
     default Size Spinner_Hud_Size() { return Dimensions.size(Dimensions.Int_52()); }
     default Size Small_Spinner_Hud_Size() { return Dimensions.size(Dimensions.Int_32()); }
@@ -37,7 +36,10 @@ public interface ConstantsProtocol {
     default int TextField_Height() { return Dimensions.Int_44(); }
     default int TextView_Title_Height() { return Dimensions.Int_44(); }
     default int TextView_Medium_Height() { return Dimensions.Int_120(); }
-    default int MaxValue1CellCharacterCount() { return 16; }
+    default int Max_Value1Cell_Character_Count() { return 16; }
+    default int NumericInput_TextField_Width() { return Dimensions.Int_120(); }
+    default int Input_TextField_Width() { return Dimensions.Int_192(); }
+    default int TableCell_Content_HorizontalMargin() { return Dimensions.Int_16(); }
 
     default int MaxTextViewCharacters() { return 400; }
 
