@@ -105,7 +105,7 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
     }
 
     private void addInteractionLayer() {
-        setTopView(interactionLayer, false, false);
+        addBackView(interactionLayer, false, false);
     }
 
     @Override

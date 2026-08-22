@@ -188,12 +188,19 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public boolean canEditSection(int section) {
-        return MutableProtocol.ViewController.super.canEditSection(section);
+        if (!isEditable)
+            return false;
+        return isEditableSectionType(section);
     }
 
     @Override
     public boolean hideSection(int section) {
         return false;
+    }
+
+    @Override
+    public boolean isHeaderSection(int section) {
+        return hasTitleForHeaderInSection(section);
     }
 
     @Override
@@ -257,7 +264,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public boolean boolValueForSection(int section) {
-        return false;
+        return object().UpdatedObject.boolValueForSectionType(section);
     }
 
     @Override
@@ -297,17 +304,13 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public void switchBoolValueAtIndexPath(IndexPath indexPath) {
-
-    }
-
-    @Override
-    public boolean isEditableSectionType(int section) {
-        return false;
+        object().UpdatedObject.switchBoolValueForSectionType(indexPath.section);
+        didSwitchBoolValueAtIndexPath(indexPath);
     }
 
     @Override
     public void didSwitchBoolValueAtIndexPath(IndexPath indexPath) {
-
+        reload();
     }
 
     @Override
@@ -318,6 +321,15 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     @Override
     public void presentSelectionVCAtIndexPath(UIViewController VC, IndexPath indexPath) {
 
+    }
+
+    @Override
+    public int heightForHeaderInSection(int section) {
+        if (numberOfRowsInSection(section) == 0)
+            return 0;
+        if (isHeaderSection(section) && !hideSection(section))
+            return hasTitleForHeaderInSection(section) ? App.constants().Table_Section_Header_Height() : App.constants().Table_Section_Header_Short_Height();
+        return 0;
     }
 
     @Override
@@ -569,14 +581,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
             }
         }
 
-        if (canAddItemToListOfType(type)) {
-            insertRowsAtIndexPaths(addIndexPaths);
-            reloadIndexPaths(replaceIndexPaths);
-        }
-        else {
-            reloadIndexPaths(addIndexPaths);
-        }
-
+        insertRowsAtIndexPaths(addIndexPaths);
+        reloadIndexPaths(replaceIndexPaths);
         didFinishUpdatesInListOfType(type);
 
         return existing;
@@ -719,7 +725,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         if (reload) reload();
     }
 
-
     //region table view
 
     @Override
@@ -782,7 +787,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
             case FIELD: {
                 if (!isEditable) {
-                    return uneditableFieldCellForSectionWithStyle(section, UITableViewCell.STYLE.DEFAULT);
+                    return uneditableFieldCellForSectionWithStyle(section, UITableViewCell.STYLE.SUBTITLE);
                 }
 
                 IndexPath path = new IndexPath(section, rowForFieldAtIndexInSection(UIView.COLUMN_TYPE.LEFT.intValue(), section));
@@ -875,7 +880,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
             case CHECKBOX:
             case CHECKBOX_BUTTON:
             case CHECKBOX_COMMENT: {
-                if (canEditSection(section)) return;
+                if (!canEditSection(section)) return;
                 switchBoolValueAtIndexPath(indexPath);
             }
             break;
@@ -1075,7 +1080,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     //endregion
 
     //region layout
-
+    //TODO: implement others - make this reloadIndexPaths(all)
     protected void reload() {
 
         int width = view().getFrame().width();

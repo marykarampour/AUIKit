@@ -69,7 +69,9 @@ public interface ConstantsProtocol {
     default int Extended_Row_Height() { return Dimensions.Int_52(); }
     default int Table_Cell_Line_Height() { return Dimensions.Int_22(); }
 
-    default int TableView_Section_Header_Height() { return 0; }
+    default int Table_Section_Header_Height() { return Dimensions.Int_32(); }
+    default int Table_Section_Header_Medium_Height() { return Dimensions.Int_44(); }
+    default int Table_Section_Header_Short_Height() { return Dimensions.Int_22(); }
 
     //strings
     String Generic_Success_Message();

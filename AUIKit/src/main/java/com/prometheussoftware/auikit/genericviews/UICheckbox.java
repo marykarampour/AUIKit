@@ -11,6 +11,7 @@ import com.prometheussoftware.auikit.common.Assets;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.Identifier;
+import com.prometheussoftware.auikit.uiview.UIControl;
 import com.prometheussoftware.auikit.uiview.UIView;
 
 public abstract class UICheckbox <L extends UIView, R extends UIView> extends UIMultiViewLabel <L, R, UIView> implements UICheckboxProtocol {
@@ -62,6 +63,8 @@ public abstract class UICheckbox <L extends UIView, R extends UIView> extends UI
         UIImage offImage = Assets.imageFromID(off, color);
         checkView().setOnImage(onImage);
         checkView().setOffImage(offImage);
+
+        addBackView(new UIControl());
     }
 
     @Override public R getRightView() {

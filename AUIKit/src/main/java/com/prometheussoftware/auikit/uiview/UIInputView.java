@@ -1,6 +1,8 @@
 package com.prometheussoftware.auikit.uiview;
 
 import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.common.Constants;
+import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.utility.StringUtility;
@@ -65,14 +67,16 @@ public class UIInputView extends UIView {
     public void constraintLayout() {
         super.constraintLayout();
 
+        int width = Constants.Screen_Size().getWidth() - fieldWidth;
         List<UIView> views = new ArrayList();
         views.add(label);
         views.add(button);
         views.add(textField);
 
-        constraintWidthForView(textField, fieldWidth);
-        constraintSameWidthAsHeightForView(button);
+        constraintWidthForView(label, width);
+        constraintWidthForView(button, Dimensions.Int_32());
         constraintHorizontally(views, horizontalMargin, horizontalMargin, verticalMargin, false);
+        applyConstraints();
     }
 
     public UILabel getLabel() {

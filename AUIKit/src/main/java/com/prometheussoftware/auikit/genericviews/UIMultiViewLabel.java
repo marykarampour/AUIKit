@@ -7,13 +7,15 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
+import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.model.Identifier;
 import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIStackedViews;
 import com.prometheussoftware.auikit.uiview.UIView;
+import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.ViewCreation;
 
-public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIView> extends UIView {
+public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIView> extends UIView implements UIControlProtocol {
 
     private UIStackedViews.Vertical<UILabel> labels;
 
@@ -76,7 +78,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
     }
 
     /** @param backView is added on top and covers the entire view */
-    public void setTopView(UIView backView) {
+    public void addBackView(UIView backView) {
         this.backView = backView;
         backView.setBackgroundColor(UIColor.clear());
         contentView.addSubview(backView);
@@ -89,10 +91,10 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
      * @param backView is added on top and covers the entire view other than possibly left and right views
      * @param coverLeft pass true to have backView cover left view
      * @param coverRight pass true to have backView cover right view */
-    public void setTopView(UIView backView, boolean coverLeft, boolean coverRight) {
+    public void addBackView(UIView backView, boolean coverLeft, boolean coverRight) {
 
         if ((coverLeft || leftView == null) && (coverRight || rightView == null)) {
-            setTopView(backView);
+            addBackView(backView);
             return;
         }
 
@@ -403,4 +405,18 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     //endregion
 
+
+    @Override
+    public void setUserInteractionEnabled(boolean userInteractionEnabled) {
+        if (backView != null)
+            backView.setUserInteractionEnabled(userInteractionEnabled);
+        else
+            super.setUserInteractionEnabled(userInteractionEnabled);
+    }
+
+    @Override
+    public void addTarget(Object ID, UITargetDelegate target) {
+        if (backView instanceof UIControlProtocol)
+            ((UIControlProtocol) backView).addTarget(ID, target);
+    }
 }

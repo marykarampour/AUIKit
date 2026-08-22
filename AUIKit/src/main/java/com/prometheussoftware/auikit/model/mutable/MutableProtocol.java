@@ -218,7 +218,7 @@ public interface MutableProtocol {
             Set values = valuesForSectionType(section);
             Optional str = values.stream().filter(o -> o instanceof String).findAny();
 
-            if (str.isPresent()) return str.toString();
+            if (str.isPresent()) return str.get().toString();
 
             Set<Integer> types = objectTypesForSectionType(section);
             for (Integer type : types) {
@@ -474,7 +474,9 @@ public interface MutableProtocol {
         default UIEdgeInsets radioButtonCellInsetsForSection (int section) { return new UIEdgeInsets(0, App.constants().Horizontal_Margin(), 0, App.constants().Horizontal_Margin()); }
         void switchBoolValueAtIndexPath (IndexPath indexPath);
         /** @brief Default is isEditableSectionType of the object. */
-        boolean isEditableSectionType (int section);
+        default boolean isEditableSectionType (int section) {
+            return object().isEditableSectionType(section);
+        }
         /** @brief By default reloads the corresonding section only. */
         void didSwitchBoolValueAtIndexPath (IndexPath indexPath);
         /** @brief It is called in tableView didSelectRowAtIndexPath when type is MKU_MUTABLE_OBJECT_FIELD_TYPE_SELECTION.

@@ -1,5 +1,6 @@
 package com.prometheussoftware.auikit.tableview;
 
+import android.text.SpannableStringBuilder;
 import android.view.ViewGroup;
 
 import com.prometheussoftware.auikit.common.App;
@@ -8,6 +9,7 @@ import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.UIEditingAccessoryProtocol;
+import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +74,8 @@ public interface UITableViewProtocol {
             return 0;
         }
 
+        default String titleForHeaderInSection(UITableView tableView, int section) { return ""; }
+
         default int heightForTextFieldCellAtIndexPath (IndexPath indexPath) {
             return App.constants().TextField_Height() + 2*App.constants().Vertical_Margin();
         }
@@ -120,12 +124,22 @@ public interface UITableViewProtocol {
             return App.constants().Default_Row_Height();
         }
 
+        default String titleForHeaderInSection(int section) { return ""; }
+
+        default boolean hasTitleForHeaderInSection(int section) {
+            String title = titleForHeaderInSection(section);
+            SpannableStringBuilder attr = attributedTitleForAccessoryLabelOfTypeSection(ACCESSORY_VIEW_TYPE.HEADER, section);
+            return StringUtility.isNotEmpty(title) || StringUtility.isNotEmpty(attr);
+        }
+
+        default SpannableStringBuilder attributedTitleForAccessoryLabelOfTypeSection(ACCESSORY_VIEW_TYPE type, int section) { return null; }
+
         default int heightForHeaderInSection(int section) {
             return 0;
         }
 
         default int heightForFooterInSection(int section) {
-            return App.constants().TableView_Section_Header_Height();
+            return App.constants().Table_Section_Header_Height();
         }
 
         default UIView viewForHeaderInSection(int section) {
@@ -205,6 +219,26 @@ public interface UITableViewProtocol {
         }
 
         TEXTVIEW_CELL_ROW(int i) {
+            value = i;
+        }
+
+        public int intValue() { return value; }
+    }
+
+    enum ACCESSORY_VIEW_TYPE {
+        HEADER(0),
+        FOOTER(1);
+
+        private final int value;
+        private static final HashMap<Integer, ACCESSORY_VIEW_TYPE> map = new HashMap<>();
+
+        static  {
+            for (ACCESSORY_VIEW_TYPE row : values()) {
+                map.put(row.value, row);
+            }
+        }
+
+        ACCESSORY_VIEW_TYPE(int i) {
             value = i;
         }
 

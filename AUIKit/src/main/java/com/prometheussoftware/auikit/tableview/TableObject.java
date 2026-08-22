@@ -247,7 +247,7 @@ public class TableObject {
 
         public int collapsedHeight;
         /** Default is Constants.TableView_Section_Header_Height */
-        public int expandedHeight = App.constants().TableView_Section_Header_Height();
+        public int expandedHeight = App.constants().Table_Section_Header_Height();
 
         public RowData rows;
 

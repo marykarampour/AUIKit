@@ -302,7 +302,10 @@ public class BaseModel implements Serializable, Cloneable {
                 else field.set(this, value);
             }
         } catch (NoSuchFieldException | InvocationTargetException e) {
-        } catch (IllegalAccessException e) { }
+            DEBUGLOG.s(e);
+        } catch (IllegalAccessException e) {
+            DEBUGLOG.s(e);
+        }
     }
 
     /** This method iterates through all fields of a class and its ancestors
