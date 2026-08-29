@@ -18,4 +18,15 @@ public interface AssetsProtocol {
     UIImage X_Mark_Round_Image();
     UIImage Plus_Circle_Fill_Image();
     UIImage Minus_Circle_Fill_Image();
+
+    String Add_Image_Name();
+    String Search_Image_Name();
+    String Refresh_Image_Name();
+    String Camera_Image_Name();
+    String Trash_Image_Name();
+    String Close_Image_Name();
+    String Email_Image_Name();
+    String Print_Image_Name();
+    String Share_Image_Name();
+
 }

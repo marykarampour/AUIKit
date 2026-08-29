@@ -11,6 +11,7 @@ import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.BaseWindow;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.model.BaseModel;
+import com.prometheussoftware.auikit.uiview.UIBarButton;
 import com.prometheussoftware.auikit.uiview.UIButton;
 import com.prometheussoftware.auikit.uiview.UINavigationBar;
 import com.prometheussoftware.auikit.uiview.UITransitioningContainerView;
@@ -18,8 +19,11 @@ import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-public class UIViewController <V extends UIView> extends BaseModel implements LifeCycleDelegate.ViewController, LifeCycleDelegate.View, NavigationControllerProtocol, UITabBarProtocol.Item, ViewControllerTransition.Protocol {
+public class UIViewController <V extends UIView> extends BaseModel implements LifeCycleDelegate.ViewController, LifeCycleDelegate.View, NavigationControllerProtocol, UITabBarProtocol.Item, ViewControllerTransition.Protocol, NavBarButtonContainerProtocol, NavBarButtonTargetProtocol {
 
     static {
         BaseModel.Register(UIViewController.class);
@@ -55,12 +59,14 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
     private boolean editing;
 
+    private List<NavBarButtonTargetProtocol> targets;
+    private UINavBarButtonTarget target = new UINavBarButtonTarget(this);
+
     public UIViewController() {
         createDefaultNavigationBar();
     }
 
     /** Add this to your custom constructors or call it after default constructor
-     *
      {@code
      new UIViewController().init();
      }
@@ -424,6 +430,126 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
     private void setParentViewController(UIViewController parentViewController) {
         this.parentViewController = parentViewController;
+    }
+
+    //endregion
+
+    //region navbar
+
+    @Override
+    public List<NavBarButtonTargetProtocol> navBarTargets() {
+        return targets;
+    }
+
+    @Override
+    public void addNavBarTarget(NavBarButtonTargetProtocol object) {
+        if (object == null || ArrayUtility.safeContains(targets, object)) return;
+
+        if (targets == null)
+            targets = new ArrayList();
+
+        if (object.viewControllerContainingNavigationBar() != null)
+            object.viewControllerContainingNavigationBar().targets.remove(object);
+        object.setViewControllerContainingNavigationBar(this);
+        targets.add(object);
+    }
+
+    @Override
+    public void setNavBarItemsOfTarget(NavBarButtonTargetProtocol object) {
+        if (object == null) return;
+        if (object.viewControllerContainingNavigationBar() != this) return;
+
+        object.setNavBarItems();
+
+        List<UIBarButton> rightArr = object.getBarButtons().get(UIBarButton.POSITION.RIGHT);
+        List<UIBarButton> leftArr = object.getBarButtons().get(UIBarButton.POSITION.LEFT);
+
+        List<UIBarButton> rightItems = itemsInArray(rightArr, object);
+        List<UIBarButton> leftItems = itemsInArray(leftArr, object);
+
+        navigationBar.setRightBarButtonItems(rightItems);
+        navigationBar.setLeftBarButtonItems(leftItems);
+    }
+
+    List<UIBarButton> itemsInArray (List<UIBarButton> arr, NavBarButtonTargetProtocol object) {
+        if (arr == null) return null;
+        return arr.stream().filter(evaluatedObject -> object.hasButtonOfType(evaluatedObject.type)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void setNavBarItemsOfTargetAtIndex(int index) {
+        setNavBarItemsOfTarget(ArrayUtility.safeGet(targets, index));
+    }
+
+    @Override
+    public void setAsNavBarTarget() {
+        addNavBarTarget(this);
+        setNavBarItemsOfTarget(this);
+    }
+
+    @Override
+    public void resetBarButtons() {
+        target.clearBarButtons();
+        setAsNavBarTarget();
+    }
+
+    @Override
+    public void resetBarButtonsOfTarget(NavBarButtonTargetProtocol object) {
+        target.clearBarButtons();
+        setBarButtonsOfTarget(object);
+    }
+
+    @Override
+    public void setBarButtonsOfTarget(NavBarButtonTargetProtocol object) {
+        addNavBarTarget(object);
+        setNavBarItemsOfTarget(object);
+    }
+
+    @Override
+    public void resetBarButtonsOfTargets() {
+        for (NavBarButtonTargetProtocol obj : targets) {
+            resetBarButtonsOfTarget(obj);
+        }
+    }
+
+    @Override
+    public void setBarButtonsOfTargets() {
+        for (NavBarButtonTargetProtocol obj : targets) {
+            setBarButtonsOfTarget(obj);
+        }
+    }
+
+    @Override
+    public void setBarButtonsOfViewControllerContainingNavigationBar() {
+        target.viewControllerContainingNavigationBar().addNavBarTarget(this.target);
+        target.viewControllerContainingNavigationBar().setNavBarItemsOfTarget(this.target);
+    }
+
+    @Override
+    public void resetBarButtonsOfViewControllerContainingNavigationBar() {
+        target.clearBarButtons();
+        target.viewControllerContainingNavigationBar().addNavBarTarget(this.target);
+        target.viewControllerContainingNavigationBar().setNavBarItemsOfTarget(this.target);
+    }
+
+    @Override
+    public void addButtonOfType(UIBarButton.TYPE type, UIBarButton.POSITION position) {
+        target.addButtonOfType(type, position);
+    }
+
+    @Override
+    public UIViewController viewControllerContainingNavigationBar() {
+        return target.viewControllerContainingNavigationBar();
+    }
+
+    @Override
+    public void setViewControllerContainingNavigationBar(UIViewController viewControllerContainingNavigationBar) {
+        target.setViewControllerContainingNavigationBar(viewControllerContainingNavigationBar);
+    }
+
+    @Override
+    public Map<UIBarButton.POSITION, List<UIBarButton>> getBarButtons() {
+        return target.getBarButtons();
     }
 
     //endregion

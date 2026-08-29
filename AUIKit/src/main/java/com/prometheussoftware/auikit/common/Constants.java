@@ -150,6 +150,30 @@ public abstract class Constants implements ConstantsProtocol, SQLConstantsProtoc
         return StringResource(R.string.save);
     }
 
+    public static String Reset_STR() {
+        return StringResource(R.string.reset);
+    }
+
+    public static String Done_STR() {
+        return StringResource(R.string.done);
+    }
+
+    public static String Edit_STR() {
+        return StringResource(R.string.edit);
+    }
+
+    public static String Clear_STR() {
+        return StringResource(R.string.clear);
+    }
+
+    public static String Close_STR() {
+        return StringResource(R.string.close);
+    }
+
+    public static String All_STR() {
+        return StringResource(R.string.all);
+    }
+
     public static String Error_STR() {
         return StringResource(R.string.error);
     }
@@ -168,6 +192,23 @@ public abstract class Constants implements ConstantsProtocol, SQLConstantsProtoc
     public String Generic_Failure_Message() {
         return null;
     }
+
+    @Override
+    public String Save_Successful_STR() { return "Save Successful!"; }
+
+    @Override
+    public String Update_Failed_Title_STR() { return "Update Failed!"; }
+
+    @Override
+    public String Add_New_Item_STR() {
+        return "Add a new item";
+    }
+
+    @Override
+    public String Delete_Failed_STR() {
+        return "Delete Failed!";
+    }
+
 
     //regex
 

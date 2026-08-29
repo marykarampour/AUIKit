@@ -8,10 +8,11 @@ import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class UIViewHolder <T extends UIView> extends UIView implements HolderProtocol {
 
-    private ArrayList<T> views = new ArrayList<>();
+    private List<T> views = new ArrayList<>();
     /** Default is 28. */
     protected Size itemSize = Dimensions.size(Dimensions.Int_28());
 
@@ -19,10 +20,10 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
         super();
     }
 
-    public void setViews(ArrayList<T> views) {
+    public void setViews(List<T> views) {
 
         clearViews();
-        this.views = views;
+        this.views = views != null ? views : new ArrayList();
         addSubviews(views);
         updateConstraints();
     }
@@ -30,9 +31,7 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
     public void setView(T view) {
 
         if (ArrayUtility.firstObject(views) == view) return;
-
-        ArrayList<T> tempButtons = (ArrayList<T>) views.clone();
-
+        ArrayList<T> tempButtons = (ArrayList<T>) ((ArrayList<T>) views).clone();
         clearViews();
 
         if (view == null) {
@@ -49,7 +48,7 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
 
         if (views.contains(view)) return;
 
-        ArrayList<T> tempButtons = (ArrayList<T>) views.clone();
+        ArrayList<T> tempButtons = (ArrayList<T>) ((ArrayList<T>) views).clone();
         tempButtons.add(view);
         setViews(tempButtons);
     }
@@ -59,7 +58,7 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
         views.clear();
     }
 
-    public ArrayList<T> getViews() {
+    public List<T> getViews() {
         return views;
     }
 

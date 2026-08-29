@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ArrayUtility {
 
@@ -193,5 +194,19 @@ public class ArrayUtility {
             }
         }
         return existing;
+    }
+
+    public static <T> T objectPassingTest(List<T> array, Predicate<? super T> test) {
+        if (array == null || array.size() == 0 || test == null) return null;
+        return array.stream().filter(test).findFirst().orElse(null);
+    }
+
+    public static <T> int indexOfObjectPassingTest(List<T> array, Predicate<? super T> test) {
+        if (array == null || array.size() == 0 || test == null) return Constants.NOT_FOUND_ID;
+        return array.indexOf(array.stream().filter(test).findFirst().get());
+    }
+
+    public static <T> boolean safeContains(List<T> array, T object) {
+        return array != null && array.contains(object);
     }
 }

@@ -11,6 +11,8 @@ import com.prometheussoftware.auikit.common.protocols.AssetsProtocol;
 
 public class Assets implements AssetsProtocol {
 
+    private static final String DRAWABLE_TYPE = "drawable";
+
     protected static Context context () {
         return MainApplication.getContext();
     }
@@ -34,6 +36,26 @@ public class Assets implements AssetsProtocol {
 
     public static UIImage imageFromID(int id, int color) {
         return new UIImage(id, color);
+    }
+
+    public static Drawable assetWithTint (String name, int color) {
+        int id = context().getResources().getIdentifier(name, DRAWABLE_TYPE, context().getOpPackageName());
+        return assetWithTint(id, color);
+    }
+
+    public static Drawable drawableFromName(String name) {
+        int id = context().getResources().getIdentifier(name, DRAWABLE_TYPE, context().getOpPackageName());
+        return drawableFromID(id);
+    }
+
+    public static UIImage imageFromName(String name) {
+        int id = context().getResources().getIdentifier(name, DRAWABLE_TYPE, context().getOpPackageName());
+        return imageFromID(id);
+    }
+
+    public static UIImage imageFromName(String name, int color) {
+        int id = context().getResources().getIdentifier(name, DRAWABLE_TYPE, context().getOpPackageName());
+        return imageFromID(id, color);
     }
 
     // navigation
@@ -105,6 +127,51 @@ public class Assets implements AssetsProtocol {
     @Override
     public UIImage Minus_Circle_Fill_Image() {
         return imageFromID(AssetIDs.Minus_Circle_Fill_Icon(), UIColor.color("#FF3B30").get());
+    }
+
+    @Override
+    public String Add_Image_Name() {
+        return "add";
+    }
+
+    @Override
+    public String Search_Image_Name() {
+        return "search";
+    }
+
+    @Override
+    public String Refresh_Image_Name() {
+        return "refresh";
+    }
+
+    @Override
+    public String Camera_Image_Name() {
+        return "camera";
+    }
+
+    @Override
+    public String Trash_Image_Name() {
+        return "trash";
+    }
+
+    @Override
+    public String Close_Image_Name() {
+        return "close";
+    }
+
+    @Override
+    public String Email_Image_Name() {
+        return "email";
+    }
+
+    @Override
+    public String Print_Image_Name() {
+        return "print";
+    }
+
+    @Override
+    public String Share_Image_Name() {
+        return "share";
     }
 
     //endregion

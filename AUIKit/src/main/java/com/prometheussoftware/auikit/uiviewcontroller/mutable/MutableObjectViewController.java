@@ -9,6 +9,7 @@ import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.classes.LabelAttributes;
 
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
+import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Dimensions;
@@ -20,6 +21,7 @@ import com.prometheussoftware.auikit.model.mutable.MutableProtocol;
 import com.prometheussoftware.auikit.model.mutable.MutableUpdateObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
+import com.prometheussoftware.auikit.uiview.UIBarButton;
 import com.prometheussoftware.auikit.uiview.UIInputView;
 import com.prometheussoftware.auikit.uiview.UIScrollview;
 import com.prometheussoftware.auikit.uiview.UIView;
@@ -41,7 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class MutableObjectViewController <ObjectType extends BaseModel & MutableProtocol.Field, UpdateObjectType extends BaseModel & MutableProtocol.Field> extends UIViewController implements MutableProtocol.ViewController<ObjectType, UpdateObjectType, MutableUpdateObject<ObjectType, UpdateObjectType>>, ViewControllerTransition, ItemsListProtocol.VC, ItemsListProtocol.EditingListVC, ItemsListProtocol.VCTransitionDelegate, ItemsListProtocol.UpdateDelegate, ViewControllerTransition.Delegate, UITableViewProtocol.TableViewData {
+public abstract class MutableObjectViewController <ObjectType extends BaseModel & MutableProtocol.Field, UpdateObjectType extends BaseModel & MutableProtocol.Field> extends UIViewController implements MutableProtocol.ViewController<ObjectType,UpdateObjectType, MutableUpdateObject<ObjectType,UpdateObjectType>>, ViewControllerTransition, ItemsListProtocol.VC, ItemsListProtocol.EditingListVC, ItemsListProtocol.VCTransitionDelegate, ItemsListProtocol.UpdateDelegate, ViewControllerTransition.Delegate, UITableViewProtocol.TableViewData {
 
     private UIScrollview scrollview;
     protected HashMap<Integer, Set> selectedSets = new HashMap<>();
@@ -85,10 +87,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         reload();
     }
 
-    private void setAsNavBarTarget() {
-    }
-
-    private boolean hasMutableNavbar() {
+    protected boolean hasMutableNavbar() {
         return true;
     }
 
@@ -143,12 +142,190 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         defaultDispatchDelegateForSaveDone();
     }
 
+    /** @brief By default calls dispathTransitionDelegateToReturnWithObject(object().UpdatedObject). */
     protected void defaultDispatchDelegateForSaveDone() {
         dispathTransitionDelegateToReturnWithObject(object().UpdatedObject);
     }
 
+    /** @brief This is called when save is pressed. It calls updateObjectWithCompletion or saveObjectWithCompletion.
+     * If completion = nil, it will shows success failure error alerts, otherwise it will perform the completion with no alerts.
+     * @note Default completion is nil. Set  performSaveOrUpdateObjectCompletionHandler to perform other actions. */
+    protected void performSaveOrUpdateObjectWithCompletion (SuccessErrorCallback completion) {
+
+        if (canUpdate()) {
+            updateObjectWithCompletion(new MutableProtocol.UpdateCallback() {
+                @Override
+                public void onSuccess(boolean result) {
+                    if (completion != null) {
+                        completion.done(result, null);
+                    }
+                    else {
+                        successResultCompletion().onSuccess(result);
+                    }
+                }
+
+                @Override
+                public void onFailure(Error error) {
+                    if (completion != null) {
+                        completion.done(false, error);
+                    }
+                    else {
+                        successResultCompletion().onFailure(error);
+                    }
+                }
+            });
+        }
+        else {
+            saveObjectWithCompletion(new MutableProtocol.SaveCallback() {
+                @Override
+                public void onSuccess(Integer ID) {
+                    if (completion != null) {
+                        didFinishUpdateWithResultID(ID);
+                        completion.done(0 < ID, null);
+                    }
+                    else {
+                        IDResultCompletion().onSuccess(ID);
+                    }
+                }
+
+                @Override
+                public void onFailure(Error error) {
+                    IDResultCompletion().onFailure(error);
+                }
+            });
+        }
+    }
+
+    /** @brief Called when right bar button item is ressed. By default does:
+     @code
+     prepareDataForUpdate();
+     if (performDefaultSavePressedAction()) {
+        dispatchDelegateForSaveDone();
+        return;
+     }
+     performSaveOrUpdateObjectWithCompletion(null);
+     @endcode
+     */
+    protected void handleSavePressed() {
+        if (!canPerformSaveObject()) {
+            handleAbortSaveObject();
+            return;
+        }
+
+        prepareDataForUpdate();
+
+        if (performDefaultSavePressedAction()) {
+            dispatchDelegateForSaveDone();
+            return;
+        }
+
+        if (canHandleSaveObject())
+            handleSaveObject();
+        else
+            performSaveOrUpdateObjectWithCompletion(performSaveOrUpdateObjectCompletionHandler());
+    }
+
     @Override
-    public MutableProtocol.UpdateCallback performSaveOrUpdateObjectCompletionHandler() {
+    public void setNavBarItems() {
+        setMutableNavBarItems();
+    }
+
+    @Override
+    public boolean hasButtonOfType(UIBarButton.TYPE type) {
+        return isEditable;
+    }
+
+    @Override
+    public UIBarButton.POSITION positionForButtonOfType(UIBarButton.TYPE type) {
+        return UIBarButton.POSITION.RIGHT;
+    }
+
+    @Override
+    public String titleForButtonOfType(UIBarButton.TYPE type) {
+        return type == UIBarButton.TYPE.SYSTEM_SAVE ? App.constants().Save_STR() : App.constants().Reset_STR();
+    }
+
+    @Override
+    public UIImage imageForButtonOfType(UIBarButton.TYPE type) {
+        return null;
+    }
+
+    @Override
+    public Object saveObject() {
+        return object();
+    }
+
+    @Override
+    public boolean isEnabledButtonOfType(UIBarButton.TYPE type) {
+        return true;
+    }
+
+    @Override
+    public UITargetDelegate.TouchUp actionForButtonOfType(UIBarButton.TYPE type) {
+        return type == UIBarButton.TYPE.SYSTEM_SAVE ? sender -> handleSavePressed() : sender -> reset();
+    }
+
+    /** @brief Handles action performed when pressing the reset button.
+    Resets the object and calls didResetUpdateObject:
+    Default in MKUMutableObjectTableViewController is:.
+     @code
+     object().reset();
+     didResetUpdateObject(object().UpdatedObject);
+     @endcode
+     */
+    protected void reset() {
+        object().reset();
+        didResetUpdateObject(object().UpdatedObject);
+        dispathTransitionDelegateToReturnWithResult(RESULT_TYPE.FAILURE, object().UpdatedObject);
+    }
+
+    /** @brief Checks for successful result and shows an appropriate alert and dispatchDelegateForSaveDone if successful. */
+    protected void handleSaveObjectCompletionWithSuccess (Boolean success, int ID, Error error) {
+        if (error == null && success) {
+            if (0 < ID)
+                didFinishUpdateWithResultID(ID);
+            if (showSaveSuccessAlert())
+                UIAlert.OKAlert(App.constants().Save_Successful_STR());
+            dispatchDelegateForSaveDone();
+        }
+        else if (error != null) {
+            UIAlert.OKAlert(App.constants().Update_Failed_Title_STR(), error.getLocalizedMessage());
+        }
+    }
+
+    /** @brief Performs handleSaveObjectCompletionWithSuccess: ID: error: */
+    protected MutableProtocol.SaveCallback IDResultCompletion() {
+        return new MutableProtocol.SaveCallback() {
+            @Override
+            public void onSuccess(Integer ID) {
+                handleSaveObjectCompletionWithSuccess(0 < ID, ID, null);
+            }
+
+            @Override
+            public void onFailure(Error error) {
+                handleSaveObjectCompletionWithSuccess(false, 0, error);
+            }
+        };
+    }
+
+    /** @brief Performs handleSaveObjectCompletionWithSuccess: ID: error: */
+    protected MutableProtocol.UpdateCallback successResultCompletion() {
+        return new MutableProtocol.UpdateCallback() {
+            @Override
+            public void onSuccess(boolean result) {
+                handleSaveObjectCompletionWithSuccess(result, 0, null);
+            }
+
+            @Override
+            public void onFailure(Error error) {
+                handleSaveObjectCompletionWithSuccess(false, 0, error);
+            }
+        };
+    }
+
+
+    @Override
+    public SuccessErrorCallback performSaveOrUpdateObjectCompletionHandler() {
         return null;
     }
 

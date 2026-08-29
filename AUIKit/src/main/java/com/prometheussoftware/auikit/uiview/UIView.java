@@ -474,6 +474,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     }
 
     public void clearConstraints(List<? extends UIView> views) {
+        if (views == null) return;
         for (UIView view : views) {
             clearConstraints(view);
         }
@@ -709,7 +710,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
          @param horizontalMargin Use CONSTRAINT_NO_PADDING to not constraint horizontally to the parent, it will center horizontally.
          @param verticalMargin The margin between the first item and the top of parent, and the last item and the bottom of parent. */
     public void constraintVertically (List<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalHeights, int parentConstraints, int horizontalConstraints) {
-
+        if (views == null) return;
         List<UIView> totalViews = new ArrayList<>();
 
         for (UIView view : views) {
@@ -764,7 +765,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
      @param verticalMargin Use CONSTRAINT_NO_PADDING to not constraint vertically to the parent, it will center vertically.
      @param horizontalMargin The margin between the first item and the start of parent, and the last item and the end of parent. */
     public void constraintHorizontally (List<? extends UIView> views, int interItemMargin, int horizontalMargin, int verticalMargin, boolean equalWidths, int parentConstraints) {
-
+        if (views == null) return;
         List<UIView> totalViews = new ArrayList<>();
 
         for (UIView view : views) {

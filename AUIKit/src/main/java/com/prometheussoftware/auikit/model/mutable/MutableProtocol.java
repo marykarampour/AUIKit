@@ -2,6 +2,7 @@ package com.prometheussoftware.auikit.model.mutable;
 
 import android.text.SpannableStringBuilder;
 
+import com.prometheussoftware.auikit.callback.SuccessErrorCallback;
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
@@ -14,11 +15,13 @@ import com.prometheussoftware.auikit.model.ArrayPropertyProtocol;
 import com.prometheussoftware.auikit.model.BaseModel;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.ModelProtocol;
+import com.prometheussoftware.auikit.uiview.UIBarButton;
 import com.prometheussoftware.auikit.uiview.UITextField;
 import com.prometheussoftware.auikit.uiview.UITextView;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.ItemsListProtocol;
+import com.prometheussoftware.auikit.uiviewcontroller.NavBarButtonTargetProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 import com.prometheussoftware.auikit.utility.DateUtility;
 import com.prometheussoftware.auikit.utility.MapUtility;
@@ -347,7 +350,7 @@ public interface MutableProtocol {
         default void objectDidUpdateObjectType(O obj, Integer type, UITextField textField, boolean endEditing, IndexPath indexPath) {}
     }
 
-    interface ViewController <ObjectType extends BaseModel & Field, UpdateObjectType extends BaseModel & Field, O extends MutableUpdateObject<ObjectType, UpdateObjectType>> extends Delegate, ModelProtocol.Object<O>, ItemsListProtocol.ListVC {
+    interface ViewController <ObjectType extends BaseModel & Field, UpdateObjectType extends BaseModel & Field, O extends MutableUpdateObject<ObjectType, UpdateObjectType>> extends Delegate, ModelProtocol.Object<O>, ItemsListProtocol.ListVC, NavBarButtonTargetProtocol {
 
         /**
          * @note Default checks:
@@ -373,6 +376,7 @@ public interface MutableProtocol {
          * @endcode
          */
         default void handleSaveObject() {};
+        default boolean canHandleSaveObject() { return false; };
         default void updateObjectWithCompletion(UpdateCallback completion) {};
         default void saveObjectWithCompletion(SaveCallback completion) {};
         default boolean canUpdate() { return false; }
@@ -384,8 +388,8 @@ public interface MutableProtocol {
          * @note viewControllerContainingNavigationBar must be set before calling this method.
          */
         default void setMutableNavBarItems() {
-            //addButtonOfType(MKU_NAV_BAR_BUTTON_TYPE_SYSTEM_SAVE, position MKU_NAV_BAR_BUTTON_POSITION_RIGHT);
-            //addButtonOfType(MKU_NAV_BAR_BUTTON_TYPE_RESET, position MKU_NAV_BAR_BUTTON_POSITION_RIGHT);
+            addButtonOfType(UIBarButton.TYPE.SYSTEM_SAVE, UIBarButton.POSITION.RIGHT);
+            addButtonOfType(UIBarButton.TYPE.RESET, UIBarButton.POSITION.RIGHT);
         }
         /**
          * @brief This is called in reset, setObject and setUpdatedObject methods, use this to update any single cells like segments, or other needed updates,
@@ -405,10 +409,12 @@ public interface MutableProtocol {
         default Class classForObject() { return MutableUpdateObject.class; }
         default boolean showSaveSuccessAlert() { return true; }
         default <O extends Field> void updateObjectDidUpdateKey(O object, String key) {}
-        /** @brief This is called when save is pressed as the completion of performSaveOrUpdateObjectWithCompletion.
-        If nil, performSaveOrUpdateObjectWithCompletion will shows success failure error alerts, otherwise it will perform the completion with no alerts.
-         @note Default completion is nil. Set to perform other actions. */
-        public UpdateCallback performSaveOrUpdateObjectCompletionHandler();
+        /**
+         * @brief This is called when save is pressed as the completion of performSaveOrUpdateObjectWithCompletion.
+         * If nil, performSaveOrUpdateObjectWithCompletion will shows success failure error alerts, otherwise it will perform the completion with no alerts.
+         * @note Default completion is nil. Set to perform other actions.
+         */
+        public SuccessErrorCallback performSaveOrUpdateObjectCompletionHandler();
         /** @brief It calls setObject */
         <T extends UpdateObjectType> void setUpdatedObject (T updatedObject);
 

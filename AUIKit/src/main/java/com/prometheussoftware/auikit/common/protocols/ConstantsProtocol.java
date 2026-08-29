@@ -76,11 +76,9 @@ public interface ConstantsProtocol {
     //strings
     String Generic_Success_Message();
     String Generic_Failure_Message();
-    default String Add_New_Item_STR() {
-        return "Add a new item";
-    }
 
-    default String Delete_Failed_STR() {
-        return "Delete Failed!";
-    }
+    String Save_Successful_STR();
+    String Update_Failed_Title_STR();
+    String Add_New_Item_STR();
+    String Delete_Failed_STR();
 }

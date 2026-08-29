@@ -16,7 +16,8 @@ import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class UINavigationBar extends UIView {
 
@@ -128,7 +129,6 @@ public class UINavigationBar extends UIView {
                 }
                 else {
                     titleViewHolder.setView(view);
-
                 }
             }
         }
@@ -181,19 +181,20 @@ public class UINavigationBar extends UIView {
         return titleViewHolder.getView();
     }
 
-    public ArrayList<UIBarButton> getLeftBarButtonItems() {
+    public List<UIBarButton> getLeftBarButtonItems() {
         return leftItemsViewHolder.getViews();
     }
 
-    public ArrayList<UIBarButton> getRightBarButtonItems() {
+    public List<UIBarButton> getRightBarButtonItems() {
         return rightItemsViewHolder.getViews();
     }
 
-    public void setLeftBarButtonItems(ArrayList<UIBarButton> leftBarButtonItems) {
+    public void setLeftBarButtonItems(List<UIBarButton> leftBarButtonItems) {
         leftItemsViewHolder.setViews(leftBarButtonItems);
     }
 
-    public void setRightBarButtonItems(ArrayList<UIBarButton> rightBarButtonItems) {
+    public void setRightBarButtonItems(List<UIBarButton> rightBarButtonItems) {
+        Collections.reverse(rightBarButtonItems);
         rightItemsViewHolder.setViews(rightBarButtonItems);
     }
 
@@ -287,6 +288,23 @@ public class UINavigationBar extends UIView {
     }
 
     class BarButtonHolder extends UIViewHolder.Row <UIBarButton> {
+
+        @Override
+        public void updateConstraints() {
+            if (getViews().size() <= 1) {
+                super.updateConstraints();
+                return;
+            }
+
+            clearConstraints(getViews());
+            constraintHorizontally(getViews(), 0, 0, 0, false, ConstraintSet.START | ConstraintSet.END);
+
+            for (UIBarButton item : getViews()) {
+                String title = item.getTitleLabel().getText();
+                constraintSizeForView(item, AppTheme.Bar_Button_Size(title));
+            }
+            applyConstraints();
+        }
     }
 
     //endregion
