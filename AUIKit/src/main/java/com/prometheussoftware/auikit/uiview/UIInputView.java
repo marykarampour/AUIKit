@@ -51,8 +51,12 @@ public class UIInputView extends UIView {
         super.initView();
         label = new UILabel();
         button = new UIButton();
+
         textField = new UITextField();
         textField.setFormat(format);
+        textField.setCornerRadius(App.constants().Control_Corner_Radius());
+        textField.setBorderWidth(App.constants().Border_Width());
+        textField.setBorderColor(App.theme().TextField_Placeholder_Color());
     }
 
     @Override

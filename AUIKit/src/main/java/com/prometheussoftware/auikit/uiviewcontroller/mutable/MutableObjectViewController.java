@@ -937,7 +937,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         return isEditing() && canAddItemToListOfType(type) ? count + 1 : count;
     }
 
-
     @Override
     public UIView cellForRowAtIndexPath(IndexPath indexPath) {
 

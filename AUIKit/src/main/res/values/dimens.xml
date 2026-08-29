@@ -10,6 +10,7 @@
     <dimen name="dimen_32">32dp</dimen>
     <dimen name="dimen_64">64dp</dimen>
     <dimen name="dimen_128">128dp</dimen>
+    <dimen name="dimen_210">256dp</dimen>
     <dimen name="dimen_256">256dp</dimen>
     <dimen name="dimen_512">512dp</dimen>
     <dimen name="dimen_1024">1024dp</dimen>

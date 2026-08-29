@@ -11,5 +11,4 @@ public class AppTheme implements ThemeProtocol {
         int width = StringUtility.width(title, App.theme().Nav_Bar_Font().pixelSize());
         return new Size(width, App.constants().Nav_Bar_Height());
     }
-
 }

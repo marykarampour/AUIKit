@@ -500,7 +500,9 @@ public interface MutableProtocol {
         default int heightForStandardSelectionCell() { return App.constants().Extended_Row_Height(); }
         int heightForSingleCellRowAtIndexPath (IndexPath indexPath);
         int attributedHeightForRowAtIndexPath (IndexPath indexPath);
-        StringUtility.TYPE textTypeForFieldAtIndexPath (IndexPath indexPath);
+        default StringUtility.TYPE textTypeForFieldAtIndexPath (IndexPath indexPath) {
+            return object().UpdatedObject.textTypeForObjectType(indexPath.row);
+        }
         default int textWidthForFieldAtIndexPath (IndexPath indexPath) {
             StringUtility.TYPE type = textTypeForFieldAtIndexPath(indexPath);
             switch (type) {

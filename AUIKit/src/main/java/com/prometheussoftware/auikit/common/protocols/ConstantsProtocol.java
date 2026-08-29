@@ -37,12 +37,14 @@ public interface ConstantsProtocol {
     default int TextView_Title_Height() { return Dimensions.Int_44(); }
     default int TextView_Medium_Height() { return Dimensions.Int_120(); }
     default int Max_Value1Cell_Character_Count() { return 16; }
-    default int NumericInput_TextField_Width() { return Dimensions.Int_120(); }
-    default int Input_TextField_Width() { return Dimensions.Int_192(); }
+    default int NumericInput_TextField_Width() { return Dimensions.Int_200(); }
+    default int Input_TextField_Width() { return Dimensions.Int_200(); }
     default int TableCell_Content_HorizontalMargin() { return Dimensions.Int_16(); }
+    default int Control_Corner_Radius() { return 0; }
+    default int Group_Corner_Radius() { return 0; }
+    default int Border_Width() { return 0; }
 
     default int MaxTextViewCharacters() { return 400; }
-
     default int MaxTextViewCharactersLong() { return 1024; }
 
     //data
@@ -65,8 +67,8 @@ public interface ConstantsProtocol {
 
     //table view
     default Size TableView_Accessory_Size() { return Dimensions.size(Dimensions.Int_28()); }
-    default int Default_Row_Height() { return Dimensions.Int_44(); }
-    default int Extended_Row_Height() { return Dimensions.Int_52(); }
+    default int Default_Row_Height() { return Dimensions.Int_48(); }
+    default int Extended_Row_Height() { return Dimensions.Int_56(); }
     default int Table_Cell_Line_Height() { return Dimensions.Int_22(); }
 
     default int Table_Section_Header_Height() { return Dimensions.Int_32(); }
