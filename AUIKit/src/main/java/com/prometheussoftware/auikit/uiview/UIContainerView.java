@@ -32,7 +32,7 @@ public class UIContainerView <V extends UIView> extends UIView {
         super.constraintLayout();
 
         setContentViewForSuperview(layerView, this, insets, () -> {
-            view.removeFromSuperview();
+            layerView.removeFromSuperview();
         });
     }
 
@@ -42,5 +42,17 @@ public class UIContainerView <V extends UIView> extends UIView {
 
     public void setViewBackgroundColor(UIColor color) {
         view.setBackgroundColor(color);
+    }
+
+    public void setBorderWidth(int width) {
+        layerView.setBorderWidth(width);
+    }
+
+    public void setBorderColor(UIColor color) {
+        layerView.setBorderColor(color.get());
+    }
+
+    public void setCornerRadius(float radius) {
+        layerView.setCornerRadius(radius);
     }
 }

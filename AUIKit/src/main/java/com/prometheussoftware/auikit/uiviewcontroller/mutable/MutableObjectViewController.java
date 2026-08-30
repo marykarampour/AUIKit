@@ -8,6 +8,7 @@ import com.prometheussoftware.auikit.callback.SuccessErrorCallback;
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.classes.LabelAttributes;
 
+import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
@@ -22,13 +23,17 @@ import com.prometheussoftware.auikit.model.mutable.MutableUpdateObject;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
 import com.prometheussoftware.auikit.uiview.UIBarButton;
+import com.prometheussoftware.auikit.uiview.UIContainerView;
 import com.prometheussoftware.auikit.uiview.UIInputView;
 import com.prometheussoftware.auikit.uiview.UIScrollview;
+import com.prometheussoftware.auikit.uiview.UITextField;
+import com.prometheussoftware.auikit.uiview.UITextView;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.UIEditingAccessoryProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 import com.prometheussoftware.auikit.tableview.BaseTableViewCell;
+import com.prometheussoftware.auikit.uiview.protocols.ViewCreation;
 import com.prometheussoftware.auikit.uiviewcontroller.ItemsListProtocol;
 import com.prometheussoftware.auikit.uiviewcontroller.UIViewController;
 import com.prometheussoftware.auikit.uiviewcontroller.ViewControllerTransition;
@@ -979,6 +984,14 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 return cell;
             }
 
+            case TITLE_FIELD: {
+                if (!isEditable) {
+                    return uneditableFieldCellForSectionWithStyle(section, UITableViewCell.STYLE.SUBTITLE);
+                }
+
+                return textFieldCellForIndexPath(indexPath, titleForSection(section), object().UpdatedObject, new IndexPath(section, rowForFieldAtIndexInSection(UIView.COLUMN_TYPE.LEFT.intValue(), section)), valueForSection(section), placeholderTitleForSection(section));
+            }
+
             case LIST: {
                 int listType = listTypeForListInSection(section);
 
@@ -997,6 +1010,41 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 if (cell != null) cell.setUserInteractionEnabled(userInteractionEnabledForSingleCellAtIndexPath(indexPath));
                 return cell;
             }
+        }
+    }
+
+    private UIView textFieldCellForIndexPath(IndexPath indexPath, String title, UITextView.TextViewDelegate delegate, IndexPath viewIndexPath, String text, String placeholder) {
+
+        if (indexPath.row == UITableViewProtocol.TEXTVIEW_CELL_ROW.TITLE.intValue()) {
+
+            BaseTableViewCell cell = new BaseTableViewCell();
+            cell.setSeparatorHeight(0);
+            cell.setSelectionStyle(UITableViewCell.SELECTION_STYLE.NONE);
+            cell.setAccessoryType(UITableViewCell.ACCESSORY_TYPE.NONE);
+            cell.getLabel(0).setText(title);
+            cell.getLabel(0).setFont(App.theme().Small_Bold_Font());
+            cell.getLabel(0).setNumberOfLines(2);
+            return cell;
+        }
+        else {
+            UIEdgeInsets insets = new UIEdgeInsets(App.constants().Vertical_Margin(), App.constants().TableCell_Content_HorizontalMargin(), App.constants().Vertical_Margin(), App.constants().TableCell_Content_HorizontalMargin());
+
+            UIContainerView cell = new UIContainerView(insets, new ViewCreation() {
+                @Override
+                public UIView view() {
+                    UITextField view = new UITextField();
+                    view.setHint(placeholder);
+                    view.setText(text);
+                    view.setIndexPath(viewIndexPath);
+                    view.setDelegate(delegate);
+                    return view;
+                }
+            });
+            cell.setViewBackgroundColor(App.theme().TextField_Background_Color());
+            cell.setCornerRadius(App.constants().Control_Corner_Radius());
+            cell.setBorderWidth(App.constants().Border_Width());
+            cell.setBorderColor(App.theme().TextField_Placeholder_Color());
+            return cell;
         }
     }
 
