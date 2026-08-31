@@ -64,8 +64,8 @@ public interface MutableProtocol {
         LIST
     }
 
-    interface SaveCallback<E extends Error> {
-        void onSuccess(Integer ID);
+    interface SaveCallback<O extends Object, E extends Error> {
+        void onSuccess(O ID);
         void onFailure(E error);
     }
 
@@ -382,7 +382,7 @@ public interface MutableProtocol {
         default boolean canUpdate() { return false; }
         /** @brief Last chance to process data for saving. */
         default void prepareDataForUpdate() {};
-        default void didFinishUpdateWithResultID(Number ID) {};
+        default void didFinishUpdateWithResultID(Object ID) {};
         /**
          * @brief Sets the Save and Reset right bar button items.
          * @note viewControllerContainingNavigationBar must be set before calling this method.

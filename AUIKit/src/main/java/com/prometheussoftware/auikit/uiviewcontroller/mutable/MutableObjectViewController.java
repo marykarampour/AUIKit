@@ -183,10 +183,10 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         else {
             saveObjectWithCompletion(new MutableProtocol.SaveCallback() {
                 @Override
-                public void onSuccess(Integer ID) {
+                public void onSuccess(Object ID) {
                     if (completion != null) {
                         didFinishUpdateWithResultID(ID);
-                        completion.done(0 < ID, null);
+                        completion.done(ID != null, null);
                     }
                     else {
                         IDResultCompletion().onSuccess(ID);
@@ -285,9 +285,9 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     /** @brief Checks for successful result and shows an appropriate alert and dispatchDelegateForSaveDone if successful. */
-    protected void handleSaveObjectCompletionWithSuccess (Boolean success, int ID, Error error) {
+    protected void handleSaveObjectCompletionWithSuccess (Boolean success, Object ID, Error error) {
         if (error == null && success) {
-            if (0 < ID)
+            if (ID != null)
                 didFinishUpdateWithResultID(ID);
             if (showSaveSuccessAlert())
                 UIAlert.OKAlert(App.constants().Save_Successful_STR());
@@ -302,8 +302,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     protected MutableProtocol.SaveCallback IDResultCompletion() {
         return new MutableProtocol.SaveCallback() {
             @Override
-            public void onSuccess(Integer ID) {
-                handleSaveObjectCompletionWithSuccess(0 < ID, ID, null);
+            public void onSuccess(Object ID) {
+                handleSaveObjectCompletionWithSuccess(ID != null, ID, null);
             }
 
             @Override
@@ -451,7 +451,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public int rowForFieldAtIndexInSection(int index, int section) {
-        return 0;
+        List<Integer> nums = new ArrayList<>(object().UpdatedObject.objectTypesForSectionType(section));
+        return ArrayUtility.safeGet(nums, index);
     }
 
     @Override

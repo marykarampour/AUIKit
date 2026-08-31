@@ -187,7 +187,9 @@ public interface ItemsListProtocol {
         default int heightForNonEditingListRowAtIndexPath (IndexPath indexPath) { return App.constants().Default_Row_Height(); }
 
         /** @brief Peform any actions required to delete this item. In the completion, this ittem will be removed from the list. */
-        default <T extends ViewContentProtocol.Placeholder> void willDeleteItemForRowAtIndexPath (T item, IndexPath indexPath, SuccessErrorCallback completion) {}
+        default <T extends ViewContentProtocol.Placeholder> void willDeleteItemForRowAtIndexPath (T item, IndexPath indexPath, SuccessErrorCallback completion) {
+            completion.done(true, null);
+        }
 
         /** @brief Peform any actions required after deleting this item such as updating navbar. */
         default <T extends ViewContentProtocol.Placeholder> void didDeleteItemForRowAtIndexPath (T item, IndexPath indexPath) {}
