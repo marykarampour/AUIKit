@@ -35,7 +35,7 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     private static BaseActivity activity;
 
     private int opacity = VISIBLE;
-    private int animationDuration = DEFAULT_ANIMATION_DURATION;
+    protected int animationDuration = DEFAULT_ANIMATION_DURATION;
     private boolean userInteractionEnabled;
     private boolean selfSetOpacity;
     protected boolean loaded;

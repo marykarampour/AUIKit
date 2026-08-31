@@ -556,19 +556,30 @@ public class BaseModel implements Serializable, Cloneable {
     }
 
     /** If clone is supported returns a cloned object from obj
-     * else returns null */
+     * else returns Gson copy */
     public <T extends BaseModel> T copy() {
         try {
             return (T) clone();
         } catch (CloneNotSupportedException e) {
-            return null;
+            return copy();
         }
     }
 
-    /** If clone is supported returns a cloned object from obj
-     * else returns null */
+    /** Returns a Gson based copy. */
     public static <T extends BaseModel> T copy(T obj) {
-        return obj.copy();
+        return copyObject(obj);
+    }
+
+    /** Returns a Gson based copy. */
+    public static <T extends Object> T copy(T obj) {
+        return copyObject(obj);
+    }
+
+    /** Returns a Gson based copy. */
+    private static <T extends Object> T copyObject(T obj) {
+        Gson gson = new Gson();
+        String json = gson.toJson(obj);
+        return gson.fromJson(json, (Class<T>) obj.getClass());
     }
 
     public static <T extends Object> T elementInArray (ArrayList<T> arr, Class<T> objectClass, String name, Object value) {

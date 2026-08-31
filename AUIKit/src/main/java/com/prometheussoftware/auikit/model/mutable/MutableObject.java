@@ -30,7 +30,7 @@ public class MutableObject <O extends MutableProtocol.Field, U extends MutablePr
     }
 
     void setupWithObject (O object) {
-        Object obj = object;//TODO: should be copy, but clone is broken BaseModel.copy(object);
+        Object obj = BaseModel.copy(object);
 
         if (obj == null) {
             Class cls = getClassForOriginalObject();
@@ -42,7 +42,8 @@ public class MutableObject <O extends MutableProtocol.Field, U extends MutablePr
     /** @brief Reinitializes both OriginalObject and UpdatedObject. */
     public void reset() {
         if (getClassForUpdatedObject().isAssignableFrom(OriginalObject.getClass())) {
-            setUpdatedObject((U) OriginalObject);//TODO: should be copy, but clone is broken BaseModel.copy((U) OriginalObject);
+            Object obj = BaseModel.copy(OriginalObject);
+            setUpdatedObject((U) obj);
         }
         else {
             setUpdatedObject((U) ObjectUtility.objectWithParams(getClassForUpdatedObject()));
@@ -75,7 +76,7 @@ public class MutableObject <O extends MutableProtocol.Field, U extends MutablePr
     /** @brief Creates a new instance with OriginalObject = nil. Other fields are set as is, not copied. */
     public MutableObject duplicateUpdateObject() {
         MutableObject obj = (MutableObject) ObjectUtility.objectWithParams(getClass());
-        obj.UpdatedObject = UpdatedObject;//TODO: should be copy, but clone is broken BaseModel.copy(UpdatedObject);
+        obj.UpdatedObject = BaseModel.copy(UpdatedObject);
         obj.resetOriginalObject();
         return obj;
     }

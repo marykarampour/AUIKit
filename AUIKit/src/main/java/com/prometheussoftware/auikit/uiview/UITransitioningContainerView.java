@@ -39,11 +39,12 @@ public class UITransitioningContainerView extends UIView {
 
     protected PathInterpolator interpolator = new PathInterpolator(0.720f, 0.105f, 0.650f, 0.725f);
 
-    public int animationDuration = 200;
     public int fadeDuration = 1000;
 
     public UITransitioningContainerView() {
         super();
+
+        animationDuration = 200;
 
         transitioningView = new UIImageView();
         transitioningView.setBackgroundColor(Color.WHITE);
