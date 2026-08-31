@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class FieldModel extends BaseModel implements MutableProtocol.Field, ArrayPropertyProtocol {
 
+    transient
     MutableProtocol.Delegate updateDelegate;
 
     static {

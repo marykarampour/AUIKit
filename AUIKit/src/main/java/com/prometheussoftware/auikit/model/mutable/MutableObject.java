@@ -9,7 +9,10 @@ import java.util.List;
 /** @note Don't clone. It will reset the UpdatedObject to OriginalObject. */
 public class MutableObject <O extends MutableProtocol.Field, U extends MutableProtocol.Field> extends BaseModel implements MutableProtocol.Mutable {
 
+    transient
     public O OriginalObject;
+
+    transient
     public U UpdatedObject;
 
     transient Class classForOriginalObject;
