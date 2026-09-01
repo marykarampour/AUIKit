@@ -142,7 +142,7 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
     }
 
     public Navigation.Tree<UIViewController> clonedNavigationStack() {
-        Navigation.Tree<UIViewController> stack = BaseModel.copy(navigationStack);
+        Navigation.Tree<UIViewController> stack = navigationStack.copy();
         return stack;
     }
 

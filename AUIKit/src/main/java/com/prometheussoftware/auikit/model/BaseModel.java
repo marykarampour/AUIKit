@@ -566,8 +566,15 @@ public class BaseModel implements Serializable, Cloneable {
     }
 
     /** Returns a Gson based copy. */
-    public static <T extends BaseModel> T copy(T obj) {
+    public <T extends BaseModel> T copy(T obj) {
         return copyObject(obj);
+    }
+
+    /** Returns a Gson based copy. */
+    public <T extends Object, U extends T> T copy(Class<U> cls) {
+        Gson gson = new Gson();
+        String json = gson.toJson(this);
+        return gson.fromJson(json, cls);
     }
 
     /** Returns a Gson based copy. */
@@ -577,9 +584,14 @@ public class BaseModel implements Serializable, Cloneable {
 
     /** Returns a Gson based copy. */
     private static <T extends Object> T copyObject(T obj) {
+        return copyObject(obj, (Class<T>) obj.getClass());
+    }
+
+    /** Returns a Gson based copy. */
+    private static <T extends Object, U extends T> U copyObject(T obj, Class<U> cls) {
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        return gson.fromJson(json, (Class<T>) obj.getClass());
+        return gson.fromJson(json, cls);
     }
 
     public static <T extends Object> T elementInArray (ArrayList<T> arr, Class<T> objectClass, String name, Object value) {
