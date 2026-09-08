@@ -112,6 +112,7 @@ public class StringUtility {
     }
 
     public static String format (String string, FORMAT form) {
+        if (isEmpty(string)) return string;
 
         switch (form) {
             case CamelCase: return underScoreToCamelCase(string, false);
@@ -128,6 +129,7 @@ public class StringUtility {
     }
 
     public static String camelCaseToUnderScore (String string, boolean ignoreDigits, boolean upperCaseAll) {
+        if (isEmpty(string)) return string;
 
         String formattedString = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, string);
         if (formattedString == null) {
@@ -138,6 +140,7 @@ public class StringUtility {
     }
 
     public static String underScoreToCamelCase (String string, boolean upperCaseAll) {
+        if (isEmpty(string)) return string;
 
         String lowerStr = lowercaseFirstChar(string);
         String formattedString = null;
@@ -151,18 +154,23 @@ public class StringUtility {
     }
 
     public static String capitalizeFirstChar (String string) {
+        if (isEmpty(string)) return string;
         return string.substring(0,1).toUpperCase() + string.substring(1);
     }
 
     public static String lowercaseFirstChar (String string) {
+        if (isEmpty(string)) return string;
         return string.substring(0,1).toLowerCase() + string.substring(1);
     }
 
     public static String CapitalizedCamelCase (String string) {
+        if (isEmpty(string)) return string;
         return capitalizeFirstChar(underScoreToCamelCase(string, false));
     }
 
     public static String splitStringForUppercaseComponents (String string, boolean excludeSingleChars) {
+        if (isEmpty(string)) return string;
+
         String[] components = string.split("(?=\\p{Upper})");
         List<String> derivedComponents;
 
