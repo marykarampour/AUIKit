@@ -17,16 +17,15 @@ public class UIPickerView <O> extends UISingleView <UIPickerView.NumberPickerVie
 
     public UIPickerView() {
         super();
-        init();
     }
 
     public UIPickerView(int style) {
         super();
         this.style = style;
-        init();
     }
 
-    @Override public void initView() {
+    @Override
+    public void initView() {
         super.initView();
         view = new NumberPickerView(getActivity(), style);
     }

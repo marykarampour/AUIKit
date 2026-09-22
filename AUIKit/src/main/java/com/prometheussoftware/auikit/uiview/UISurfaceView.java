@@ -8,7 +8,6 @@ public class UISurfaceView extends UISingleView <SurfaceView> {
 
     public UISurfaceView() {
         super();
-        init();
     }
 
     @Override

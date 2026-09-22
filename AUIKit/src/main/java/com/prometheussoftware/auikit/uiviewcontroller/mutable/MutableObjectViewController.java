@@ -8,7 +8,6 @@ import com.prometheussoftware.auikit.callback.SuccessErrorCallback;
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.classes.LabelAttributes;
 
-import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
@@ -24,6 +23,7 @@ import com.prometheussoftware.auikit.tableview.UITableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewProtocol;
 import com.prometheussoftware.auikit.uiview.UIBarButton;
 import com.prometheussoftware.auikit.uiview.UIContainerView;
+import com.prometheussoftware.auikit.uiview.UIDatePickerView;
 import com.prometheussoftware.auikit.uiview.UIInputView;
 import com.prometheussoftware.auikit.uiview.UIScrollview;
 import com.prometheussoftware.auikit.uiview.UITextField;
@@ -43,9 +43,11 @@ import com.prometheussoftware.auikit.utility.StringUtility;
 import com.prometheussoftware.auikit.utility.UIAlert;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class MutableObjectViewController <ObjectType extends BaseModel & MutableProtocol.Field, UpdateObjectType extends BaseModel & MutableProtocol.Field> extends UIViewController implements MutableProtocol.ViewController<ObjectType,UpdateObjectType, MutableUpdateObject<ObjectType,UpdateObjectType>>, ViewControllerTransition, ItemsListProtocol.VC, ItemsListProtocol.EditingListVC, ItemsListProtocol.VCTransitionDelegate, ItemsListProtocol.UpdateDelegate, ViewControllerTransition.Delegate, UITableViewProtocol.TableViewData {
@@ -57,6 +59,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     private ItemsListProtocol.SelectionActionHandler selectedActionHandler;
     private ItemsListProtocol.UpdateDelegate updateDelegate;
     public boolean allowsMultipleSelection;
+    protected Map<Integer, UIDatePickerView> dateCellInfoObjects = new HashMap();
 
     public MutableObjectViewController() {
         super();
@@ -364,6 +367,11 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
+    public boolean canSelectSection(int section) {
+        return !isDateSection(section);
+    }
+
+    @Override
     public void didSelectSection(int section) {
         MutableProtocol.ViewController.super.didSelectSection(section);
     }
@@ -516,7 +524,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public int heightForRowAtIndexPath(IndexPath indexPath) {
+    public int heightForNonDateRowAtIndexPath(IndexPath indexPath) {
 
         int section = indexPath.section;
         String value = valueForSection(section);
@@ -702,7 +710,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         if (!canSelectItemsInListOfType(type)) return false;
         ViewContentProtocol.Placeholder object = listItemAtIndexPath(indexPath);
         Set set = selectedSetsInListOfType(type);
-        return set.contains(object);
+        return set != null && set.contains(object);
     }
 
     protected Set selectedSetsInListOfType (int type) {
@@ -711,7 +719,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public void didSelectListItemAtIndexPath(ViewContentProtocol.Placeholder item, IndexPath indexPath) {
-        ItemsListProtocol.VC.super.didSelectListItemAtIndexPath(item, indexPath);
+        if (selectedActionHandler.action(indexPath.section) == ItemsListProtocol.LIST_ITEM_SELECTED_ACTION.TRANSITION_TO_DETAIL)
+            presentTransitioningViewControllerWithItemAtIndexPath(item, indexPath);
     }
 
     public <T extends ViewContentProtocol.Placeholder> void setItemsForListOfType(List<T> items, int type) {
@@ -810,11 +819,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public List<ViewContentProtocol.Placeholder> listItemsForListInSection(int section) {
-        return ItemsListProtocol.VC.super.listItemsForListInSection(section);
-    }
-
-    @Override
     public boolean canSelectItemsInListOfType(int type) {
         return ItemsListProtocol.VC.super.canSelectItemsInListOfType(type);
     }
@@ -848,10 +852,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         if (!canSelectItemsInListOfType(type)) return;
 
         Set set = selectedSetsInListOfType(type);
-        Set selectedObjects = new HashSet<>(set);
+        Set selectedObjects = set != null ? set : new HashSet<>();
 
-        if (selectedObjects.isEmpty())
-            selectedObjects = new HashSet<>();//TODO: was null
         if (!allowsMultipleSelection || maxMultipleSelectionForListOfType(type) == 1)
             selectedObjects.clear();
         if (shouldSelectItemsInListOfType(type))
@@ -859,6 +861,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
         setSelectedObjectsWithSetInListOfType(selectedObjects, type, reload);
     }
+
     private void setDeselectedObject(ViewContentProtocol.Placeholder item) {
         setDeselectedObject(item, true);
     }
@@ -882,6 +885,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     protected void resetSelectedSetsReload() {
         resetSelectedSets();
+        selectedIndexPath = null;
         reload();
     }
 
@@ -944,8 +948,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public UIView cellForRowAtIndexPath(IndexPath indexPath) {
-
+    public UIView cellForNonDateRowAtIndexPath(IndexPath indexPath) {
         int section = indexPath.section;
         MutableProtocol.FIELD_TYPE type = typeForSection(section);
         boolean isEditable = canEditSection(section);
@@ -953,7 +956,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         switch (type) {
             case SELECTION:
             case LABEL: {
-                BaseTableViewCell cell = new BaseTableViewCell();
+                BaseTableViewCell cell = new BaseTableViewCell(UITableViewCell.STYLE.SUBTITLE);
                 cell.setSelectionStyle(UITableViewCell.SELECTION_STYLE.NONE);
                 cell.setAccessoryType(hasAccessoryForSection(section) ? UITableViewCell.ACCESSORY_TYPE.DISCLOSURE_INDICATOR : UITableViewCell.ACCESSORY_TYPE.NONE);
 
@@ -1302,11 +1305,24 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         return type;
     }
 
+    @Override
+    public Map<Integer, UIDatePickerView> dateCellInfoObjects() {
+        return dateCellInfoObjects;
+    }
+
+    @Override
+    public void didHideDatePickerInSection(int section) {
+        Date date = dateCellInfoObjects.get(section).info.date;
+        object().UpdatedObject.setValueForSectionType(date, section);
+        reloadSection(section);
+    }
+
     //endregion
 
     //region layout
-    //TODO: implement others - make this reloadIndexPaths(all)
-    protected void reload() {
+    //TODO: implement others - make this reloadIndexPaths(all) - animated when insert/delete row height changes
+    @Override
+    public void reload() {
 
         int width = view().getFrame().width();
         ArrayList views = new ArrayList();
@@ -1335,6 +1351,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
                 IndexPath indexPath = new IndexPath(i, j);
                 int height = heightForRowAtIndexPath(indexPath);
+                if (height == 0) continue;
+
                 UIView cell = cellForRowAtIndexPath(indexPath);
                 views.add(cell);
 
@@ -1370,6 +1388,10 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     protected void removeRowsAtIndexPaths(List<IndexPath> indexPaths) {
+        reload();
+    }
+
+    protected void reloadSection(int section) {
         reload();
     }
 

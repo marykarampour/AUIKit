@@ -6,7 +6,6 @@ public class UIRefreshView extends UISingleView <SwipeRefreshLayout> {
 
     public UIRefreshView() {
         super();
-        init();
     }
 
     @Override public void initView() {

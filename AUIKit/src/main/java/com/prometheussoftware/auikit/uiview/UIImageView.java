@@ -80,7 +80,6 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
         public UIImageLayer() {
             super();
-            init();
         }
 
         @Override public void initView() {

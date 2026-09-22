@@ -23,7 +23,7 @@ public class UIControl extends UIView implements View.OnTouchListener, UITargetM
 
     private MotionEvent lastTouch;
     private long lastTouchUpTimeStamp;
-    private static final long DOUBLE_TAP_INTERVAL = 1000;
+    private static final long DOUBLE_TAP_INTERVAL = 500;
 
     private boolean isLongTouch;
     private GestureDetector gestureDetector;

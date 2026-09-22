@@ -13,11 +13,22 @@ public class UISingleView <V extends View> extends UIView {
 
     public UISingleView() {
         super();
+        init();
     }
 
-    @Override public void initView() {
+    public UISingleView(V view) {
+        super();
+        setView(view);
+    }
+
+    @Override
+    public void initView() {
         super.initView();
-        view = (V)new View(getActivity());
+        createView();
+    }
+
+    protected void createView() {
+        setView((V)new View(getActivity()));
     }
 
     @Override
@@ -28,8 +39,15 @@ public class UISingleView <V extends View> extends UIView {
 
     @Override public void constraintLayout() {
         super.constraintLayout();
+        constraintSet.clear(view.getId());
         ConstraintUtility.constraintSidesForView(constraintSet, view, insets());
         constraintSet.applyTo(this);
+    }
+
+    public void setView(V view) {
+        this.view = view;
+        loadView();
+        constraintLayout();
     }
 
     public V getView() {

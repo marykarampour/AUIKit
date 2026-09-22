@@ -6,7 +6,6 @@ public class UIWebView extends UISingleView <WebView> {
 
     public UIWebView() {
         super();
-        init();
     }
 
     @Override

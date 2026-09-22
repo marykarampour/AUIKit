@@ -5,14 +5,17 @@ import android.view.ViewGroup;
 
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.model.IndexPath;
+import com.prometheussoftware.auikit.uiview.UIDatePickerView;
 import com.prometheussoftware.auikit.uiview.UILabel;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.UIEditingAccessoryProtocol;
+import com.prometheussoftware.auikit.utility.MapUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public interface UITableViewProtocol {
 
@@ -48,7 +51,7 @@ public interface UITableViewProtocol {
         default <V extends UITableViewHolder> V viewHolderForViewType(ViewGroup parent, int viewType) { return null; };
     }
 
-    interface TableViewData <V extends UIView & UIControlProtocol & UIEditingAccessoryProtocol> {
+    interface TableViewData <V extends UIView & UIControlProtocol & UIEditingAccessoryProtocol> extends UIDatePickerView.Delegate {
 
         default int numberOfRowsInSection(UITableView tableView, int section) {
             return 0;
@@ -63,6 +66,10 @@ public interface UITableViewProtocol {
         }
 
         default int heightForRowAtIndexPath(UITableView tableView, IndexPath indexPath) {
+            return App.constants().Default_Row_Height();
+        }
+
+        default int heightForNonDateRowAtIndexPath(IndexPath indexPath) {
             return App.constants().Default_Row_Height();
         }
 
@@ -109,7 +116,49 @@ public interface UITableViewProtocol {
         }
 
         default V cellForRowAtIndexPath(IndexPath indexPath) {
+            if (isDateSection(indexPath.section)) {
+                UIDatePickerView obj = dateCellInfoObjects().get(indexPath.section);
+                obj.info.indexPath = indexPath;
+                return (V) obj;
+            }
+            return cellForNonDateRowAtIndexPath(indexPath);
+        }
+
+        default V cellForNonDateRowAtIndexPath(IndexPath indexPath) {
             return (V) new UIView();
+        }
+
+        default UIDatePickerView defaultDateCellForIndexPath (IndexPath indexPath) {
+            UIDatePickerView view = new UIDatePickerView();
+            view.delegate = this;
+            view.info.indexPath = indexPath;
+            dateCellInfoObjects().put(indexPath.section, view);
+            return view;
+        }
+
+        default UIDatePickerView defaultDateCellForSection (int section) {
+            return defaultDateCellForIndexPath(new IndexPath(section, 0));
+        }
+
+        default boolean isDateSection (int section) {
+            return dateCellInfoObjects().containsKey(section);
+        }
+
+        @Override
+        default void didSetDatePickerHidden(UIDatePickerView view, boolean hidden) {
+            Integer section = MapUtility.allKeysForObject(dateCellInfoObjects(), view).stream().findAny().orElse(null);
+            if (hidden)
+                didHideDatePickerInSection(section);
+            else
+                didShowDatePickerInSection(section);
+        }
+
+        default void didShowDatePickerInSection(int section) {
+            reload();
+        }
+
+        default void didHideDatePickerInSection(int section) {
+            reload();
         }
 
         default int numberOfSectionsInTableView() {
@@ -121,7 +170,12 @@ public interface UITableViewProtocol {
         }
 
         default int heightForRowAtIndexPath(IndexPath indexPath) {
-            return App.constants().Default_Row_Height();
+            if (isDateSection(indexPath.section)) {
+                UIDatePickerView obj = dateCellInfoObjects().get(indexPath.section);
+                obj.info.indexPath = indexPath;
+                return obj.estimatedHeight();
+            }
+            return heightForNonDateRowAtIndexPath(indexPath);
         }
 
         default String titleForHeaderInSection(int section) { return ""; }
@@ -190,7 +244,18 @@ public interface UITableViewProtocol {
 
         default int numberOfVisibleViews() { return 0; }
 
-        default void setMultiSelectEnabled(boolean multiSelectEnabled) {};
+        default void setMultiSelectEnabled(boolean multiSelectEnabled) {}
+
+        default Map<Integer, UIDatePickerView> dateCellInfoObjects() { return new HashMap(); }
+
+        default void addDateSections (Integer ... sections) {
+            for (Integer i : sections) {
+                UIDatePickerView date = defaultDateCellForSection(i);
+                dateCellInfoObjects().put(i, date);
+            }
+        }
+
+        default void reload() {}
     }
 
     interface Data extends RecyclerViewData, TableViewData<UITableViewCell> {

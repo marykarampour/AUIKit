@@ -269,10 +269,6 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
         contentView = new UITransitioningContainerView();
     }
 
-    @Override public int animationDuration() {
-        return 200;
-    }
-
     //endregion
 
     //region UIViewController

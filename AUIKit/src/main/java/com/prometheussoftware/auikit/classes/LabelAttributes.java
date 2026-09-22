@@ -60,8 +60,8 @@ public class LabelAttributes {
             type = 0 < placeholder.length() ? TYPE.PLACEHOLDER : type.TITLE;
         }
         else {
-            if (0 < value.length()) {
-                if (0 < title.length()) {
+            if (StringUtility.isNotEmpty(value)) {
+                if (StringUtility.isNotEmpty(title)) {
                     type = TYPE.ATTR_VALUE;
                 }
                 else {
@@ -75,8 +75,8 @@ public class LabelAttributes {
                 type = TYPE.NONE;
             }
 
-            if (0 < subvalue.length()) {
-                if (0 < subtitle.length()) {
+            if (StringUtility.isNotEmpty(subvalue)) {
+                if (StringUtility.isNotEmpty(subtitle)) {
                     type.value = type.value | TYPE.ATTR_SUBVALUE.value;
                 }
                 else {

@@ -47,6 +47,13 @@ public class BaseTableViewCell extends UITableViewCell {
         return new UIEdgeInsets(Dimensions.Int_4(), Dimensions.Int_8(), Dimensions.Int_4(), Dimensions.Int_8());
     }
 
+    public static class Subtitle extends BaseTableViewCell {
+
+        public Subtitle() {
+            super(STYLE.SUBTITLE);
+        }
+    }
+
     public static class Editing extends BaseTableViewCell {
 
         public Editing(STYLE style) {

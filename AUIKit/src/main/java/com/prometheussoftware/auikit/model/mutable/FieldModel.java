@@ -52,7 +52,7 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field, Arra
         for (Integer type : types) {
             String key = propertyEnumDictionary().get(type);
             for (Class cls : BaseModel.classOfPropertyForObjectClass(key, getClass())) {
-                if (cls != null && cls.isAssignableFrom(value.getClass())) {
+                if (cls != null && (value == null || cls.isAssignableFrom(value.getClass()))) {
                     setValueForObjectType(value, type);
                     return;
                 }

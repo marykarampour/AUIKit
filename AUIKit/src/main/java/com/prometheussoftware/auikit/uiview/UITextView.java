@@ -596,7 +596,6 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
 
         public UITextLayer() {
             super();
-            init();
         }
 
         @Override public void initView() {

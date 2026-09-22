@@ -336,6 +336,11 @@ public class UITableViewDataController implements UITableViewProtocol.Data {
         if (updateDelegate != null) updateDelegate.performUpdateForDidSelectRowAtIndexPath(item, indexPath);
     }
 
+    @Override
+    public void reload() {
+        viewDelegate.reloadData();
+    }
+
     //endregion
 
     //region view protocol

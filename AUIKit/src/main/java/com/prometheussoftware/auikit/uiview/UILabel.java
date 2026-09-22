@@ -9,7 +9,6 @@ public class UILabel extends UISingleView <TextView> {
 
     public UILabel() {
         super();
-        init();
     }
 
     @Override public void initView() {

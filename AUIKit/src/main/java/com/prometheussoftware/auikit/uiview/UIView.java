@@ -1,9 +1,15 @@
 package com.prometheussoftware.auikit.uiview;
 
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.transition.AutoTransition;
+import android.transition.Transition;
+import android.transition.TransitionManager;
 import android.util.Size;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -458,6 +464,40 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintForView(ConstraintSet.BOTTOM, bar);
 
         applyConstraints();
+    }
+
+    public void animateColorAlpha(float alpha) {
+        ObjectAnimator.ofFloat(this, "alpha", alpha)
+                .setDuration(animationDuration)
+                .start();
+    }
+
+    public void setExpanded(boolean expanded, UIView view, int height, int maxHeight, boolean animated, CompletionCallback completion) {
+
+        float alpha = expanded ? 1.0f : 0.0f;
+
+        if (animated) {
+            view.animateColorAlpha(alpha);
+            Transition transition = new AutoTransition();
+            transition.setDuration(animationDuration);
+            transition.setInterpolator(new AccelerateInterpolator());
+            TransitionManager.beginDelayedTransition(view, transition);
+        }
+        else {
+            view.setAlpha(alpha);
+        }
+
+        constraintHeightForView(view, expanded ? maxHeight : height);
+        applyConstraints();
+
+        if (completion != null) {
+            if (animated) {
+                new Handler().postDelayed( () -> completion.done(), animationDuration );
+            }
+            else {
+                completion.done();
+            }
+        }
     }
 
     //endregion

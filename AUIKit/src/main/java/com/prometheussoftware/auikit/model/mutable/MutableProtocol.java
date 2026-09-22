@@ -249,12 +249,12 @@ public interface MutableProtocol {
 
         /** @brief Uses the same format as dates being formatted by this class. */
         default String localDateStringWithDate(Date date) {
-            return DateUtility.dateStringWithFormat(date, DateUtility.FORMAT.DAY_TIME_STYLE.getName());
+            return DateUtility.dateStringWithFormat(date, DateUtility.FORMAT.DAY_TIME_STYLE);
         }
 
         /** @brief Uses the same format as dates being formatted by this class for object type. */
         default String localDateStringWithDateForObjectType(Date date, int type) {
-            return DateUtility.dateStringWithFormat(date, dateFormatForObjectType(type).getName());
+            return DateUtility.dateStringWithFormat(date, dateFormatForObjectType(type));
         }
 
         default String localDateStringForObjectType(int type) {

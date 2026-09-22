@@ -171,10 +171,6 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
         contentView = new UITransitioningContainerView();
     }
 
-    @Override public int animationDuration() {
-        return 200;
-    }
-
     public UITabBar getTabBar() {
         return tabBar;
     }

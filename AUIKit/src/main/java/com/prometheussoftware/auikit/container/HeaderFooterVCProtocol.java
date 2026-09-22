@@ -21,7 +21,6 @@ public interface HeaderFooterVCProtocol {
         void createChildVC();
         default void createChildVCWithChildObject (Object object) {}
         default void setHeaderViewTitle (String title) {}
-        default int animationDuration() { return 400; }
     }
 
     interface Child <O, C extends UIViewController & HeaderFooterVCProtocol.Container> {

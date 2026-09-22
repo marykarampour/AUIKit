@@ -14,7 +14,6 @@ public class UISearchBar extends UISingleView <UISearchBar.UISearchLayer> {
 
     public UISearchBar() {
         super();
-        init();
     }
 
     @Override
@@ -99,7 +98,6 @@ public class UISearchBar extends UISingleView <UISearchBar.UISearchLayer> {
 
         public UISearchView() {
             super();
-            init();
         }
 
         @Override public void initView() {

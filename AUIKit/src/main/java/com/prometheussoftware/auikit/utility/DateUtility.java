@@ -253,12 +253,39 @@ public class DateUtility {
 
     }
 
-    public static String dateStringWithFormat(Date currentDate, String dateFormat) {
+    public static String dateStringWithFormatString(Date currentDate, String dateFormat) {
 
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
         String formattedDate = formatter.format(currentDate);
 
         return formattedDate;
+    }
+
+    public static String dateStringWithFormatString(Date currentDate, String dateFormat, Locale locale) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, locale);
+        String formattedDate = formatter.format(currentDate);
+
+        return formattedDate;
+    }
+
+    public static String dateStringWithFormat(Date currentDate, FORMAT dateFormat) {
+        return dateStringWithFormatString(currentDate, dateFormat.name);
+    }
+
+    public static String dateStringWithFormat(long currentDate, FORMAT dateFormat) {
+        return dateStringWithFormatString(new Date(currentDate), dateFormat.name);
+    }
+
+    public static String dateStringWithFormat(int y, int m, int d, FORMAT dateFormat) {
+        Date date = dateWithComponents(y, m, d);
+        return dateStringWithFormatString(date, dateFormat.name);
+    }
+
+    public static Date dateWithComponents(int y, int m, int d) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(y, m, d);
+        return cal.getTime();
     }
 
     public static int daysBetweenFromDate(Date start, Date end) {
@@ -365,13 +392,5 @@ public class DateUtility {
 
     public static int timestamp() {
         return Math.toIntExact(System.currentTimeMillis() / 1000);
-    }
-
-    public static String dateStringWithFormat(Date currentDate, String dateFormat, Locale locale) {
-
-        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, locale);
-        String formattedDate = formatter.format(currentDate);
-
-        return formattedDate;
     }
 }

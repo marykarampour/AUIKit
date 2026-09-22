@@ -12,13 +12,11 @@ public class UITableView extends UISingleView <RecyclerView> {
 
     public UITableView() {
         super();
-        init();
     }
 
     public UITableView(int ori) {
         super();
         orientation = ori;
-        init();
     }
 
     @Override public void initView() {

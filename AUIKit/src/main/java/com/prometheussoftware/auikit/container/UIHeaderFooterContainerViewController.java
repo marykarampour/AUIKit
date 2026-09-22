@@ -1,12 +1,5 @@
 package com.prometheussoftware.auikit.container;
 
-import android.animation.ObjectAnimator;
-import android.os.Handler;
-import android.transition.AutoTransition;
-import android.transition.Transition;
-import android.transition.TransitionManager;
-import android.view.animation.AccelerateInterpolator;
-
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.callback.CompletionCallback;
@@ -131,39 +124,14 @@ public abstract class UIHeaderFooterContainerViewController <H extends UIView, F
     }
 
     private void setExpanded(boolean expanded, UIView view, int height, int maxHeight, boolean animated, CompletionCallback completion) {
-
-        float alpha = expanded ? 1.0f : 0.0f;
-
-        if (animated) {
-            animateViewExpandColor(expanded, view, alpha);
-            Transition transition = new AutoTransition();
-            transition.setDuration(animationDuration());
-            transition.setInterpolator(new AccelerateInterpolator());
-            TransitionManager.beginDelayedTransition(view, transition);
-        }
-        else {
-            view.setAlpha(alpha);
-        }
-
-        backView.constraintHeightForView(view, expanded ? maxHeight : height);
-        backView.applyConstraints();
-
-        if (completion != null) {
-            if (animated) {
-                new Handler().postDelayed( () -> completion.done(), animationDuration() );
-            }
-            else {
-                completion.done();
-            }
-        }
+        backView.setExpanded(expanded, view, height, maxHeight, animated, completion);
     }
 
-    private void animateViewExpandColor(boolean expanded, UIView view, float alpha) {
-
-        ObjectAnimator.ofFloat(view, "alpha", alpha)
-                .setDuration(animationDuration())
-                .start();
+    @Override
+    public int animationDuration() {
+        return 400;
     }
+
 
     public H getHeaderView() {
         return headerView;
