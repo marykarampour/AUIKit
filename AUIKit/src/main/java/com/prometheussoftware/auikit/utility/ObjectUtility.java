@@ -1,5 +1,7 @@
 package com.prometheussoftware.auikit.utility;
 
+import com.google.gson.Gson;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -76,5 +78,10 @@ public class ObjectUtility {
         catch (InstantiationException e) { e.printStackTrace(); }
         catch (InvocationTargetException e) { e.printStackTrace(); }
         return null;
+    }
+
+    public static <T extends Object> T objectWithJSON(String json, Class<T> cls) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, cls);
     }
 }
