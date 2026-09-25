@@ -3,10 +3,16 @@ package com.prometheussoftware.auikit.classes;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.prometheussoftware.auikit.callback.ObjectCallback;
+import com.prometheussoftware.auikit.common.MainApplication;
 
 public class BarcodeController {
 
@@ -26,8 +32,8 @@ public class BarcodeController {
         return null;
     }
 
-    public static BarcodeController reader() {
-        return new Reader();
+    public static BarcodeController reader(ObjectCallback<String> callback) {
+        return new Reader(callback);
     }
 
     public static BarcodeController generator(String code, BarcodeFormat format, int width, int height) {
@@ -37,9 +43,15 @@ public class BarcodeController {
 
     static class Reader extends BarcodeController {
 
-        private Reader() {
+        private Reader(ObjectCallback<String> callback) {
             super();
 
+            GmsBarcodeScannerOptions options = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE).enableAutoZoom().build();
+            GmsBarcodeScanner scanner = GmsBarcodeScanning.getClient(MainApplication.getContext(), options);
+            scanner.startScan().addOnSuccessListener(barcode -> {
+                setCode(barcode.getRawValue());
+                callback.returns(getCode());
+            });
         }
     }
 
