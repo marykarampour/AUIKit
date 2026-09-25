@@ -66,7 +66,6 @@ public final class UITargetManager {
         return true;
     }
 
-
     public boolean handleOnTouch(View v, MotionEvent event) {
         for (Object ID : targets.keySet()) {
             for (UITargetDelegate target : targets.get(ID)) {

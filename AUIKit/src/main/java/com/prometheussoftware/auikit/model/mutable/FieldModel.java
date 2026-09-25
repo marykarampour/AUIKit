@@ -101,8 +101,8 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field, Arra
     //endregion
 
     //region Text
-    void handleTextFieldUpdates (UITextField textField, String newText, boolean setTextField, boolean endEditing) {
 
+    void handleTextFieldUpdates (UITextField textField, String newText, boolean setTextField, boolean endEditing) {
         IndexPath indexPath = textField.getIndexPath();
         if (indexPath == null) return;
 

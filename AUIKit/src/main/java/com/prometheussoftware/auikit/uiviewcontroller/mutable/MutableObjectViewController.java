@@ -985,6 +985,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 cell.getLabel().setText(titleForSection(section));
                 cell.setIndexPath(path);
                 cell.getButton().setTarget(actionForFieldButtonAtIndexPath(path));
+
                 return cell;
             }
 

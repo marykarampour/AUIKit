@@ -55,4 +55,8 @@ public class UIContainerView <V extends UIView> extends UIView {
     public void setCornerRadius(float radius) {
         layerView.setCornerRadius(radius);
     }
+
+    public V getView() {
+        return view;
+    }
 }

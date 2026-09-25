@@ -217,7 +217,6 @@ public class UIControl extends UIView implements View.OnTouchListener, UITargetM
 
     //endregion
 
-
     public void setHighlighted(boolean highlighted) {
         this.highlighted = highlighted;
     }
