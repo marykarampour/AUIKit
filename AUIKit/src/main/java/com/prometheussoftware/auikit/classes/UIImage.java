@@ -16,6 +16,10 @@ public class UIImage extends BaseModel {
     private int image;
     private int tintColor;
 
+    static {
+        BaseModel.Register(UIImage.class);
+    }
+
     public UIImage() {
         super();
     }
@@ -122,7 +126,6 @@ public class UIImage extends BaseModel {
 
     @Override
     protected void finalize() throws Throwable {
-
         try {
             dispose();
         }
@@ -130,5 +133,16 @@ public class UIImage extends BaseModel {
         finally {
             super.finalize();
         }
+    }
+
+    public boolean isEmpty() {
+        return bitmap == null && drawable == null && image == 0 && tintColor == 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        UIImage image = (UIImage) obj;
+        if ((image.isEmpty() && !isEmpty()) || (!image.isEmpty() && isEmpty())) return false;
+        return super.equals(obj);
     }
 }

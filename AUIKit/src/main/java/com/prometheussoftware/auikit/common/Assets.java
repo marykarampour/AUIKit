@@ -160,6 +160,11 @@ public class Assets implements AssetsProtocol {
     }
 
     @Override
+    public String Back_Image_Name() {
+        return "chevron_left";
+    }
+
+    @Override
     public String Email_Image_Name() {
         return "email";
     }

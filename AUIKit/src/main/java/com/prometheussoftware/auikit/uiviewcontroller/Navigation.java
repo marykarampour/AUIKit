@@ -133,7 +133,6 @@ public class Navigation {
         }
 
         public static <O extends BaseModel> Navigation.Node<O> node(O obj, boolean isRoot) {
-
             if (obj == null) return null;
 
             Navigation.Node<O> node = new Navigation.Node<O>();

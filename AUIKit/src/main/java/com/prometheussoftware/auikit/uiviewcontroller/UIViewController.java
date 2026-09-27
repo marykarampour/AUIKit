@@ -466,8 +466,8 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
         List<UIBarButton> rightItems = itemsInArray(rightArr, object);
         List<UIBarButton> leftItems = itemsInArray(leftArr, object);
 
-        navigationBar.setRightBarButtonItems(rightItems);
-        navigationBar.setLeftBarButtonItems(leftItems);
+        navigationBar.addRightBarButtonItems(rightItems);
+        navigationBar.addLeftBarButtonItems(leftItems);
     }
 
     List<UIBarButton> itemsInArray (List<UIBarButton> arr, NavBarButtonTargetProtocol object) {
@@ -526,6 +526,8 @@ public class UIViewController <V extends UIView> extends BaseModel implements Li
 
     @Override
     public void resetBarButtonsOfViewControllerContainingNavigationBar() {
+        if (targets == null || target.viewControllerContainingNavigationBar() == null) return;
+
         target.clearBarButtons();
         target.viewControllerContainingNavigationBar().addNavBarTarget(this.target);
         target.viewControllerContainingNavigationBar().setNavBarItemsOfTarget(this.target);

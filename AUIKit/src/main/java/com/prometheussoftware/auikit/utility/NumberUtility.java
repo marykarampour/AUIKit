@@ -35,4 +35,12 @@ public class NumberUtility {
         }
     }
 
+    public static boolean isNumber(Class cls) {
+        return Number.class.isAssignableFrom(cls) ||
+                cls == short.class ||
+                cls == int.class ||
+                cls == long.class ||
+                cls == double.class ||
+                cls == float.class;
+    }
 }

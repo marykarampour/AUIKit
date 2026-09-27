@@ -25,8 +25,8 @@ public interface AssetsProtocol {
     String Camera_Image_Name();
     String Trash_Image_Name();
     String Close_Image_Name();
+    String Back_Image_Name();
     String Email_Image_Name();
     String Print_Image_Name();
     String Share_Image_Name();
-
 }

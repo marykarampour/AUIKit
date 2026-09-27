@@ -198,6 +198,25 @@ public class UINavigationBar extends UIView {
         rightItemsViewHolder.setViews(rightBarButtonItems);
     }
 
+    public void addLeftBarButtonItems(List<UIBarButton> leftBarButtonItems) {
+        leftItemsViewHolder.addViews(leftBarButtonItems, false);
+    }
+
+    public void addRightBarButtonItems(List<UIBarButton> rightBarButtonItems) {
+        Collections.reverse(rightBarButtonItems);
+        rightItemsViewHolder.addViews(rightBarButtonItems, true);
+    }
+
+    public void addLeftBarButtonItem(UIBarButton leftBarButtonItem) {
+        if (leftBarButtonItem == null) return;
+        leftItemsViewHolder.addView(leftBarButtonItem);
+    }
+
+    public void addRightBarButtonItem(UIBarButton rightBarButtonItem) {
+        if (rightBarButtonItem == null) return;
+        rightItemsViewHolder.addView(rightBarButtonItem);
+    }
+
     /** The contents of this property always refer to the first bar button item in the leftBarButtonItems array.
      * Assigning a new value to this property replaces the first item in the leftBarButtonItems array with the new value.
      * Setting this property to null removes the first item in the array.
@@ -301,7 +320,10 @@ public class UINavigationBar extends UIView {
 
             for (UIBarButton item : getViews()) {
                 String title = item.getTitleLabel().getText();
-                constraintSizeForView(item, AppTheme.Bar_Button_Size(title));
+                if (StringUtility.isNotEmpty(title))
+                    constraintSizeForView(item, AppTheme.Bar_Button_Size(title));
+                else if (item.getImageView().getImage() != null)
+                    constraintSizeForView(item, App.constants().Nav_Bar_Icon_Size());
             }
             applyConstraints();
         }

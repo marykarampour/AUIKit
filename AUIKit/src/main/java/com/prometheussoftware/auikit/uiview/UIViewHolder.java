@@ -20,6 +20,19 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
         super();
     }
 
+    public void addViews(List<T> views, boolean reverse) {
+        if (ArrayUtility.isEmpty(views)) return;
+
+        if (reverse) {
+            views.addAll(this.views);
+            this.views = views;
+        }
+        else
+            this.views.addAll(views);
+        addSubviews(views);
+        updateConstraints();
+    }
+
     public void setViews(List<T> views) {
 
         clearViews();
