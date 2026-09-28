@@ -182,6 +182,10 @@ public abstract class Constants implements ConstantsProtocol, SQLConstantsProtoc
         return StringResource(R.string.email);
     }
 
+    public static String Delete_STR() {
+        return StringResource(R.string.delete);
+    }
+
 
     @Override
     public String Generic_Success_Message() {

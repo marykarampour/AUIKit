@@ -316,7 +316,7 @@ public class UINavigationBar extends UIView {
             }
 
             clearConstraints(getViews());
-            constraintHorizontally(getViews(), 0, 0, 0, false, ConstraintSet.START | ConstraintSet.END);
+            constraintHorizontally(getViews(), App.constants().Nav_Bar_Item_Spacing(), 0, 0, false, ConstraintSet.START | ConstraintSet.END);
 
             for (UIBarButton item : getViews()) {
                 String title = item.getTitleLabel().getText();

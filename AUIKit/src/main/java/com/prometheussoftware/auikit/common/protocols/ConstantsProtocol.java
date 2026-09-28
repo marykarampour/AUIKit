@@ -26,6 +26,7 @@ public interface ConstantsProtocol {
     default Size Nav_Bar_Icon_Size() { return Dimensions.size(Nav_Bar_Icon_Height()); }
     default int Nav_Bar_Shadow_Size() { return Dimensions.Int_2(); }
     default int Nav_Bar_Height() { return Dimensions.Int_64(); }
+    default int Nav_Bar_Item_Spacing() { return 0; }
     default int Status_Bar_Height() { return Dimensions.Int_22(); }
 
     //nav bar

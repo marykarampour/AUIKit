@@ -9,7 +9,6 @@ import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.classes.LabelAttributes;
 
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
-import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Dimensions;
@@ -244,21 +243,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public UIBarButton.POSITION positionForButtonOfType(UIBarButton.TYPE type) {
-        return UIBarButton.POSITION.RIGHT;
-    }
-
-    @Override
-    public String titleForButtonOfType(UIBarButton.TYPE type) {
-        return type == UIBarButton.TYPE.SYSTEM_SAVE ? App.constants().Save_STR() : App.constants().Reset_STR();
-    }
-
-    @Override
-    public UIImage imageForButtonOfType(UIBarButton.TYPE type) {
-        return null;
-    }
-
-    @Override
     public Object saveObject() {
         return object();
     }
@@ -270,7 +254,14 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public UITargetDelegate.TouchUp actionForButtonOfType(UIBarButton.TYPE type) {
-        return type == UIBarButton.TYPE.SYSTEM_SAVE ? sender -> handleSavePressed() : sender -> reset();
+        switch (type) {
+            case SYSTEM_SAVE:
+                return sender -> handleSavePressed();
+            case RESET:
+                return sender -> reset();
+            default:
+                return null;
+        }
     }
 
     /** @brief Handles action performed when pressing the reset button.

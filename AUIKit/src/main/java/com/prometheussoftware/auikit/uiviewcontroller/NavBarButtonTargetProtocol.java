@@ -2,6 +2,7 @@ package com.prometheussoftware.auikit.uiviewcontroller;
 
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
+import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.uiview.UIBarButton;
 
 import java.util.List;
@@ -24,16 +25,11 @@ public interface NavBarButtonTargetProtocol {
      @note Put in the inner most view controller. */
     default boolean hasButtonOfType (UIBarButton.TYPE type) { return false; }
 
-    /** @brief If not implemented, the button will be positioned at right. */
-    default UIBarButton.POSITION positionForButtonOfType (UIBarButton.TYPE type) {
-        return UIBarButton.POSITION.RIGHT;
-    }
-
     /** @brief title of the  button if type is not UIBarButton.TYPE type_IMAGE, otherwise it is the name of the image resource.
      @note Put in the inner most view controller. */
-    default String titleForButtonOfType (UIBarButton.TYPE type) { return null; }
+    default String titleForButtonOfType (UIBarButton.TYPE type) { return type.stringValue(); }
 
-    default UIImage imageForButtonOfType (UIBarButton.TYPE type) { return null; }
+    default UIImage imageForButtonOfType (UIBarButton.TYPE type) { return UIImage.imageNamed(type.stringValue(), App.theme().Nav_Bar_Tint_Color().get()); }
 
     /** Passed to saveAction when savePressed. */
     default Object saveObject() { return null; }

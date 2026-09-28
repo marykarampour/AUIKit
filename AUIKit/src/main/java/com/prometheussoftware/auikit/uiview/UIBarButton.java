@@ -3,7 +3,6 @@ package com.prometheussoftware.auikit.uiview;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
-import com.prometheussoftware.auikit.common.Assets;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
@@ -27,7 +26,7 @@ public class UIBarButton extends UIButton {
 
     public UIBarButton(TYPE type, UITargetDelegate.TouchUp target) {
         super();
-        setImage(Assets.imageFromName(type.stringValue()));
+        setImage(UIImage.imageNamed(type.stringValue()));
         setTarget(target);
     }
 
@@ -128,7 +127,7 @@ public class UIBarButton extends UIButton {
         EMAIL           (16, App.assets().Email_Image_Name()),
         PRINT           (17, App.assets().Print_Image_Name()),
         SHARE           (18, App.assets().Share_Image_Name()),
-        COUN            (19, null);
+        COUNT           (19, null);
 
         private final int value;
         private final String string;

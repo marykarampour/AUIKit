@@ -61,21 +61,20 @@ public class UINavBarButtonTarget implements NavBarButtonTargetProtocol {
             button = UIBarButton.editNavBarButtonObject();
         }
         else {
-            UIBarButton.POSITION pos = positionForButtonOfType(type);
             String title = titleForButtonOfType(type);
             UIImage image = imageForButtonOfType(type);
             boolean enabled = isEnabledButtonOfType(type);
 
             UITargetDelegate.TouchUp target = sender -> internalButtonPressed((UIBarButton) sender);
 
-            if (image != null)
+            if (image != null && !image.isEmpty())
                 button = new UIBarButton(image, target);
             else if (type.intValue() < UIBarButton.TYPE.SYSTEM_COUNT.intValue() || StringUtility.isNotEmpty(title))
                 button = UIBarButton.navBarButtonWithTitle(title, type, target);
             else
                 button = UIBarButton.spacer();
 
-            button.position = pos;
+            button.position = position;
             button.setEnabled(enabled);
             button.type = type;
         }
@@ -94,7 +93,7 @@ public class UINavBarButtonTarget implements NavBarButtonTargetProtocol {
         if (object == null) object = sender;
 
         UITargetDelegate.TouchUp target = actionForButtonOfType(sender.type);
-        target.controlReleased(sender);
+        if (target != null) target.controlReleased(sender);
     }
 
     @Override
@@ -105,11 +104,6 @@ public class UINavBarButtonTarget implements NavBarButtonTargetProtocol {
     @Override
     public boolean hasButtonOfType (UIBarButton.TYPE type) {
         return this.delegate.hasButtonOfType(type);
-    }
-
-    @Override
-    public UIBarButton.POSITION positionForButtonOfType (UIBarButton.TYPE type) {
-        return this.delegate.positionForButtonOfType(type);
     }
 
     @Override

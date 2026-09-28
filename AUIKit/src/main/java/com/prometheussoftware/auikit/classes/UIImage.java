@@ -49,6 +49,14 @@ public class UIImage extends BaseModel {
         setDrawable(Assets.drawableFromID(ID), tintColor);
     }
 
+    public static UIImage imageNamed(String name) {
+        return Assets.imageFromName(name);
+    }
+
+    public static UIImage imageNamed(String name, int color) {
+        return Assets.imageFromName(name, color);
+    }
+
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
         this.image = 0;
@@ -64,8 +72,10 @@ public class UIImage extends BaseModel {
 
     public void setDrawable(Drawable drawable, int tintColor) {
         this.tintColor = tintColor;
-        this.drawable = drawable;
-        this.drawable.setTint(tintColor);
+        if (drawable != null) {
+            this.drawable = drawable;
+            this.drawable.setTint(tintColor);
+        }
         this.image = 0;
         this.bitmap = null;
     }
@@ -136,7 +146,7 @@ public class UIImage extends BaseModel {
     }
 
     public boolean isEmpty() {
-        return bitmap == null && drawable == null && image == 0 && tintColor == 0;
+        return bitmap == null && drawable == null && image == 0 && tintColor <= 0;
     }
 
     @Override
