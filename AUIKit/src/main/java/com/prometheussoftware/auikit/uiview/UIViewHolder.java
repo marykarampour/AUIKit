@@ -21,7 +21,8 @@ public abstract class UIViewHolder <T extends UIView> extends UIView implements 
     }
 
     public void addViews(List<T> views, boolean reverse) {
-        if (ArrayUtility.isEmpty(views)) return;
+        if (ArrayUtility.isEmpty(views))
+            views = new ArrayList();
 
         if (reverse) {
             views.addAll(this.views);

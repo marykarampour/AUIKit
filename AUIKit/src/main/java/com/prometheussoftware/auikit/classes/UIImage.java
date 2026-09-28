@@ -151,6 +151,8 @@ public class UIImage extends BaseModel {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null || !UIImage.class.isAssignableFrom(obj.getClass())) return false;
+
         UIImage image = (UIImage) obj;
         if ((image.isEmpty() && !isEmpty()) || (!image.isEmpty() && isEmpty())) return false;
         return super.equals(obj);
