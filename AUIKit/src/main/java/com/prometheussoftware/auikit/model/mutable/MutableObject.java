@@ -44,8 +44,10 @@ public class MutableObject <O extends MutableProtocol.Field, U extends MutablePr
 
     /** @brief Reinitializes both OriginalObject and UpdatedObject. */
     public void reset() {
-        if (getClassForUpdatedObject().isAssignableFrom(OriginalObject.getClass())) {
-            Object obj = BaseModel.copy(OriginalObject);
+        Class cls = getClassForUpdatedObject();
+        if (cls == null) cls = OriginalObject.getClass();
+        if (OriginalObject.getClass() == cls || OriginalObject.getClass().isAssignableFrom(cls)) {
+            Object obj = BaseModel.copyObject(OriginalObject, cls);
             setUpdatedObject((U) obj);
         }
         else {
@@ -112,7 +114,7 @@ public class MutableObject <O extends MutableProtocol.Field, U extends MutablePr
 
     @Override
     public Class defaultClassForUpdatedObject() {
-        return Object.class;
+        return null;
     }
 
     @Override
