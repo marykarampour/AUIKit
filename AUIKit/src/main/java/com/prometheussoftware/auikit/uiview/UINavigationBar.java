@@ -310,22 +310,24 @@ public class UINavigationBar extends UIView {
 
         @Override
         public void updateConstraints() {
-            if (getViews().size() <= 1) {
-                super.updateConstraints();
-                return;
-            }
-
             clearConstraints(getViews());
-            constraintHorizontally(getViews(), App.constants().Nav_Bar_Item_Spacing(), 0, 0, false, ConstraintSet.START | ConstraintSet.END);
+
+            if (1 < getViews().size()) {
+                constraintHorizontally(getViews(), App.constants().Nav_Bar_Item_Spacing(), 0, 0, false, ConstraintSet.START | ConstraintSet.END);
+            }
 
             for (UIBarButton item : getViews()) {
-                String title = item.getTitleLabel().getText();
-                if (StringUtility.isNotEmpty(title))
-                    constraintSizeForView(item, AppTheme.Bar_Button_Size(title));
-                else if (item.getImageView().getImage() != null)
-                    constraintSizeForView(item, App.constants().Nav_Bar_Icon_Size());
+                constraintsItem(item);
             }
             applyConstraints();
+        }
+
+        protected void constraintsItem(UIBarButton item) {
+            String title = item.getTitleLabel().getText();
+            if (StringUtility.isNotEmpty(title))
+                constraintSizeForView(item, AppTheme.Bar_Button_Size(title));
+            else if (item.getImageView().getImage() != null)
+                constraintSizeForView(item, App.constants().Nav_Bar_Icon_Size());
         }
     }
 

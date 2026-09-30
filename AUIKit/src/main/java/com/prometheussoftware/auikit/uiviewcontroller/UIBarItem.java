@@ -6,7 +6,6 @@ import com.prometheussoftware.auikit.model.BaseModel;
 public class UIBarItem extends BaseModel {
 
     private UIImage image;
-
     private String title;
 
     public static UIBarItem build (String title, UIImage image) {

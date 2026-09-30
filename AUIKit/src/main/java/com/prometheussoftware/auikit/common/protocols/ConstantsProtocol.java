@@ -2,6 +2,7 @@ package com.prometheussoftware.auikit.common.protocols;
 
 import android.util.Size;
 
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.Dimensions;
 
 public interface ConstantsProtocol {
@@ -32,6 +33,7 @@ public interface ConstantsProtocol {
     //nav bar
     default int Tab_Bar_Icon_Height() { return Dimensions.Int_32(); }
     default int Tab_Bar_Height() { return Dimensions.Int_64(); }
+    default UIEdgeInsets Tab_Bar_Insets() { return new UIEdgeInsets(); }
 
     //controls
     default int TextField_Height() { return Dimensions.Int_44(); }

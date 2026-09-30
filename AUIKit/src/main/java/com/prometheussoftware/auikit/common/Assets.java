@@ -156,7 +156,7 @@ public class Assets implements AssetsProtocol {
 
     @Override
     public String Close_Image_Name() {
-        return "close";
+        return "x_mark_round";
     }
 
     @Override
@@ -177,6 +177,26 @@ public class Assets implements AssetsProtocol {
     @Override
     public String Share_Image_Name() {
         return "share";
+    }
+
+    @Override
+    public String Home_Image_Name() {
+        return "house";
+    }
+
+    @Override
+    public String Person_Image_Name() {
+        return "person_3";
+    }
+
+    @Override
+    public String List_Image_Name() {
+        return "list_bullet";
+    }
+
+    @Override
+    public String Gear_Image_Name() {
+        return "gear";
     }
 
     //endregion

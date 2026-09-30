@@ -197,7 +197,10 @@ public interface UITableViewProtocol {
         }
 
         default UIView viewForHeaderInSection(int section) {
-            return new UILabel();
+            UILabel label = new UILabel();
+            label.setBackgroundColor(App.theme().Tableview_Header_Background_Color());
+            label.setTextColor(App.theme().Tableview_Header_Text_Color());
+            return label;
         }
 
         default UIView viewForFooterInSection(int section) {

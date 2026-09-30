@@ -137,7 +137,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     @Override
     public <T extends UpdateObjectType> void didResetUpdateObject(T object) {
         updateDatesWithUpdateObject(object);
-//        registerKVO();
+        //registerKVO();
         reload();
     }
 
