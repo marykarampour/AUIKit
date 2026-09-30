@@ -57,6 +57,10 @@ public class UIImage extends BaseModel {
         return Assets.imageFromName(name, color);
     }
 
+    public static UIImage imageNamed(String name, UIColor color) {
+        return Assets.imageFromName(name, color.get());
+    }
+
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
         this.image = 0;

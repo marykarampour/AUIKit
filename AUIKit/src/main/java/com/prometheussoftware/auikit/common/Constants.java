@@ -72,6 +72,10 @@ public abstract class Constants implements ConstantsProtocol, SQLConstantsProtoc
         return MainApplication.getContext().getResources().getString(source);
     }
 
+    protected static String StringResource(int source, Object... formatArgs) {
+        return MainApplication.getContext().getResources().getString(source, formatArgs);
+    }
+
     //strings
 
     public static String OK_STR() {
