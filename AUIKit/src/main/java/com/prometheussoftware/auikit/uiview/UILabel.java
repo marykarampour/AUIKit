@@ -3,6 +3,7 @@ package com.prometheussoftware.auikit.uiview;
 import android.widget.TextView;
 
 import com.prometheussoftware.auikit.classes.UIColor;
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIFont;
 
 public class UILabel extends UISingleView <TextView> {
@@ -10,6 +11,11 @@ public class UILabel extends UISingleView <TextView> {
     public UILabel() {
         super();
     }
+
+    public UILabel(UIEdgeInsets insets) {
+        super(insets);
+    }
+
 
     @Override public void initView() {
         super.initView();

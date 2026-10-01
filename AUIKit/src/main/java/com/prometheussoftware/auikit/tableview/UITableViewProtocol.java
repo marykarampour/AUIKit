@@ -197,9 +197,11 @@ public interface UITableViewProtocol {
         }
 
         default UIView viewForHeaderInSection(int section) {
-            UILabel label = new UILabel();
+            UILabel label = new UILabel(App.constants().Table_Section_Header_Insets());
             label.setBackgroundColor(App.theme().Tableview_Header_Background_Color());
             label.setTextColor(App.theme().Tableview_Header_Text_Color());
+            label.setText(titleForHeaderInSection(section));
+            label.setFont(App.theme().Medium_Bold_Font());
             return label;
         }
 

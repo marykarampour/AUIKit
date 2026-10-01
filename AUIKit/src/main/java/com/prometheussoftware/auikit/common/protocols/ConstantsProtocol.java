@@ -77,6 +77,7 @@ public interface ConstantsProtocol {
     default int Table_Section_Header_Height() { return Dimensions.Int_32(); }
     default int Table_Section_Header_Medium_Height() { return Dimensions.Int_44(); }
     default int Table_Section_Header_Short_Height() { return Dimensions.Int_22(); }
+    default UIEdgeInsets Table_Section_Header_Insets() { return new UIEdgeInsets(); }
 
     //strings
     String Generic_Success_Message();

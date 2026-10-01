@@ -10,6 +10,7 @@ import com.prometheussoftware.auikit.utility.ViewUtility;
 public class UISingleView <V extends View> extends UIView {
 
     protected V view;
+    protected UIEdgeInsets insets = insets();
 
     public UISingleView() {
         super();
@@ -18,6 +19,18 @@ public class UISingleView <V extends View> extends UIView {
 
     public UISingleView(V view) {
         super();
+        setView(view);
+    }
+
+    public UISingleView(UIEdgeInsets insets) {
+        super();
+        this.insets = insets;
+        init();
+    }
+
+    public UISingleView(V view, UIEdgeInsets insets) {
+        super();
+        this.insets = insets;
         setView(view);
     }
 
@@ -40,7 +53,7 @@ public class UISingleView <V extends View> extends UIView {
     @Override public void constraintLayout() {
         super.constraintLayout();
         constraintSet.clear(view.getId());
-        ConstraintUtility.constraintSidesForView(constraintSet, view, insets());
+        ConstraintUtility.constraintSidesForView(constraintSet, view, insets);
         constraintSet.applyTo(this);
     }
 
