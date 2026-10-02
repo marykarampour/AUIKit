@@ -198,6 +198,25 @@ public class UINavigationBar extends UIView {
         rightItemsViewHolder.setViews(rightBarButtonItems);
     }
 
+    public void addLeftBarButtonItems(List<UIBarButton> leftBarButtonItems) {
+        leftItemsViewHolder.addViews(leftBarButtonItems, false);
+    }
+
+    public void addRightBarButtonItems(List<UIBarButton> rightBarButtonItems) {
+        Collections.reverse(rightBarButtonItems);
+        rightItemsViewHolder.addViews(rightBarButtonItems, true);
+    }
+
+    public void addLeftBarButtonItem(UIBarButton leftBarButtonItem) {
+        if (leftBarButtonItem == null) return;
+        leftItemsViewHolder.addView(leftBarButtonItem);
+    }
+
+    public void addRightBarButtonItem(UIBarButton rightBarButtonItem) {
+        if (rightBarButtonItem == null) return;
+        rightItemsViewHolder.addView(rightBarButtonItem);
+    }
+
     /** The contents of this property always refer to the first bar button item in the leftBarButtonItems array.
      * Assigning a new value to this property replaces the first item in the leftBarButtonItems array with the new value.
      * Setting this property to null removes the first item in the array.
@@ -291,19 +310,24 @@ public class UINavigationBar extends UIView {
 
         @Override
         public void updateConstraints() {
-            if (getViews().size() <= 1) {
-                super.updateConstraints();
-                return;
-            }
-
             clearConstraints(getViews());
-            constraintHorizontally(getViews(), 0, 0, 0, false, ConstraintSet.START | ConstraintSet.END);
+
+            if (1 < getViews().size()) {
+                constraintHorizontally(getViews(), App.constants().Nav_Bar_Item_Spacing(), 0, 0, false, ConstraintSet.START | ConstraintSet.END);
+            }
 
             for (UIBarButton item : getViews()) {
-                String title = item.getTitleLabel().getText();
-                constraintSizeForView(item, AppTheme.Bar_Button_Size(title));
+                constraintsItem(item);
             }
             applyConstraints();
+        }
+
+        protected void constraintsItem(UIBarButton item) {
+            String title = item.getTitleLabel().getText();
+            if (StringUtility.isNotEmpty(title))
+                constraintSizeForView(item, AppTheme.Bar_Button_Size(title));
+            else if (item.getImageView().getImage() != null)
+                constraintSizeForView(item, App.constants().Nav_Bar_Icon_Size());
         }
     }
 

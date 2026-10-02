@@ -24,22 +24,15 @@ public class UITabBar extends UIView {
     /** get/set visible UITabBarItems. default is nil.
      * changes not animated. shown in order */
     private ArrayList<UITabBarItem> items;
-
     private ArrayList<UITabBarButton> buttons;
 
     /** will show feedback based on mode. default is nil */
     private UITabBarItem selectedItem;
-
     private UIColor barTintColor = App.theme().Tab_Bar_Selected_Item_Tint_Color();
-
     private UIColor unselectedItemTintColor = App.theme().Tab_Bar_Tint_Color();
-
     private UIView contentView;
-
     private UIImageView selectionIndicatorImageView;
-
     private UIImageView shadowImageView;
-
     private UIImageView backgroundImageView;
 
     public UITabBar() {
@@ -83,7 +76,7 @@ public class UITabBar extends UIView {
     public void constraintLayout() {
         super.constraintLayout();
 
-        UIEdgeInsets contentInsets = new UIEdgeInsets(contentPadding(), 0, 0, 0);
+        UIEdgeInsets contentInsets = App.constants().Tab_Bar_Insets();
 
         constraintSidesForView(backgroundImageView, contentInsets);
         constraintSidesForView(contentView, contentInsets);
@@ -94,10 +87,6 @@ public class UITabBar extends UIView {
         constraintViews(shadowImageView, ConstraintSet.BOTTOM, backgroundImageView, ConstraintSet.TOP);
 
         applyConstraints();
-    }
-
-    private int contentPadding() {
-        return Dimensions.Int_2();
     }
 
     public void setItems(ArrayList<UITabBarItem> items) {

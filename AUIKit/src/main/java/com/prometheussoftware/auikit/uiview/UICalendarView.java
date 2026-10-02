@@ -3,7 +3,6 @@ package com.prometheussoftware.auikit.uiview;
 import android.widget.CalendarView;
 
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
-import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
@@ -37,19 +36,23 @@ public class UICalendarView extends UIView implements UIControlProtocol {
     public void constraintLayout() {
         super.constraintLayout();
 
-        constraintHeightForView(button, App.constants().Default_Row_Height());
+        constraintHeightForView(button, buttonSize());
         constraintWidthForView(calendar, Constants.Screen_Size().getWidth());
         constraintHeightForView(calendar, calendarSize());
         constraintVertically(ArrayUtility.arrayOf(button, calendar), 0, false);
         applyConstraints();
     }
 
-    protected int calendarSize() {
+    protected static int buttonSize() {
+        return Dimensions.Int_32();
+    }
+
+    protected static int calendarSize() {
         return Dimensions.Int_256();
     }
 
     public int estimatedHeight() {
-        return App.constants().Default_Row_Height() + calendarSize();
+        return buttonSize() + calendarSize();
     }
 
     @Override

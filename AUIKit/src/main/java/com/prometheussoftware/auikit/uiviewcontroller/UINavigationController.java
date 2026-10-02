@@ -250,7 +250,7 @@ public class UINavigationController extends UIHeaderFooterContainerViewControlle
         if (1 < navigationStack.getNodes().size()) {
 
             UIBarButton leftButton = UINavigationBar.barButtonItem(App.assets().Left_Chevron_Image());
-            currentNavigationBar.setLeftBarButtonItem(leftButton);
+            currentNavigationBar.addLeftBarButtonItem(leftButton);
             currentNavigationBar.leftBarButtonItem().addTouchUpTarget(this, v -> {
                 if (navigationStack.getNodes().size() < 2) {
                     dismiss();

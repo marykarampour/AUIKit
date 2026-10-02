@@ -6,10 +6,15 @@ import android.widget.ImageView;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIImage;
+import com.prometheussoftware.auikit.model.BaseModel;
 
 public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
 
     private UIImage image;
+
+    static {
+        BaseModel.Register(UIImageView.class);
+    }
 
     public UIImageView() {
         super();
@@ -41,6 +46,10 @@ public class UIImageView extends UISingleLayerView <UIImageView.UIImageLayer> {
     public void setImage(UIImage image) {
         this.image = image;
         updateImage();
+    }
+
+    public UIImage getImage() {
+        return image;
     }
 
     private void updateImage() {

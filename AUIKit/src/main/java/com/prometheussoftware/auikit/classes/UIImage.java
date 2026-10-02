@@ -16,6 +16,10 @@ public class UIImage extends BaseModel {
     private int image;
     private int tintColor;
 
+    static {
+        BaseModel.Register(UIImage.class);
+    }
+
     public UIImage() {
         super();
     }
@@ -45,6 +49,18 @@ public class UIImage extends BaseModel {
         setDrawable(Assets.drawableFromID(ID), tintColor);
     }
 
+    public static UIImage imageNamed(String name) {
+        return Assets.imageFromName(name);
+    }
+
+    public static UIImage imageNamed(String name, int color) {
+        return Assets.imageFromName(name, color);
+    }
+
+    public static UIImage imageNamed(String name, UIColor color) {
+        return Assets.imageFromName(name, color.get());
+    }
+
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
         this.image = 0;
@@ -60,8 +76,10 @@ public class UIImage extends BaseModel {
 
     public void setDrawable(Drawable drawable, int tintColor) {
         this.tintColor = tintColor;
-        this.drawable = drawable;
-        this.drawable.setTint(tintColor);
+        if (drawable != null) {
+            this.drawable = drawable;
+            this.drawable.setTint(tintColor);
+        }
         this.image = 0;
         this.bitmap = null;
     }
@@ -122,7 +140,6 @@ public class UIImage extends BaseModel {
 
     @Override
     protected void finalize() throws Throwable {
-
         try {
             dispose();
         }
@@ -130,5 +147,18 @@ public class UIImage extends BaseModel {
         finally {
             super.finalize();
         }
+    }
+
+    public boolean isEmpty() {
+        return bitmap == null && drawable == null && image == 0 && tintColor <= 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !UIImage.class.isAssignableFrom(obj.getClass())) return false;
+
+        UIImage image = (UIImage) obj;
+        if ((image.isEmpty() && !isEmpty()) || (!image.isEmpty() && isEmpty())) return false;
+        return super.equals(obj);
     }
 }

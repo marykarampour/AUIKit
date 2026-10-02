@@ -3,10 +3,14 @@ package com.prometheussoftware.auikit.uiview;
 import android.view.Gravity;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIFont;
 import com.prometheussoftware.auikit.classes.UIImage;
+import com.prometheussoftware.auikit.model.BaseModel;
+import com.prometheussoftware.auikit.utility.StringUtility;
 
 public class UIButton extends UIControl {
 
@@ -18,6 +22,10 @@ public class UIButton extends UIControl {
 
     private UIColor normalTextColor;
     private UIColor highlightTextColor;
+
+    static {
+        BaseModel.Register(UIButton.class);
+    }
 
     public UIButton() {
         super();
@@ -128,5 +136,36 @@ public class UIButton extends UIControl {
     public void setNormalTextColor(UIColor normalTextColor) {
         this.normalTextColor = normalTextColor;
         setTextColor(normalTextColor);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null || !UIButton.class.isAssignableFrom(obj.getClass())) return false;
+
+        UIButton button = (UIButton) obj;
+        boolean thisEmpty = StringUtility.isEmpty(titleLabel.getText());
+        boolean empty = StringUtility.isEmpty(button.titleLabel.getText());
+
+        if (thisEmpty && empty) {
+            if (imageView.getImage() == null && button.imageView.getImage() == null) return super.equals(obj);
+
+            if (button.imageView.getImage() != null && imageView.getImage() != null) {
+                if ((imageView.getImage().isEmpty() && !button.imageView.getImage().isEmpty()) || (!imageView.getImage().isEmpty() && button.imageView.getImage().isEmpty()))
+                    return false;
+                else
+                    return imageView.getImage().equals(button.imageView.getImage());
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            if (!thisEmpty && !empty) {
+                return titleLabel.getText().equals(button.titleLabel.getText());
+            }
+            else {
+                return false;
+            }
+        }
     }
 }

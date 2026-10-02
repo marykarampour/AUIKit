@@ -25,7 +25,6 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
 
     private UITabBarProtocol.Controller delegate;
 
-
     public UITabBarController() {
         super();
         init();
@@ -59,7 +58,6 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
     public void tabBarDidSelectItem(UITabBar tabBar, UITabBarItem item) {
         setSelectedViewController(item, true);
     }
-
 
     //endregion
 

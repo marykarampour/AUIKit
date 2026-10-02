@@ -3,7 +3,6 @@ package com.prometheussoftware.auikit.uiview;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
-import com.prometheussoftware.auikit.common.Assets;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
@@ -27,7 +26,7 @@ public class UIBarButton extends UIButton {
 
     public UIBarButton(TYPE type, UITargetDelegate.TouchUp target) {
         super();
-        setImage(Assets.imageFromName(type.stringValue()));
+        setImage(UIImage.imageNamed(type.stringValue()));
         setTarget(target);
     }
 
@@ -119,15 +118,16 @@ public class UIBarButton extends UIButton {
         SYSTEM_CAMERA   (7,  App.assets().Camera_Image_Name()),
         SYSTEM_TRASH    (8,  App.assets().Trash_Image_Name()),
         SYSTEM_CLOSE    (9,  App.assets().Close_Image_Name()),
-        SYSTEM_COUNT    (10, null),//No item, marks the end of system items
-        RESET           (11, Constants.Reset_STR()),
-        CLEAR           (12, Constants.Clear_STR()),
-        CLOSE           (13, Constants.Close_STR()),
-        ALL             (14, Constants.All_STR()),
-        EMAIL           (15, App.assets().Email_Image_Name()),
-        PRINT           (16, App.assets().Print_Image_Name()),
-        SHARE           (17, App.assets().Share_Image_Name()),
-        COUN            (18, null);
+        SYSTEM_BACK     (10, App.assets().Back_Image_Name()),
+        SYSTEM_COUNT    (11, null),//No item, marks the end of system items
+        RESET           (12, Constants.Reset_STR()),
+        CLEAR           (13, Constants.Clear_STR()),
+        CLOSE           (14, Constants.Close_STR()),
+        ALL             (15, Constants.All_STR()),
+        EMAIL           (16, App.assets().Email_Image_Name()),
+        PRINT           (17, App.assets().Print_Image_Name()),
+        SHARE           (18, App.assets().Share_Image_Name()),
+        COUNT           (19, null);
 
         private final int value;
         private final String string;

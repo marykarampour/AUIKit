@@ -26,6 +26,7 @@ public class UIDatePickerView extends UICalendarView {
         button.setTarget((sender) -> setExpanded(!expanded));
         button.setBackgroundColor(UIColor.green(0.2f));
         button.setTextColor(UIColor.black(0.9f));
+        button.setFont(App.theme().Medium_Bold_Font());
         button.setText("No Date Selected");
 
         calendar.view.setOnDateChangeListener((calendarView, y, m, d) -> {
@@ -43,7 +44,7 @@ public class UIDatePickerView extends UICalendarView {
 
     @Override
     public int estimatedHeight() {
-        return expanded ? super.estimatedHeight() : App.constants().Default_Row_Height();
+        return expanded ? super.estimatedHeight() : buttonSize();
     }
 
     public interface Delegate {

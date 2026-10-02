@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.prometheussoftware.auikit.classes.UIColor;
+import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
@@ -29,8 +30,11 @@ public class UITabBarButton extends UIButton {
 
     @Override
     public void constraintLayout() {
+
+        UIEdgeInsets contentInsets = App.constants().Tab_Bar_Insets();
+
         constraintHeightForView(getImageView(), App.constants().Tab_Bar_Icon_Height());
-        constraintVertically(ArrayUtility.arrayOf(getImageView(), getTitleLabel()), Dimensions.Int_1(), Dimensions.Int_2(), Dimensions.Int_2(), false, ConstraintSet.TOP | ConstraintSet.BOTTOM);
+        constraintVertically(ArrayUtility.arrayOf(getImageView(), getTitleLabel()), Dimensions.Int_1(), 0, contentInsets.top, false, ConstraintSet.TOP | ConstraintSet.BOTTOM);
         applyConstraints();
     }
 }

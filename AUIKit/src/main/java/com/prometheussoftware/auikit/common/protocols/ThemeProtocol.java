@@ -34,6 +34,8 @@ public interface ThemeProtocol {
 
     //tableview
     default UIColor Tableview_Separator_Color() { return UIColor.color(0.7f, 0.6f, 0.7f, 1.0f); }
+    default UIColor Tableview_Header_Background_Color() { return UIColor.white(1.0f); }
+    default UIColor Tableview_Header_Text_Color() { return UIColor.black(1.0f); }
 
     //fonts
     default UIFont Small_Regular_Font() { return UIFont.systemFont(14, UIFont.STYLE.REGULAR); }

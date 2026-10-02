@@ -6,6 +6,7 @@ import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.model.Range;
 import com.prometheussoftware.auikit.uiview.UITextField;
 import com.prometheussoftware.auikit.uiview.UITextView;
+import com.prometheussoftware.auikit.utility.NumberUtility;
 import com.prometheussoftware.auikit.utility.StringUtility;
 
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class FieldModel extends BaseModel implements MutableProtocol.Field, Arra
         String name = propertyEnumDictionary().get(type);
 
         for (Class cls : classOfPropertyForObjectClass(name, getClass())) {
-            if (Number.class.isAssignableFrom(cls))
+            if (NumberUtility.isNumber(cls))
                 value = StringUtility.numValue(text);
         }
 

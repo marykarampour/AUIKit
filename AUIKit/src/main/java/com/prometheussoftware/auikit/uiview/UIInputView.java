@@ -50,6 +50,8 @@ public class UIInputView extends UIView {
     public void initView() {
         super.initView();
         label = new UILabel();
+        label.setTextColor(App.theme().Text_Dark_Color());
+
         button = new UIButton();
 
         textField = new UITextField();

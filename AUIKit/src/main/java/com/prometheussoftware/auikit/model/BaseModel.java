@@ -588,7 +588,7 @@ public class BaseModel implements Serializable, Cloneable {
     }
 
     /** Returns a Gson based copy. */
-    private static <T extends Object, U extends T> U copyObject(T obj, Class<U> cls) {
+    public static <T extends Object, U extends T> U copyObject(T obj, Class<U> cls) {
         Gson gson = new Gson();
         String json = gson.toJson(obj);
         return gson.fromJson(json, cls);
