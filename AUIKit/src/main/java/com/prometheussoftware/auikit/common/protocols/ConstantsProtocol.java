@@ -10,6 +10,7 @@ public interface ConstantsProtocol {
     //environment and services
     default int Server_Environment() { return 0; }
     default String BaseURL() { return ""; }
+    boolean IS_TESTING();
 
     //app
     default String CopyRight_STR() { return ""; }

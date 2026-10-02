@@ -15,6 +15,11 @@ public abstract class Constants implements ConstantsProtocol, SQLConstantsProtoc
     public static final boolean TARGET_ANDROID_EMULATOR = Build.FINGERPRINT.contains("sdk");
     public static final boolean IS_DEBUG = BuildConfig.DEBUG;
 
+    @Override
+    public boolean IS_TESTING() {
+        return IS_DEBUG;
+    }
+
     public static String OS_Version_Device () {
         return Build.DEVICE + ", " + Build.MODEL + ", " + Android_STR() + Build.VERSION.SDK_INT;
     }
