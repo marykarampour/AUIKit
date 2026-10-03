@@ -118,6 +118,7 @@ public interface ItemsListProtocol {
             BaseTableViewCell cell = new BaseTableViewCell.Editing(style);
             setTextForListItemAtIndexPath(item, indexPath, cell);
             setStyleForListItemAtIndexPath(item, indexPath, cell);
+            cell.setSeparatorStyle(UITableViewCell.SEPARATOR_STYLE.DEFAULT);
             return (C) cell;
         }
 

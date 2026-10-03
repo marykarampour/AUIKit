@@ -29,19 +29,20 @@ import java.util.Map;
 
 public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIView> extends UIMultiViewLabel <UIButton, A, UIView> implements UIControlProtocol, UIEditingAccessoryProtocol {
 
-    private ACCESSORY_TYPE accessoryType;
-    private SELECTION_STYLE selectionStyle;
-    private EDITING_STYLE editingStyle;
+    private ACCESSORY_TYPE accessoryType = ACCESSORY_TYPE.NONE;
+    private SELECTION_STYLE selectionStyle = SELECTION_STYLE.NONE;
+    private EDITING_STYLE editingStyle = EDITING_STYLE.NONE;
     private STYLE style;
 
     /** Use only in case of static cells */
     public IndexPath indexPath;
 
-    protected S separator;
-
     private UIControl interactionLayer;
 
+    protected S separator;
     private int separatorHeight;
+    private SEPARATOR_STYLE separatorStyle = SEPARATOR_STYLE.NONE;
+    private int separatorInset = Dimensions.Int_32();
 
     static {
         Identifier.Register(UITableViewCell.class);
@@ -55,7 +56,6 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
     public UITableViewCell(STYLE style) {
         super(style == STYLE.SUBTITLE ? LABEL_TYPE.COUNT.intValue() : 1);
         setEnabled(true);
-        accessoryType = ACCESSORY_TYPE.NONE;
         this.style = style;
     }
 
@@ -86,7 +86,7 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         super.constraintLayout();
 
         contentView.constraintHeightForView(separator, separatorHeight);
-        contentView.constraintForView(ConstraintSet.START, separator, 0);
+        contentView.constraintForView(ConstraintSet.START, separator, separatorStyle == SEPARATOR_STYLE.DEFAULT ? separatorInset : 0);
         contentView.constraintForView(ConstraintSet.END, separator, 0);
         contentView.constraintForView(ConstraintSet.BOTTOM, separator, 0);
         contentView.applyConstraints();
@@ -95,6 +95,7 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
     protected void createSeparator() {
         separator = (S) new UIView();
         separator.setEnabled(false);
+        separator.setHidden(separatorStyle == SEPARATOR_STYLE.NONE);
         setSeparatorColor(App.theme().Tableview_Separator_Color());
         contentView.addSubview(separator);
     }
@@ -167,6 +168,13 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
 
     protected int separatorHeight() {
         return Dimensions.Int_1();
+    }
+
+    public void setSeparatorStyle(SEPARATOR_STYLE separatorStyle) {
+        this.separatorStyle = separatorStyle;
+        separator.setHidden(separatorStyle == SEPARATOR_STYLE.NONE);
+        contentView.constraintForView(ConstraintSet.START, separator, separatorStyle == SEPARATOR_STYLE.DEFAULT ? separatorInset : 0);
+        contentView.applyConstraints();
     }
 
     public void setSizeForView(Size size, UIView view) {
@@ -345,6 +353,12 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
     public enum STYLE {
         DEFAULT,
         SUBTITLE
+    }
+
+    public enum SEPARATOR_STYLE {
+        NONE,
+        DEFAULT,
+        ETCHED
     }
 
     public enum ACCESSORY_TYPE {
