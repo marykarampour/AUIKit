@@ -322,7 +322,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         };
     }
 
-
     @Override
     public SuccessErrorCallback performSaveOrUpdateObjectCompletionHandler() {
         return null;

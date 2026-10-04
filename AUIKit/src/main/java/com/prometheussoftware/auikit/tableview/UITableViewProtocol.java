@@ -84,7 +84,7 @@ public interface UITableViewProtocol {
         default String titleForHeaderInSection(UITableView tableView, int section) { return ""; }
 
         default int heightForTextFieldCellAtIndexPath (IndexPath indexPath) {
-            return App.constants().TextField_Height() + 2*App.constants().Vertical_Margin();
+            return indexPath.row == TEXTVIEW_CELL_ROW.TITLE.intValue() ? App.constants().TextView_Title_Height() : App.constants().TextField_Height() + 2*App.constants().Vertical_Margin();
         }
 
         default int heightForTextViewCellAtIndexPath (IndexPath indexPath) {
