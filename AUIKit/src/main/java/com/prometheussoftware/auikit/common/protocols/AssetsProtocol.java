@@ -33,4 +33,5 @@ public interface AssetsProtocol {
     String Person_Image_Name();
     String List_Image_Name();
     String Gear_Image_Name();
+    String Power_Image_Name();
 }

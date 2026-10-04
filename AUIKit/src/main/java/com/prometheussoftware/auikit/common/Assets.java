@@ -199,5 +199,10 @@ public class Assets implements AssetsProtocol {
         return "gear";
     }
 
+    @Override
+    public String Power_Image_Name() {
+        return "power";
+    }
+
     //endregion
 }

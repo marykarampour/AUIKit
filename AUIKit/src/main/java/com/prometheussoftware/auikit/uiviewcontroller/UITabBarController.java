@@ -34,10 +34,17 @@ public class UITabBarController extends UIHeaderFooterContainerViewController<UI
         navigationStack.getNodes().clear();
 
         for (UIViewController vc : viewControllers) {
-
             Navigation.Node<UIViewController> node = new Navigation.Node<>();
             node.setNodeObject(vc);
             navigationStack.getNodes().add(node);
+        }
+    }
+
+    @Override
+    public void setPresentingViewController(UIViewController presentingViewController) {
+        super.setPresentingViewController(presentingViewController);
+        for (Navigation.Node<UIViewController> vc : navigationStack.getNodes()) {
+            vc.getNodeObject().setPresentingViewController(this.getPresentingViewController());
         }
     }
 
