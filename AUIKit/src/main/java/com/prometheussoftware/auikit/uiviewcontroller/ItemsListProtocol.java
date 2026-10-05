@@ -6,6 +6,7 @@ import com.prometheussoftware.auikit.callback.ObjectCallback;
 import com.prometheussoftware.auikit.callback.SuccessErrorCallback;
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
 import com.prometheussoftware.auikit.classes.UIImage;
+import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.tableview.BaseTableViewCell;
@@ -56,6 +57,7 @@ public interface ItemsListProtocol {
             if (type == UITableViewCell.ACCESSORY_TYPE.CUSTOM) {
                 cell.getRightView().setOnImage(accessoryCustomOnImageForListItemAtIndexPath(item, indexPath));
                 cell.getRightView().setOffImage(accessoryCustomOffImageForListItemAtIndexPath(item, indexPath));
+                cell.setAccessoryTarget(accessoryCustomActionForListItemAtIndexPath(item, indexPath));
             }
 
             cell.setAccessoryType(type);
@@ -80,6 +82,12 @@ public interface ItemsListProtocol {
         default <T extends ViewContentProtocol.Placeholder> UIImage accessoryCustomOffImageForListItemAtIndexPath(T item, IndexPath indexPath) {
             return accessoryCustomOnImageForListItemAtIndexPath(item, indexPath);
         }
+
+        default <T extends ViewContentProtocol.Placeholder> UITargetDelegate.TouchUp accessoryCustomActionForListItemAtIndexPath(T item, IndexPath indexPath) {
+            return sender -> performSelectListItemAtIndexPath(item, indexPath, true);
+        }
+
+        default void performSelectListItemAtIndexPath(ViewContentProtocol.Placeholder item, IndexPath indexPath, boolean selected) {}
 
         default boolean allowsMultipleSelection() { return false; }
         default int sectionTypeForIndexPath(IndexPath indexPath) { return listTypeForListInSection(indexPath.section); }

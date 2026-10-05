@@ -56,7 +56,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     private boolean isEditable;
     private IndexPath selectedIndexPath;
     private ItemsListProtocol.SelectionActionHandler selectedActionHandler;
-    private ItemsListProtocol.UpdateDelegate updateDelegate;
+    private ItemsListProtocol.UpdateDelegate updateDelegate = this;
     public boolean allowsMultipleSelection;
     protected Map<Integer, UIDatePickerView> dateCellInfoObjects = new HashMap();
 
@@ -1158,11 +1158,16 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 dispathTransitionDelegateToReturnWithObject(returnedInSelectObject());
         }
         else {
-            setSelectedObject(item, false);
-            didSelectListItemAtIndexPath(item, indexPath);
-            dispatchUpdateDelegateToSetSelected(!selected, item);
-            reload();
+            performSelectListItemAtIndexPath(item, indexPath, selected);
         }
+    }
+
+    @Override
+    public void performSelectListItemAtIndexPath(ViewContentProtocol.Placeholder item, IndexPath indexPath, boolean selected) {
+        setSelectedObject(item, false);
+        didSelectListItemAtIndexPath(item, indexPath);
+        dispatchUpdateDelegateToSetSelected(!selected, item);
+        reload();
     }
 
     @Override
@@ -1198,6 +1203,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     private void setAccessoryForRowAtIndexPath(UIView cell, IndexPath indexPath) {
         if (!(cell instanceof UIEditingAccessoryProtocol)) return;
+        if (typeForSection(indexPath.section) == MutableProtocol.FIELD_TYPE.LIST) return;
 
         UIEditingAccessoryProtocol control = (UIEditingAccessoryProtocol)cell;
         control.addAccessoryTarget(this, (UITargetDelegate.TouchUp) sender -> {

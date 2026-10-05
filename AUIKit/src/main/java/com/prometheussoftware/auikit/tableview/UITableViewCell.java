@@ -133,8 +133,18 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
     }
 
     @Override
+    public void setAccessoryTarget(UITargetDelegate.TouchUp target) {
+        if (rightView != null) rightView.setTarget(target);
+    }
+
+    @Override
     public void addEditingTarget(Object ID, UITargetDelegate target) {
         if (leftView != null) leftView.addTarget(ID, target);
+    }
+
+    @Override
+    public void setEditingTarget(UITargetDelegate.TouchUp target) {
+        if (leftView != null) leftView.setTarget(target);
     }
 
     //region sizes
