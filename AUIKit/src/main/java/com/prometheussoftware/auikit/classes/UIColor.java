@@ -41,7 +41,7 @@ public class UIColor extends BaseModel {
      * @param alpha Between 0.0-1.0 is transparency */
     public static UIColor color(float red, float green, float blue, float alpha) {
         int color = Color.argb((int) (alpha*255), (int) (red*255), (int) (green*255), (int) (blue*255));
-        return new UIColor(color, 1.0f);
+        return new UIColor(color, alpha);
     }
 
     /** Creates a hex color with transparency from colorID
