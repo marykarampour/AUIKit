@@ -525,8 +525,9 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
                 return Dimensions.Int_80();
 
             case FIELD:
-            case CHECKBOX:
             case STEPPER_FIELD:
+                return defaultTextFieldHeight();
+            case CHECKBOX:
                 return App.constants().Extended_Row_Height();
 
             case CHECKBOX_BUTTON:

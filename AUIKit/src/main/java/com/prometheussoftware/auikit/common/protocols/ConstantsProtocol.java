@@ -37,7 +37,7 @@ public interface ConstantsProtocol {
     default UIEdgeInsets Tab_Bar_Insets() { return new UIEdgeInsets(); }
 
     //controls
-    default int TextField_Height() { return Dimensions.Int_44(); }
+    default int TextField_Height() { return Dimensions.Int_40(); }
     default int TextView_Title_Height() { return Dimensions.Int_44(); }
     default int TextView_Medium_Height() { return Dimensions.Int_120(); }
     default int Max_Value1Cell_Character_Count() { return 16; }
