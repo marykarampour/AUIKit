@@ -12,6 +12,8 @@ import com.prometheussoftware.auikit.utility.DateUtility;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -21,6 +23,12 @@ public class DateFormatter {
 
         @Override
         public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+
+            try {
+                return Date.from(Instant.parse(json.getAsString()));
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
+            }
 
             for (DateUtility.FORMAT format : DateUtility.FORMAT.values()) {
                 try {
