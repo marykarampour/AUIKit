@@ -4,12 +4,17 @@ import android.util.Size;
 
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.common.Dimensions;
+import com.prometheussoftware.auikit.utility.DateUtility;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public interface ConstantsProtocol {
 
     //environment and services
     default int Server_Environment() { return 0; }
     default String BaseURL() { return ""; }
+    default Set<DateUtility.FORMAT> Server_Date_Formates() { return new HashSet(); }
     boolean IS_TESTING();
 
     //app

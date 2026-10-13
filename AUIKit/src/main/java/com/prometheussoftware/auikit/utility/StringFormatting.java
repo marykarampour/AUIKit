@@ -37,6 +37,15 @@ public class StringFormatting {
         }
     }
 
+    public static SpannableStringBuilder appendAttributedTextFromSpans(ArrayList<SpannableStringBuilder> attrs, String delimiter) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        for (SpannableStringBuilder attr : attrs) {
+            builder.append(attr);
+            if (attrs.indexOf(attr) != attrs.size() - 1) builder.append(delimiter);
+        }
+        return builder;
+    }
+
     /** @apiNote Use setAllCaps(false) on buttons for API 23 or lower before setting
      *  text using this method otherwise the font and color are not going to work */
     public static SpannableStringBuilder attributedText(ArrayList<StringAttributes> attrs, String delimiter) {
