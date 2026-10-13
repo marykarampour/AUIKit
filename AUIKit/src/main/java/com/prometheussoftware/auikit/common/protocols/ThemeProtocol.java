@@ -111,4 +111,7 @@ public interface ThemeProtocol {
     default UIColor Light_Silver_Color() { return UIColor.white(1.0f); }
     default UIColor Mist_Silver_Color() { return UIColor.white(1.0f); }
     default UIColor White_Silver_Color() { return UIColor.white(1.0f); }
+
+    default UIColor DatePicker_Text_Color() { return UIColor.black(1.0f); }
+    default UIColor DatePicker_Button_Color() { return UIColor.white(1.0f); }
 }

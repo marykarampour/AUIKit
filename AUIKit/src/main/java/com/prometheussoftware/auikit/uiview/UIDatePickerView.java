@@ -24,8 +24,8 @@ public class UIDatePickerView extends UICalendarView {
         super.initView();
 
         button.setTarget((sender) -> setExpanded(!expanded));
-        button.setBackgroundColor(UIColor.green(0.2f));
-        button.setTextColor(UIColor.black(0.9f));
+        button.setBackgroundColor(App.theme().DatePicker_Button_Color());
+        button.setTextColor(App.theme().DatePicker_Text_Color());
         button.setFont(App.theme().Medium_Bold_Font());
         button.setText("No Date Selected");
 

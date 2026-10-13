@@ -44,7 +44,7 @@ public class UICalendarView extends UIView implements UIControlProtocol {
     }
 
     protected static int buttonSize() {
-        return Dimensions.Int_32();
+        return Dimensions.Int_40();
     }
 
     protected static int calendarSize() {
