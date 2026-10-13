@@ -30,6 +30,7 @@ public class DateUtility {
         WEEKDAY_MONTH_LONG_STYLE            (12, "EEEE, MMMM dd, yyyy"),
         TIME_APM_STYLE                      (13, "HH:mm:ss a"),
         FULL_TIMEZONE_STYLE                 (14, "yyyy-MM-dd'T'HH:mm:ss.SS zzz"),
+        FULL_MILLISECONDS_TIMEZONE_STYLE    (15, "yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
         FULL_MICROSECONDS_TIMEZONE_STYLE    (15, "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"),
         LONG_STYLE                          (16, "yyyy-MM-dd'T'HH:mm:ss"),
         SHORT_SLASH_STYLE                   (17, "MM/dd/yy"),
