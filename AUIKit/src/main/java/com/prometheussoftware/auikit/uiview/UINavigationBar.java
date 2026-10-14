@@ -317,13 +317,14 @@ public class UINavigationBar extends UIView {
             }
 
             for (UIBarButton item : getViews()) {
-                constraintsItem(item);
+                constraintItem(item);
             }
             applyConstraints();
         }
 
-        protected void constraintsItem(UIBarButton item) {
+        protected void constraintItem(UIBarButton item) {
             String title = item.getTitleLabel().getText();
+            constraintForView(ConstraintSet.VERTICAL, item);
             if (StringUtility.isNotEmpty(title))
                 constraintSizeForView(item, AppTheme.Bar_Button_Size(title));
             else if (item.getImageView().getImage() != null)
