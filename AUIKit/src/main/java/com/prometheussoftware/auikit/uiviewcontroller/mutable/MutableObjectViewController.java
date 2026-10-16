@@ -57,6 +57,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     private IndexPath selectedIndexPath;
     private ItemsListProtocol.SelectionActionHandler selectedActionHandler;
     private ItemsListProtocol.UpdateDelegate updateDelegate = this;
+    private MutableProtocol.TransitionDelegate transitionMutableVCDelegate;
     public boolean allowsMultipleSelection;
     protected Map<Integer, UIDatePickerView> dateCellInfoObjects = new HashMap();
 
@@ -362,11 +363,6 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     }
 
     @Override
-    public void didSelectSection(int section) {
-        MutableProtocol.ViewController.super.didSelectSection(section);
-    }
-
-    @Override
     public boolean canEditSection(int section) {
         if (!isEditable)
             return false;
@@ -496,12 +492,32 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public void handleSelectionAtIndexPath(IndexPath indexPath) {
+        int section = indexPath.section;
 
+        if (canTransitionToPresentingSelectionVCInSection(section) && hasTypesForSection(section)) {
+            ViewControllerCallback callback = createPresentingSelectionVCAtIndexPath(indexPath);
+            UIViewController vc = callback.VC();
+            if (callback.VC() != null)
+                runOnUiThread(() -> presentSelectionVCAtIndexPath(vc, indexPath));
+        }
+        else {
+            didSelectSection(section);
+        }
     }
 
     @Override
     public void presentSelectionVCAtIndexPath(UIViewController VC, IndexPath indexPath) {
-
+        if (transitionMutableVCDelegate != null && transitionMutableVCDelegate != this) {
+            if (transitionMutableVCDelegate.shouldHandlePresentSelectionVCAtIndexPath(VC, indexPath)) {
+                transitionMutableVCDelegate.presentSelectionVCAtIndexPath(VC, indexPath);
+            }
+            else {
+                pushViewController(VC,true);
+            }
+        }
+        else {
+            pushViewController(VC,true);
+        }
     }
 
     @Override

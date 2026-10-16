@@ -1,26 +1,17 @@
 package com.prometheussoftware.auikit.common;
 
-import android.Manifest;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.classes.UITargetManager;
-import com.prometheussoftware.auikit.uiview.UIButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,47 +131,6 @@ public class BaseActivity extends AppCompatActivity implements UITargetManager.D
 
     public void setMultiTargetEnabled(boolean multiTargetEnabled) {
         targetManager.setMultiTargetEnabled(multiTargetEnabled);
-    }
-
-    //endregion
-
-
-    public void addPhoneCallAction(UIButton button, String phoneNumber) {
-        button.addTouchUpTarget(this, v -> {
-            addPhoneCallAction(phoneNumber);
-        });
-    }
-
-    public void addPhoneCallAction(String phoneNumber) {
-
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + phoneNumber));
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            this.startActivity(callIntent);
-        }
-    }
-
-    public void copyTextToClipboard(String text) {
-
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Copied Text", text);
-        clipboard.setPrimaryClip(clip);
-    }
-
-    public boolean hasCameraPermissions() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void getCameraPermissions() {
-        if (!hasCameraPermissions()) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    public boolean isAsleep() {
-        PowerManager manager = (PowerManager) getSystemService(POWER_SERVICE);
-        return manager.isInteractive();
     }
 
     //endregion

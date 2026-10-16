@@ -4,12 +4,14 @@ import android.text.SpannableStringBuilder;
 
 import com.prometheussoftware.auikit.callback.SuccessErrorCallback;
 import com.prometheussoftware.auikit.callback.ViewControllerCallback;
+import com.prometheussoftware.auikit.classes.MessageComposer;
 import com.prometheussoftware.auikit.classes.UIEdgeInsets;
 import com.prometheussoftware.auikit.classes.UIImage;
 import com.prometheussoftware.auikit.classes.UITargetDelegate;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.AssetIDs;
 import com.prometheussoftware.auikit.common.Assets;
+import com.prometheussoftware.auikit.common.MainApplication;
 import com.prometheussoftware.auikit.genericviews.UICheckbox;
 import com.prometheussoftware.auikit.model.ArrayPropertyProtocol;
 import com.prometheussoftware.auikit.model.BaseModel;
@@ -437,7 +439,16 @@ public interface MutableProtocol {
         return YES. */
         default boolean hasAccessoryForSection (int section) { return false; }
         /** @brief Default only handles email and phone calls. */
-        default void didSelectSection (int section) {}
+        default void didSelectSection (int section) {
+            String value = object().UpdatedObject.stringValueForSectionType(section);
+
+            if (object().UpdatedObject.isEmailSectionType(section)) {
+                MessageComposer.sendEmail(value);
+            }
+            else if (object().UpdatedObject.isPhoneSectionType(section)) {
+                MainApplication.callPhone(value);
+            }
+        }
         default boolean canEditSection (int section) { return false; }
         /** @brief Return YES if you want to hide this section completely regardlss of other conditions.
         Default hides a section with no value or subvalue when isEditable is NO.

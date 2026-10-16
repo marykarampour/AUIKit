@@ -1,7 +1,6 @@
 package com.prometheussoftware.auikit.uiview;
 
 import com.prometheussoftware.auikit.classes.DateViewAttributes;
-import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.utility.DateUtility;
 
