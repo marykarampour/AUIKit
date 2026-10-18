@@ -14,6 +14,7 @@ import com.prometheussoftware.auikit.uiview.UIStackedViews;
 import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiview.protocols.UIControlProtocol;
 import com.prometheussoftware.auikit.uiview.protocols.ViewCreation;
+import com.prometheussoftware.auikit.utility.StringUtility;
 
 public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIView> extends UIView implements UIControlProtocol {
 
@@ -28,7 +29,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
     protected R rightView;
 
     /** Insets between the subviews and edges of parent, i.e. this */
-    private UIEdgeInsets insets;
+    private UIEdgeInsets insets = insets();
 
     /** PAdding between right view and title or left view */
     private int rightPadding;
@@ -39,8 +40,8 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     private Size rightViewSize;
     private Size leftViewSize;
-    public ALIGNMENT rightViewVerticalAlignment = UIView.ALIGNMENT.CENTER_Y;
-    public ALIGNMENT leftViewVerticalAlignment = UIView.ALIGNMENT.CENTER_Y;
+    private ALIGNMENT rightViewVerticalAlignment = rightViewVerticalAlignment();
+    private ALIGNMENT leftViewVerticalAlignment = leftViewVerticalAlignment();
 
     static {
         Identifier.Register(UIMultiViewLabel.class);
@@ -52,7 +53,6 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     public UIMultiViewLabel(int count) {
         super();
-        this.insets = insets();
         createContentView();
         createLabels(count);
     }
@@ -72,7 +72,6 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     public UIMultiViewLabel(C contentView) {
         super();
-        this.insets = insets();
         this.contentView = contentView;
         createLabels(1);
     }
@@ -88,8 +87,8 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
     }
 
     /** This view is added on top of all other views
-     * @param backView is added on top and covers the entire view other than possibly left and right views
-     * @param coverLeft pass true to have backView cover left view
+     * @param backView   is added on top and covers the entire view other than possibly left and right views
+     * @param coverLeft  pass true to have backView cover left view
      * @param coverRight pass true to have backView cover right view */
     public void addBackView(UIView backView, boolean coverLeft, boolean coverRight) {
 
@@ -126,7 +125,8 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     //region life cycle
 
-    @Override public void init() {
+    @Override
+    public void init() {
         if (insets == null) insets = insets();
         if (rightPadding == 0) rightPadding = rightPadding();
         if (leftPadding == 0) leftPadding = leftPadding();
@@ -135,14 +135,16 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         super.init();
     }
 
-    @Override public void initView() {
+    @Override
+    public void initView() {
         super.initView();
         createContentView();
         createRightView();
         createLeftView();
     }
 
-    @Override public void loadView() {
+    @Override
+    public void loadView() {
         super.loadView();
         addSubview(contentView);
         contentView.addSubview(labels);
@@ -154,7 +156,8 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     //region constraints
 
-    @Override public void constraintLayout() {
+    @Override
+    public void constraintLayout() {
         super.constraintLayout();
 
         constraintSidesForView(contentView);
@@ -229,7 +232,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         if (0 < leftViewSize.getHeight() && 0 < leftViewSize.getWidth()) {
             contentView.constraintSizeForView(leftView, leftViewSize);
         }
-        else if ( 0 < leftViewSize.getWidth()) {
+        else if (0 < leftViewSize.getWidth()) {
             contentView.constraintWidthForView(leftView, leftViewSize.getWidth());
         }
         else if (0 < leftViewSize.getHeight()) {
@@ -238,7 +241,7 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         else if (0 < rightViewSize.getHeight() && 0 < rightViewSize.getWidth()) {
             contentView.constraintSizeForView(rightView, rightViewSize);
         }
-        else if ( 0 < rightViewSize.getWidth()) {
+        else if (0 < rightViewSize.getWidth()) {
             contentView.constraintWidthForView(rightView, rightViewSize.getWidth());
         }
         else if (0 < rightViewSize.getHeight()) {
@@ -263,12 +266,12 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
         contentView.applyConstraints();
     }
-    
+
     private void constraintLabel() {
         constraintSidesForView(labels, insets);
         contentView.applyConstraints();
     }
-    
+
     //endregion
 
     //region views
@@ -294,18 +297,18 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         contentView = (C) new UIView();
     }
 
-//    /** It will NOT set the view if view is already loaded */
+    /** It will NOT set the view if view is already loaded */
     public void setLeftView(L leftView) {
-//        if (!isLoaded())
+        //if (!isLoaded())
         contentView.removeSubview(this.leftView);
         this.leftView = leftView;
         contentView.addSubview(leftView);
         constraintLayout();
     }
 
-//    /** It will NOT set the view if view is already loaded */
+    /** It will NOT set the view if view is already loaded */
     public void setRightView(R rightView) {
-//        if (!isLoaded())
+        //if (!isLoaded())
         contentView.removeSubview(this.rightView);
         this.rightView = rightView;
         contentView.addSubview(rightView);
@@ -381,11 +384,34 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
         setMinHeight(height);
     }
 
+    public void setRightViewVerticalAlignment(ALIGNMENT rightViewVerticalAlignment) {
+        this.rightViewVerticalAlignment = rightViewVerticalAlignment;
+        constraintVertical(rightView, rightViewVerticalAlignment);
+        applyConstraints();
+    }
+
+    public void setLeftViewVerticalAlignment(ALIGNMENT leftViewVerticalAlignment) {
+        this.leftViewVerticalAlignment = leftViewVerticalAlignment;
+        constraintVertical(leftView, leftViewVerticalAlignment);
+        applyConstraints();
+    }
+
+    protected ALIGNMENT rightViewVerticalAlignment() {
+        return UIView.ALIGNMENT.CENTER_Y;
+    }
+
+    protected ALIGNMENT leftViewVerticalAlignment() {
+        return UIView.ALIGNMENT.CENTER_Y;
+    }
+
     //endregion
 
     //region helpers
 
-    protected void constraintVertical (UIView view, ALIGNMENT alignment) {
+    protected void constraintVertical(UIView view, ALIGNMENT alignment) {
+        contentView.removeConstraint(view, ConstraintSet.TOP);
+        contentView.removeConstraint(view, ConstraintSet.BOTTOM);
+
         switch (alignment) {
             case TOP:
                 contentView.constraintForView(ConstraintSet.TOP, view, insets.top);
@@ -401,6 +427,29 @@ public class UIMultiViewLabel <L extends UIView, R extends UIView, C extends UIV
 
     public void setMultiline(int index) {
         labels.viewAtIndex(index).setNumberOfLines(Integer.MAX_VALUE);
+    }
+
+    //TODO: Doesn't work
+    public void collapseEmptyLabels() {
+
+        int count = labels.count();
+
+        for (UILabel view : labels.contentViews()) {
+            if (StringUtility.isEmpty(view.getText())) count --;
+        }
+
+        float percentHeight = count <= 0 ? 0 : (100f/count) / 100;
+
+        for (UILabel view : labels.contentViews()) {
+            if (StringUtility.isEmpty(view.getText())) {
+                labels.removeConstraintHeightForSubview(view);
+            }
+            else {
+                labels.constrainPercentHeightForView(view, percentHeight);
+            }
+        }
+
+        labels.applyConstraints();
     }
 
     //endregion

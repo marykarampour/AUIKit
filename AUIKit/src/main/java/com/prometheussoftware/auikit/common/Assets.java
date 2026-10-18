@@ -48,12 +48,12 @@ public class Assets implements AssetsProtocol {
         return drawableFromID(id);
     }
 
-    public static UIImage imageFromName(String name) {
+    public static UIImage imageNamed(String name) {
         int id = context().getResources().getIdentifier(name, DRAWABLE_TYPE, context().getOpPackageName());
         return imageFromID(id);
     }
 
-    public static UIImage imageFromName(String name, int color) {
+    public static UIImage imageNamed(String name, int color) {
         int id = context().getResources().getIdentifier(name, DRAWABLE_TYPE, context().getOpPackageName());
         return imageFromID(id, color);
     }

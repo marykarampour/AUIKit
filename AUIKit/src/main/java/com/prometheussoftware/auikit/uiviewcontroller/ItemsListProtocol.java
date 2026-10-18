@@ -1,6 +1,7 @@
 package com.prometheussoftware.auikit.uiviewcontroller;
 
 import android.text.SpannableStringBuilder;
+import android.view.Gravity;
 
 import com.prometheussoftware.auikit.callback.ObjectCallback;
 import com.prometheussoftware.auikit.callback.SuccessErrorCallback;
@@ -11,6 +12,7 @@ import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.model.IndexPath;
 import com.prometheussoftware.auikit.tableview.BaseTableViewCell;
 import com.prometheussoftware.auikit.tableview.UITableViewCell;
+import com.prometheussoftware.auikit.uiview.UIView;
 import com.prometheussoftware.auikit.uiview.protocols.ViewContentProtocol;
 import com.prometheussoftware.auikit.utility.ArrayUtility;
 import com.prometheussoftware.auikit.utility.ObjectUtility;
@@ -51,6 +53,10 @@ public interface ItemsListProtocol {
 
             int sectionType = sectionTypeForIndexPath(indexPath);
             cell.setSelectionStyle(selectionStyleForListOfType(sectionType));
+            cell.getImageView().setImage(imageForListItemAtIndexPath(item, indexPath));
+            cell.setLeftViewVerticalAlignment(imageAlignmentForListItemAtIndexPath(item, indexPath));
+            cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setGravity(textAlignmentForListItemAtIndexPath(item, indexPath));
+            cell.getLabel(UITableViewCell.LABEL_TYPE.DETAIL_TEXT.intValue()).setGravity(detailTextAlignmentForListItemAtIndexPath(item, indexPath));
 
             UITableViewCell.ACCESSORY_TYPE type = accessoryTypeForListItemAtIndexPath(item, indexPath);
 
@@ -85,6 +91,22 @@ public interface ItemsListProtocol {
 
         default <T extends ViewContentProtocol.Placeholder> UITargetDelegate.TouchUp accessoryCustomActionForListItemAtIndexPath(T item, IndexPath indexPath) {
             return sender -> performSelectListItemAtIndexPath(item, indexPath, true);
+        }
+
+        default <T extends ViewContentProtocol.Placeholder> UIImage imageForListItemAtIndexPath(T item, IndexPath indexPath) {
+            return null;
+        }
+
+        default <T extends ViewContentProtocol.Placeholder> UIView.ALIGNMENT imageAlignmentForListItemAtIndexPath(T item, IndexPath indexPath) {
+            return UIView.ALIGNMENT.CENTER_Y;
+        }
+
+        default <T extends ViewContentProtocol.Placeholder> int textAlignmentForListItemAtIndexPath(T item, IndexPath indexPath) {
+            return Gravity.CENTER_VERTICAL | Gravity.LEFT;
+        }
+
+        default <T extends ViewContentProtocol.Placeholder> int detailTextAlignmentForListItemAtIndexPath(T item, IndexPath indexPath) {
+            return Gravity.CENTER_VERTICAL | Gravity.LEFT;
         }
 
         default void performSelectListItemAtIndexPath(ViewContentProtocol.Placeholder item, IndexPath indexPath, boolean selected) {}

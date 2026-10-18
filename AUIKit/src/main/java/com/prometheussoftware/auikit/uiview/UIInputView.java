@@ -1,5 +1,7 @@
 package com.prometheussoftware.auikit.uiview;
 
+import android.view.Gravity;
+
 import com.prometheussoftware.auikit.common.App;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
@@ -52,6 +54,7 @@ public class UIInputView extends UIView {
         label = new UILabel();
         label.setTextColor(App.theme().Text_Dark_Color());
         label.setFont(App.theme().Medium_Bold_Font());
+        label.setGravity(Gravity.CENTER_VERTICAL);
 
         button = new UIButton();
 
@@ -74,15 +77,17 @@ public class UIInputView extends UIView {
     public void constraintLayout() {
         super.constraintLayout();
 
-        int width = Constants.Screen_Size().getWidth() - fieldWidth;
+        int buttonSize = Dimensions.Int_36();
+        int width = Constants.Screen_Size().getWidth() - fieldWidth - 2*horizontalMargin - buttonSize;
         List<UIView> views = new ArrayList();
         views.add(label);
         views.add(button);
         views.add(textField);
 
         constraintWidthForView(label, width);
-        constraintWidthForView(button, Dimensions.Int_32());
-        constraintHorizontally(views, horizontalMargin, horizontalMargin, verticalMargin, false);
+        constraintWidthForView(button, buttonSize);
+        constraintHeightForView(button, buttonSize);
+        constraintHorizontally(views, 0, horizontalMargin, verticalMargin, false);
         applyConstraints();
     }
 

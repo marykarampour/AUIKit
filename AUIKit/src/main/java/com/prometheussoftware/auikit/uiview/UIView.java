@@ -526,6 +526,11 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         }
     }
 
+    public void removeConstraintHeightForSubview(UIView view) {
+        constraintHeightForView(view, 0);
+        applyConstraints();
+    }
+
     public void constraintSidesForView (UIView view) {
         constraintSidesForView(view, new UIEdgeInsets());
     }
@@ -602,9 +607,19 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
         constraintSet.constrainHeight(view.getId(), height);
     }
 
+    public void constrainPercentHeightForView (UIView view, float height) {
+        if (view == null || view.getParent() != this) return;
+        constraintSet.constrainPercentHeight(view.getId(), height);
+    }
+
     public void constraintWidthForView (UIView view, int width) {
         if (view == null || view.getParent() != this) return;
         constraintSet.constrainWidth(view.getId(), width);
+    }
+
+    public void constrainPercentWidthForView (UIView view, float width) {
+        if (view == null || view.getParent() != this) return;
+        constraintSet.constrainPercentWidth(view.getId(), width);
     }
 
     public void constraintSameWidthAsHeightForView (UIView view) {
@@ -898,6 +913,12 @@ public class UIView extends ConstraintLayout implements UIViewProtocol {
     public void removeConstraints (UIView view) {
         if (view == null || view.getParent() != this) return;
         constraintSet.clear(view.getId());
+        constraintSet.applyTo(this);
+    }
+
+    public void removeConstraint (UIView view, int constraint) {
+        if (view == null || view.getParent() != this) return;
+        constraintSet.clear(view.getId(), constraint);
         constraintSet.applyTo(this);
     }
 

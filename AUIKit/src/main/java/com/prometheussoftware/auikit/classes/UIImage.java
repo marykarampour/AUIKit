@@ -50,15 +50,15 @@ public class UIImage extends BaseModel {
     }
 
     public static UIImage imageNamed(String name) {
-        return Assets.imageFromName(name);
+        return Assets.imageNamed(name);
     }
 
     public static UIImage imageNamed(String name, int color) {
-        return Assets.imageFromName(name, color);
+        return Assets.imageNamed(name, color);
     }
 
     public static UIImage imageNamed(String name, UIColor color) {
-        return Assets.imageFromName(name, color.get());
+        return Assets.imageNamed(name, color.get());
     }
 
     public void setBitmap(Bitmap bitmap) {

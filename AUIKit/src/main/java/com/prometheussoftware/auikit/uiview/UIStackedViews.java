@@ -87,6 +87,17 @@ public class UIStackedViews <T extends UIView> extends UIView implements UIStack
         return views.get(index);
     }
 
+    public void constraintHeightForViewAtIndex(int height, int index) {
+        if (index >= views.size()) return;
+        constraintHeightForView(contentViews().get(index), height);
+        applyConstraints();
+    }
+
+    public void constraintHeightForSubview(T view, int height) {
+        constraintHeightForView(view, height);
+        applyConstraints();
+    }
+
     public ArrayList<T> contentViews() {
         return views;
     }

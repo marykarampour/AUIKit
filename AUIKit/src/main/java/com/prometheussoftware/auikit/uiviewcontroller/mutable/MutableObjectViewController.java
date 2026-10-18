@@ -969,6 +969,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
                 LabelAttributes attrs = labelAttributesForSection(section);
                 attrs.setAttributedTitlesForLabel(cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()), cell.getLabel(UITableViewCell.LABEL_TYPE.DETAIL_TEXT.intValue()));
+                //cell.collapseEmptyLabels(); //TODO: Doesn't work causing label not be cenered
 
                 return cell;
             }

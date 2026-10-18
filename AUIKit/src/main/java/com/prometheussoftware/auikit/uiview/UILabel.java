@@ -1,5 +1,6 @@
 package com.prometheussoftware.auikit.uiview;
 
+import android.view.Gravity;
 import android.widget.TextView;
 
 import com.prometheussoftware.auikit.classes.UIColor;
@@ -20,6 +21,8 @@ public class UILabel extends UISingleView <TextView> {
     @Override public void initView() {
         super.initView();
         view = new TextView(getActivity());
+        view.setIncludeFontPadding(false);
+        setGravity(Gravity.TOP);
     }
 
     public String getText() {

@@ -59,7 +59,7 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
         this.style = style;
     }
 
-    private void baseSetup() {
+    protected void baseSetup() {
         if (separatorHeight == 0) separatorHeight = separatorHeight();
         getLabel(LABEL_TYPE.TEXT.intValue()).setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         getLabel(LABEL_TYPE.DETAIL_TEXT.intValue()).setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
