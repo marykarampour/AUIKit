@@ -458,12 +458,21 @@ public abstract class UITableViewCell <A extends UIAccessoryView, S extends UIVi
             init();
         }
 
+        public Concrete(STYLE style) {
+            super(style);
+            init();
+        }
+
         @Override
         public void initView() {
             super.initView();
 
-            getLabel(LABEL_TYPE.TEXT.intValue()).setTextColor(UIColor.black(1.0f));
-            getLabel(LABEL_TYPE.DETAIL_TEXT.intValue()).setTextColor(UIColor.gray(1.0f));
+            getLabel(LABEL_TYPE.TEXT.intValue()).setTextColor(App.theme().Tableview_Title_Text_Color());
+            getLabel(LABEL_TYPE.TEXT.intValue()).setFont(App.theme().Tableview_Title_Font());
+
+            getLabel(LABEL_TYPE.DETAIL_TEXT.intValue()).setTextColor(App.theme().Tableview_Subtitle_Text_Color());
+            getLabel(LABEL_TYPE.DETAIL_TEXT.intValue()).setFont(App.theme().Tableview_Subtitle_Font());
+
             contentView.setBackgroundColor(UIColor.white(1.0f));
         }
 

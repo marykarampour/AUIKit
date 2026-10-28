@@ -118,7 +118,7 @@ public interface ItemsListProtocol {
         default <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForSelectedListItemInListOfType (T item, int type) {
             return UITableViewCell.ACCESSORY_TYPE.NONE; }
         /** @brief Default is UITableViewCellAccessoryNone. */
-        default <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForDeselectedListItemInListOfType(T item, int sectionType) { return UITableViewCell.ACCESSORY_TYPE.NONE; }
+        default <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForDeselectedListItemInListOfType(T item, int type) { return UITableViewCell.ACCESSORY_TYPE.NONE; }
         /** @brief Default is UITableViewCellAccessoryDisclosureIndicator. */
         default <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForSingleDeselectedListItemInListOfType (T item, int type) { return UITableViewCell.ACCESSORY_TYPE.NONE; }
 

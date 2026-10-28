@@ -690,6 +690,32 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
         }
     }
 
+    @Override
+    public <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForDeselectedListItemInListOfType(T item, int type) {
+
+        int section = listSectionForListType(type);
+        ItemsListProtocol.LIST_ITEM_SELECTED_ACTION action = selectedActionHandler.action(section);
+        switch (action) {
+            case TRANSITION_TO_DETAIL:
+                return UITableViewCell.ACCESSORY_TYPE.DISCLOSURE_INDICATOR;
+            default:
+                return UITableViewCell.ACCESSORY_TYPE.NONE;
+        }
+    }
+
+    @Override
+    public <T extends ViewContentProtocol.Placeholder> UITableViewCell.ACCESSORY_TYPE accessoryTypeForSingleDeselectedListItemInListOfType(T item, int type) {
+
+        int section = listSectionForListType(type);
+        ItemsListProtocol.LIST_ITEM_SELECTED_ACTION action = selectedActionHandler.action(section);
+        switch (action) {
+            case TRANSITION_TO_DETAIL:
+                return UITableViewCell.ACCESSORY_TYPE.DISCLOSURE_INDICATOR;
+            default:
+                return UITableViewCell.ACCESSORY_TYPE.NONE;
+        }
+    }
+
     public boolean isAddIndexPath (IndexPath indexPath) {
         if (typeForSection(indexPath.section) != MutableProtocol.FIELD_TYPE.LIST)
             return false;
@@ -1034,9 +1060,8 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
             cell.setSeparatorHeight(0);
             cell.setSelectionStyle(UITableViewCell.SELECTION_STYLE.NONE);
             cell.setAccessoryType(UITableViewCell.ACCESSORY_TYPE.NONE);
-            cell.getLabel(0).setText(title);
-            cell.getLabel(0).setFont(App.theme().Small_Bold_Font());
-            cell.getLabel(0).setNumberOfLines(2);
+            cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setText(title);
+            cell.getLabel(UITableViewCell.LABEL_TYPE.TEXT.intValue()).setNumberOfLines(2);
             return cell;
         }
         else {

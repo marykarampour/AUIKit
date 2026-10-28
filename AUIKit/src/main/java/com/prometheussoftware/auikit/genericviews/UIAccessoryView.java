@@ -161,6 +161,12 @@ public abstract class UIAccessoryView extends UISwitch implements UIAccessoryVie
             super();
         }
 
+        @Override
+        public void init() {
+            super.init();
+            updateViews();
+        }
+
         @Override public void initView() {
             super.initView();
             label = createLabel();

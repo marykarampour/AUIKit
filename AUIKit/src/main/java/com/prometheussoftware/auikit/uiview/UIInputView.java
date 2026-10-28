@@ -52,8 +52,8 @@ public class UIInputView extends UIView {
     public void initView() {
         super.initView();
         label = new UILabel();
-        label.setTextColor(App.theme().Text_Dark_Color());
-        label.setFont(App.theme().Medium_Bold_Font());
+        label.setTextColor(App.theme().Tableview_Title_Text_Color());
+        label.setFont(App.theme().Tableview_Title_Font());
         label.setGravity(Gravity.CENTER_VERTICAL);
 
         button = new UIButton();

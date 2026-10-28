@@ -2,6 +2,7 @@ package com.prometheussoftware.auikit.common.protocols;
 
 import com.prometheussoftware.auikit.classes.UIColor;
 import com.prometheussoftware.auikit.classes.UIFont;
+import com.prometheussoftware.auikit.common.App;
 
 public interface ThemeProtocol {
 
@@ -36,6 +37,11 @@ public interface ThemeProtocol {
     default UIColor Tableview_Separator_Color() { return UIColor.color(0.7f, 0.6f, 0.7f, 1.0f); }
     default UIColor Tableview_Header_Background_Color() { return UIColor.white(1.0f); }
     default UIColor Tableview_Header_Text_Color() { return UIColor.black(1.0f); }
+
+    default UIColor Tableview_Title_Text_Color() { return UIColor.black(1.0f); }
+    default UIColor Tableview_Subtitle_Text_Color() { return UIColor.gray(1.0f); }
+    default UIFont Tableview_Title_Font() { return App.theme().Medium_Bold_Font(); }
+    default UIFont Tableview_Subtitle_Font() { return App.theme().Medium_Regular_Font(); }
 
     //fonts
     default UIFont Small_Regular_Font() { return UIFont.systemFont(14, UIFont.STYLE.REGULAR); }
@@ -113,5 +119,6 @@ public interface ThemeProtocol {
     default UIColor White_Silver_Color() { return UIColor.white(1.0f); }
 
     default UIColor DatePicker_Text_Color() { return UIColor.black(1.0f); }
+    default UIColor DatePicker_Border_Color() { return UIColor.black(1.0f); }
     default UIColor DatePicker_Button_Color() { return UIColor.white(1.0f); }
 }

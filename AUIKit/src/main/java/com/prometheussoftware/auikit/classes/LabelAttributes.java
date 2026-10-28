@@ -137,17 +137,17 @@ public class LabelAttributes {
 
         if (this.attrValue == null && ((this.type.value & TYPE.ATTR_VALUE.value) != 0)) {
             ArrayList<StringFormatting.StringAttributes> attrs = new ArrayList();
-            attrs.add(new StringFormatting.StringAttributes(this.title, App.theme().Medium_Bold_Font(), UIColor.black(1.0f)));
+            attrs.add(new StringFormatting.StringAttributes(this.title, App.theme().Tableview_Title_Font(), App.theme().Tableview_Title_Text_Color()));
             attrs.add(new StringFormatting.StringAttributes(this.value, App.theme().Medium_Regular_Font(), UIColor.gray(1.0f)));
 
             this.attrValue = StringFormatting.attributedText(attrs, this.labelDelimiter);
         }
         if (this.attrSubvalue == null && ((this.type.value & TYPE.ATTR_SUBVALUE.value) != 0)) {
             ArrayList<StringFormatting.StringAttributes> attrs = new ArrayList();
-            attrs.add(new StringFormatting.StringAttributes(this.subtitle, App.theme().Small_Bold_Font(), App.theme().Text_Dark_Color()));
+            attrs.add(new StringFormatting.StringAttributes(this.subtitle, App.theme().Tableview_Subtitle_Font(), App.theme().Tableview_Subtitle_Text_Color()));
             attrs.add(new StringFormatting.StringAttributes(this.subvalue, App.theme().Small_Regular_Font(), App.theme().Bright_Blue_Color()));
 
-            this.attrValue = StringFormatting.attributedText(attrs, this.sublabelDelimiter);
+            this.attrSubvalue = StringFormatting.attributedText(attrs, this.sublabelDelimiter);
         }
     }
 
@@ -165,7 +165,8 @@ public class LabelAttributes {
         @Override
         public void setAttributedTitlesForLabel(UILabel label, UILabel sublabel) {
             if (label != null) {
-                label.setFont(App.theme().Medium_Bold_Font());
+                label.setFont(App.theme().Tableview_Title_Font());
+                label.setTextColor(App.theme().Tableview_Title_Text_Color());
                 label.setText(title);
                 label.setTextAlignment(TEXT_ALIGNMENT_CENTER);
             }
@@ -187,7 +188,8 @@ public class LabelAttributes {
         @Override
         public void setAttributedTitlesForLabel(UILabel label, UILabel sublabel) {
             if (label != null) {
-                label.setFont(App.theme().Medium_Bold_Font());
+                label.setFont(App.theme().Tableview_Title_Font());
+                label.setTextColor(App.theme().Tableview_Title_Text_Color());
                 label.setText(placeholder);
                 label.setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
             }
@@ -220,6 +222,8 @@ public class LabelAttributes {
         @Override
         public void setAttributedTitlesForLabel(UILabel label, UILabel sublabel) {
             if (label != null) {
+                label.setFont(App.theme().Tableview_Title_Font());
+                label.setTextColor(App.theme().Tableview_Title_Text_Color());
                 label.setText(value);
                 label.setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
             }
@@ -242,7 +246,8 @@ public class LabelAttributes {
 //            SpannableStringBuilder attrs = StringFormatting.attributedTitleSubtitle(this)
             super.setAttributedTitlesForLabel(label, sublabel);
             if (sublabel != null) {
-                sublabel.setFont(App.theme().Medium_Bold_Font());
+                sublabel.setFont(App.theme().Tableview_Subtitle_Font());
+                sublabel.setTextColor(App.theme().Tableview_Subtitle_Text_Color());
                 sublabel.setText(subvalue);
                 sublabel.setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
             }
@@ -317,7 +322,8 @@ public class LabelAttributes {
         public void setAttributedTitlesForLabel(UILabel label, UILabel sublabel) {
             super.setAttributedTitlesForLabel(label, sublabel);
             if (sublabel != null) {
-                sublabel.setFont(App.theme().Medium_Bold_Font());
+                sublabel.setFont(App.theme().Tableview_Subtitle_Font());
+                sublabel.setTextColor(App.theme().Tableview_Subtitle_Text_Color());
                 sublabel.setText(this.subvalue);
                 sublabel.setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
             }
@@ -360,7 +366,8 @@ public class LabelAttributes {
         @Override
         public void setAttributedTitlesForLabel(UILabel label, UILabel sublabel) {
             if (label != null) {
-                label.setFont(App.theme().Medium_Bold_Font());
+                label.setFont(App.theme().Tableview_Title_Font());
+                label.setTextColor(App.theme().Tableview_Title_Text_Color());
                 label.setText(title);
                 label.setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
             }
@@ -382,7 +389,8 @@ public class LabelAttributes {
         @Override
         public void setAttributedTitlesForLabel(UILabel label, UILabel sublabel) {
             if (label != null) {
-                label.setFont(App.theme().Medium_Bold_Font());
+                label.setFont(App.theme().Tableview_Title_Font());
+                label.setTextColor(App.theme().Tableview_Title_Text_Color());
                 label.setText(title);
                 label.setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
             }

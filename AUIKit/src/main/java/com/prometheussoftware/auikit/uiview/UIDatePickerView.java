@@ -2,6 +2,7 @@ package com.prometheussoftware.auikit.uiview;
 
 import com.prometheussoftware.auikit.classes.DateViewAttributes;
 import com.prometheussoftware.auikit.common.App;
+import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.utility.DateUtility;
 
 public class UIDatePickerView extends UICalendarView {
@@ -27,6 +28,9 @@ public class UIDatePickerView extends UICalendarView {
         button.setTextColor(App.theme().DatePicker_Text_Color());
         button.setFont(App.theme().Medium_Bold_Font());
         button.setText("No Date Selected");
+        button.setBorderColor(App.theme().DatePicker_Border_Color());
+        button.setBorderWidth(Dimensions.Int_1());
+        button.setCornerRadius(0);
 
         calendar.view.setOnDateChangeListener((calendarView, y, m, d) -> {
             info.date = DateUtility.dateWithComponents(y, m, d);

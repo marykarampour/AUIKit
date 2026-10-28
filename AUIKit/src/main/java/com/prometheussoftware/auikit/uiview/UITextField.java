@@ -19,7 +19,7 @@ public class UITextField extends UITextView {
         view().setPadding(insets, 0, insets, 0);
         setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
 
-        setBackgroundColor(App.theme().TextField_Background_Color());
+        setContentBackgroundColor(App.theme().TextField_Background_Color());
         setHintTextColor(App.theme().TextField_Placeholder_Color());
         setTextColor(App.theme().TextField_Text_Color());
     }
