@@ -34,7 +34,7 @@ public class UITabBarButton extends UIButton {
         UIEdgeInsets contentInsets = App.constants().Tab_Bar_Insets();
 
         constraintHeightForView(getImageView(), App.constants().Tab_Bar_Icon_Height());
-        constraintVertically(ArrayUtility.arrayOf(getImageView(), getTitleLabel()), Dimensions.Int_1(), 0, contentInsets.top, false, ConstraintSet.TOP | ConstraintSet.BOTTOM);
+        constraintVertically(ArrayUtility.arrayOf(getImageView(), getTitleLabel()), Dimensions.Int_4(), 0, contentInsets.top, false, ConstraintSet.TOP | ConstraintSet.BOTTOM);
         applyConstraints();
     }
 }

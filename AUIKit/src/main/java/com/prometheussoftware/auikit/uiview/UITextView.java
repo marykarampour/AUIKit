@@ -23,6 +23,7 @@ import androidx.core.widget.TextViewCompat;
 
 import com.prometheussoftware.auikit.baseviews.TextView;
 import com.prometheussoftware.auikit.classes.UIColor;
+import com.prometheussoftware.auikit.classes.UIFont;
 import com.prometheussoftware.auikit.common.Constants;
 import com.prometheussoftware.auikit.common.Dimensions;
 import com.prometheussoftware.auikit.model.IndexPath;
@@ -204,6 +205,16 @@ public class UITextView <V extends UIView, W extends UIView> extends UISingleLay
 
     public void setTextColor(UIColor color) {
         view().setTextColor(color.get());
+    }
+
+    public void setFont(UIFont font) {
+        if (0 < font.size()) view().setTextSize(font.size());
+        if (0 < font.style()) {
+            view().setTypeface(font.get(), font.style());
+        }
+        else {
+            view().setTypeface(font.get());
+        }
     }
 
     public void setHint(CharSequence s) {

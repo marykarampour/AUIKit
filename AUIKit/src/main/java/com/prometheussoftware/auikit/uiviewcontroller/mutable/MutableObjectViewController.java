@@ -132,7 +132,9 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
 
     @Override
     public void prepareDataForUpdate() {
-        //TODO: date pickers
+        dateCellInfoObjects.forEach((Integer key, UIDatePickerView value) -> {
+            object().UpdatedObject.setValueForSectionType(value.info.date, key);
+        });
     }
 
     @Override
@@ -1360,7 +1362,7 @@ public abstract class MutableObjectViewController <ObjectType extends BaseModel 
     //endregion
 
     //region layout
-    //TODO: implement others - make this reloadIndexPaths(all) - animated when insert/delete row height changes
+    //TODO: implement others - make this reloadIndexPaths(all) - animated when insert/delete row height changes - it requires registering a cell identifier and caching cells so the ones that are not recreated are reloaded and only constrained
     @Override
     public void reload() {
 

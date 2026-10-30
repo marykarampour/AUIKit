@@ -22,5 +22,6 @@ public class UITextField extends UITextView {
         setContentBackgroundColor(App.theme().TextField_Background_Color());
         setHintTextColor(App.theme().TextField_Placeholder_Color());
         setTextColor(App.theme().TextField_Text_Color());
+        setFont(App.theme().TextField_Text_Font());
     }
 }
